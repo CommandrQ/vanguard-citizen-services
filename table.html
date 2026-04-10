@@ -10,47 +10,45 @@
 
     <div id="loader-screen">
         <div class="loader-content">
-            <span class="system-text">INITIALIZING VANGUARD PROTOCOL</span>
+            <div class="terminal-text" id="sys-status">BOOTING VANGUARD OS...</div>
             <span id="load-percent">0%</span>
             <div class="progress-bar-container">
                 <div id="progress-bar"></div>
             </div>
+            <div class="terminal-text" id="sys-log">ESTABLISHING SECURE CONNECTION...</div>
         </div>
-    </div>
+        <div class="scanlines"></div> </div>
 
-    <main id="main-stage" class="doorway-stage hidden-stage">
+    <main id="main-stage" class="hidden-stage">
         
-        <div class="pulse-layer pulse-blue"></div>
-        <div class="pulse-layer pulse-red"></div>
-        <div class="pulse-layer pulse-gold"></div>
-
-        <div class="top-crest">
-            <svg viewBox="0 0 24 24" class="helmet-svg">
-                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2c3.92 1.07 7 4.58 7 8.05 0 .28-.02.56-.05.83-.34-1.29-1.42-2.38-2.73-2.88H7.78c-1.31.5-2.39 1.59-2.73 2.88-.03-.27-.05-.55-.05-.83 0-3.47 3.08-6.98 7-8.05zM7 13.5v1h10v-1h-10zm2 3v1h6v-1H9z"/>
-            </svg>
+        <div class="holo-table">
+            <div class="ring ring-outer"></div>
+            <div class="ring ring-middle"></div>
+            <div class="ring ring-inner"></div>
+            <div class="core-light"></div>
         </div>
 
-        <div class="round-table-container">
+        <div class="orbital-container">
             
-            <a href="archive.html" class="seat archive">
+            <a href="archive.html" class="seat seat-1">
                 <div class="text-group">
                     <span class="seat-label">The Archive</span>
                 </div>
             </a>
 
-            <a href="citizens.html" class="seat citizens">
+            <a href="citizens.html" class="seat seat-2">
                 <div class="text-group">
                     <span class="seat-label">The Citizens</span>
                 </div>
             </a>
 
-            <a href="horizon.html" class="seat horizon">
+            <a href="horizon.html" class="seat seat-3">
                 <div class="text-group">
                     <span class="seat-label">The Horizon</span>
                 </div>
             </a>
 
-            <a href="vanguard.html" class="seat vanguard">
+            <a href="vanguard.html" class="seat seat-4">
                 <div class="text-group">
                     <span class="seat-label">The Vanguard</span>
                 </div>
@@ -65,16 +63,22 @@
             const progressBar = document.getElementById('progress-bar');
             const loader = document.getElementById('loader-screen');
             const mainStage = document.getElementById('main-stage');
+            const sysLog = document.getElementById('sys-log');
             
-            if (!loadText || !loader || !mainStage) {
-                console.error("Loader Error: Missing HTML IDs");
-                return; 
-            }
+            if (!loadText || !loader || !mainStage) return;
 
             let progress = 0;
+            const logMessages = [
+                "ESTABLISHING SECURE CONNECTION...",
+                "DECRYPTING ARCHIVES...",
+                "CALIBRATING SHIELD PROTOCOLS...",
+                "ALIGNING KNIGHTS...",
+                "SYSTEM READY."
+            ];
 
             function simulateLoad() {
-                let increment = Math.floor(Math.random() * 15) + 1;
+                // Random jump between 1% and 18%
+                let increment = Math.floor(Math.random() * 18) + 1;
                 progress += increment;
 
                 if (progress > 100) progress = 100;
@@ -82,21 +86,29 @@
                 loadText.innerText = progress + '%';
                 progressBar.style.width = progress + '%';
 
+                // Change log text based on progress
+                if (progress > 20 && progress < 50) sysLog.innerText = logMessages[1];
+                if (progress >= 50 && progress < 85) sysLog.innerText = logMessages[2];
+                if (progress >= 85 && progress < 100) sysLog.innerText = logMessages[3];
+                if (progress === 100) sysLog.innerText = logMessages[4];
+
                 if (progress < 100) {
-                    setTimeout(simulateLoad, Math.random() * 150 + 50);
+                    // Random pause (50ms to 250ms) to simulate CPU thinking
+                    setTimeout(simulateLoad, Math.random() * 200 + 50);
                 } else {
+                    // The Flashy Entrance Trigger
                     setTimeout(() => {
                         loader.style.opacity = '0'; 
                         setTimeout(() => {
                             loader.style.display = 'none';
                             mainStage.classList.remove('hidden-stage');
-                            mainStage.classList.add('zoom-in-active'); 
+                            mainStage.classList.add('flash-entrance'); 
                         }, 500);
-                    }, 400); 
+                    }, 600); 
                 }
             }
             
-            setTimeout(simulateLoad, 200);
+            setTimeout(simulateLoad, 300);
         })();
     </script>
 </body>
