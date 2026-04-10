@@ -14,7 +14,7 @@
             --vcs-gold: #D4AF37;
             --text-main: #F5F5F7;
             --text-dim: rgba(245, 245, 247, 0.7);
-            --glass-bg: rgba(20, 20, 20, 0.4); /* Darker frost for black bg */
+            --glass-bg: rgba(20, 20, 20, 0.4); 
             --glass-border: rgba(255, 255, 255, 0.1);
         }
 
@@ -47,16 +47,17 @@
         .cyber-grid {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 200vh;
+            /* Changed to Vanguard Gold and increased opacity to 20% to make it pop */
             background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(212, 175, 55, 0.2) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212, 175, 55, 0.2) 1px, transparent 1px);
             background-size: 50px 50px;
             z-index: 0;
             animation: scrollGrid 30s linear infinite;
             pointer-events: none;
-            /* Fades the grid out at the edges for a cinematic vignette */
-            mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 80%);
-            -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 80%);
+            /* Widened the mask so more of the grid is visible before fading into black edges */
+            mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 90%);
+            -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 90%);
         }
 
         @keyframes scrollGrid {
@@ -64,13 +65,13 @@
             100% { transform: translateY(-50px); }
         }
 
-        /* Ambient glowing orb in the center */
+        /* Ambient glowing orb in the center - brightened to illuminate the grid */
         .core-glow {
             position: fixed;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 60vw; height: 60vw;
-            background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 60%);
+            width: 70vw; height: 70vw;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.12) 0%, transparent 65%);
             z-index: 0;
             pointer-events: none;
         }
@@ -141,7 +142,6 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
         }
 
-        /* Sheen animation adapted for dark mode */
         .glass-panel::after {
             content: '';
             position: absolute;
@@ -159,7 +159,7 @@
             100% { left: 200%; }
         }
 
-        /* --- 5. TYPOGRAPHY (Adapted for Dark Mode) --- */
+        /* --- 5. TYPOGRAPHY --- */
         .page-title {
             font-family: 'Cinzel', serif;
             font-size: clamp(2rem, 4vw, 3rem);
