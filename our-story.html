@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VCS | Our Story</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@200;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Text is pure white to stand out on the glass */
+            --text-main: #FFFFFF;
+            --text-dim: rgba(255, 255, 255, 0.85);
+            --vcs-gold: #D4AF37;
+            /* Frosted glass variables for a daylight/sky background */
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --snap: 0.8s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+
+        body {
+            /* Light blue sky gradient */
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- 1. ENTRANCE FADE FROM BLACK --- */
+        #blackout-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #000000;
+            z-index: 9999;
+            pointer-events: none; /* Allows clicking once faded */
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        /* --- 2. DRIFTING CLOUDS BACKGROUND --- */
+        .clouds {
+            position: fixed;
+            top: 0; left: 0; width: 200vw; height: 100vh;
+            /* Using a lightweight SVG Data URI for seamless clouds */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' opacity='0.3'%3E%3Cpath d='M150 200 a40 40 0 0 1 80 0 a50 50 0 0 1 90 20 a40 40 0 0 1 -40 50 h-130 a30 30 0 0 1 0 -70 z' fill='%23ffffff'/%3E%3Cpath d='M450 400 a40 40 0 0 1 80 0 a50 50 0 0 1 90 20 a40 40 0 0 1 -40 50 h-130 a30 30 0 0 1 0 -70 z' fill='%23ffffff'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            z-index: 0;
+            animation: driftClouds 80s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes driftClouds {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* --- 3. NAVIGATION / RETURN BUTTON --- */
+        .nav-bar {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 30px 5vw;
+            z-index: 100;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .return-btn {
+            color: var(--text-main);
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            transition: color 0.4s ease, text-shadow 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* Keeps it legible over clouds */
+        }
+
+        .return-btn:hover {
+            color: var(--vcs-gold);
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        /* --- 4. GLASS PANEL & SHEEN ANIMATION --- */
+        .page-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 800px;
+            margin: 15vh auto 10vh auto;
+            padding: 0 5vw;
+        }
+
+        .glass-panel {
+            position: relative;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            overflow: hidden; /* Crucial for hiding the sheen when it's outside the box */
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        /* The Animated Glass Sheen */
+        .glass-panel::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -150%;
+            width: 50%; height: 100%;
+            /* A bright, angled beam of light */
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.5), transparent);
+            transform: skewX(-25deg);
+            animation: glassSheen 7s infinite;
+            pointer-events: none; /* So you can still click/select text underneath */
+        }
+
+        @keyframes glassSheen {
+            0% { left: -150%; }
+            15% { left: 200%; }
+            100% { left: 200%; } /* Pauses out of frame before repeating */
+        }
+
+        /* --- 5. TYPOGRAPHY --- */
+        .page-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: var(--text-main);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 30px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+
+        .content-block {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-dim);
+            font-weight: 200;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); /* Adds contrast against bright clouds */
+        }
+
+        .content-block strong {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* --- 6. PROGRESSIONAL FADE ANIMATION --- */
+        .fade-element {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+
+        .fade-element.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- 7. MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            .glass-panel { padding: 40px 25px; }
+            .page-container { margin-top: 12vh; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="blackout-screen"></div>
+
+    <div class="clouds"></div>
+
+    <nav class="nav-bar">
+        <a href="table.html" class="return-btn">
+            <span>&#8592;</span> Return
+        </a>
+    </nav>
+
+    <main class="page-container">
+        
+        <article class="glass-panel">
+            
+            <h1 class="page-title fade-element">Our Story</h1>
+
+            <p class="content-block fade-element">
+                <strong>Every revolution begins with a conversation.</strong> Long before the Vanguard Knights were assembled, Commander Q and Sir Lancelot crossed paths during their travels. Despite coming from different origins, they quickly discovered a shared ideology: a mutual, burning desire to change the world for the better.
+            </p>
+
+            <p class="content-block fade-element">
+                What began as a shared vision soon evolved into a fierce debate on execution. They spent countless hours discussing the intricacies of how to enact real, lasting change without compromising their core values. They realized that talking was no longer enough; action was required.
+            </p>
+
+            <p class="content-block fade-element">
+                Ultimately, they forged an absolute mandate. They decided to not only showcase their vision to the world, but to build a beacon—a platform designed to attract brave, brilliant individuals from different walks of life. Together, they laid the foundation for the collective that would eventually execute the Vanguard Vision.
+            </p>
+
+        </article>
+
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            // 1. Cinematic Fade In From Black
+            const blackoutScreen = document.getElementById('blackout-screen');
+            // Wait 200ms before starting the fade to ensure a smooth transition from the previous page
+            setTimeout(() => {
+                blackoutScreen.style.opacity = '0';
+            }, 200);
+
+            // 2. Progressional Scroll Animation for Text
+            const elements = document.querySelectorAll('.fade-element');
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15 
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target); 
+                    }
+                });
+            }, observerOptions);
+
+            elements.forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>
