@@ -9,9 +9,7 @@
     --vcs-purple: #BF94FF;
     --text-main: #F5F5F7;
     --text-dim: rgba(245, 245, 247, 0.4);
-    --glass-bg: rgba(255, 255, 255, 0.03);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --snap: 0.4s cubic-bezier(0.2, 0, 0, 1);
+    --snap: 0.5s cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* =========================================
@@ -35,161 +33,7 @@ body {
 }
 
 /* =========================================
-   3. TYPOGRAPHY & PERFECT CENTERING
-========================================= */
-.text-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-    transition: var(--snap);
-}
-
-.brand-text, .seat-label {
-    font-family: 'Cinzel', serif;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    text-align: center;
-    transition: var(--snap);
-    margin-right: -0.3em; /* Offsets the letter-spacing for true center */
-}
-
-.brand-text { font-size: 1.1rem; color: var(--text-main); }
-.seat-label { font-size: clamp(0.85rem, 2.5vw, 1.1rem); color: var(--text-dim); }
-
-.role-text {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.6rem;
-    letter-spacing: 0.5em;
-    color: var(--text-dim);
-    margin-top: 10px;
-    text-align: center;
-    margin-right: -0.5em; 
-}
-
-/* =========================================
-   4. GATEWAY (INDEX.HTML) STYLING
-========================================= */
-.glass-pane {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 80px;
-    padding: 60px 100px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(25px); 
-    -webkit-backdrop-filter: blur(25px);
-    border: 1px solid var(--glass-border);
-    z-index: 10;
-}
-
-.node {
-    text-decoration: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: var(--snap);
-}
-
-.icon-wrapper {
-    width: 60px;
-    height: 60px;
-    margin-bottom: 25px;
-}
-
-.icon-svg {
-    width: 100%;
-    height: 100%;
-    fill: var(--text-dim);
-    transition: var(--snap);
-}
-
-.divider {
-    width: 1px;
-    height: 100px;
-    background: linear-gradient(to bottom, transparent, var(--glass-border), transparent);
-}
-
-/* =========================================
-   5. TABLE.HTML: CIRCUITRY & FLOATING LAYOUT
-========================================= */
-.doorway-stage {
-    display: grid;
-    place-items: center;
-    height: 100vh;
-    width: 100vw;
-    position: relative;
-    /* Subtle Circuitry Background Pattern */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M10 10 L90 10 M90 10 L90 90 M90 90 L10 90 M10 90 L10 10 M30 30 L70 30 M70 30 L70 70 M70 70 L30 70 L30 30 M50 10 L50 30 M90 50 L70 50 M50 90 L50 70 M10 50 L30 50' stroke='%23333' stroke-width='0.5' fill='none'/%3E%3C/svg%3E");
-    background-size: 250px 250px;
-    /* Faded enough to not overpower the text or pulses */
-    box-shadow: inset 0 0 200px 100px var(--true-black); /* Fades edges into black */
-}
-
-.round-table-container {
-    position: relative;
-    z-index: 10;
-    width: min(90vw, 700px);
-    height: min(90vw, 700px);
-    display: grid;
-    place-items: center;
-}
-
-.seat { 
-    position: absolute; 
-    text-decoration: none;
-    /* Continuous floating and rotating animations */
-    animation: slow-float 10s ease-in-out infinite, slow-rotate 15s linear infinite;
-}
-
-/* Organic, staggered positioning and animation delays */
-.archive  { top: 15%; left: 20%; animation-delay: -2s; }
-.horizon  { bottom: 15%; right: 20%; animation-delay: -5s; }
-.citizens { top: 50%; right: 5%; transform: translateY(-50%); animation-delay: -8s; }
-.vanguard { top: 50%; left: 5%; transform: translateY(-50%); animation-delay: -11s; }
-
-/* =========================================
-   6. INTERACTIVE GLOWS & HOVERS
-========================================= */
-/* Focus Fade (Dim others) */
-.glass-pane:has(.node:hover) .node:not(:hover),
-.round-table-container:has(.seat:hover) .seat:not(:hover) {
-    opacity: 0.15;
-    filter: blur(4px);
-}
-
-/* Shield/Table Hover (Gold) */
-.shield-node:hover .brand-text, 
-.seat:hover .seat-label { 
-    color: var(--vcs-gold); 
-    text-shadow: 0 0 15px rgba(212, 175, 55, 0.6); 
-    letter-spacing: 0.4em; /* Expands slightly on hover */
-}
-
-/* Scale the text group to avoid conflicting with the keyframe transforms */
-.seat:hover .text-group {
-    transform: scale(1.15);
-}
-
-.shield-node:hover .icon-svg { 
-    fill: var(--vcs-gold); 
-    filter: drop-shadow(0 0 15px var(--vcs-gold)); 
-}
-
-/* Sword Hover (Purple) */
-.sword-node:hover .brand-text { 
-    color: var(--vcs-purple); 
-    text-shadow: 0 0 15px rgba(191, 148, 255, 0.6); 
-}
-
-.sword-node:hover .icon-svg { 
-    fill: var(--vcs-purple); 
-    filter: drop-shadow(0 0 15px var(--vcs-purple)); 
-}
-
-/* =========================================
-   7. BOOT SEQUENCE (LOADING SCREEN)
+   3. THE REALISTIC LOADER
 ========================================= */
 #loader-screen {
     position: fixed;
@@ -210,12 +54,13 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 15px;
-    width: 300px;
+    width: 350px;
+    z-index: 2;
 }
 
-.system-text {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.55rem;
+.terminal-text {
+    font-family: 'Inter', monospace;
+    font-size: 0.6rem;
     letter-spacing: 0.4em;
     color: var(--text-dim);
     text-transform: uppercase;
@@ -223,130 +68,202 @@ body {
 
 #load-percent {
     font-family: 'Inter', sans-serif;
-    font-size: 1.5rem;
-    color: var(--text-main);
+    font-size: 2.5rem;
+    color: var(--vcs-gold);
     font-weight: 200;
     letter-spacing: 0.1em;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
 }
 
 .progress-bar-container {
     width: 100%;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.1);
+    height: 2px;
+    background: rgba(255, 255, 255, 0.05);
     position: relative;
+    overflow: hidden;
 }
 
 #progress-bar {
     height: 100%;
     width: 0%;
-    background: var(--text-main);
+    background: var(--vcs-gold);
+    box-shadow: 0 0 10px var(--vcs-gold);
     transition: width 0.1s linear;
 }
 
-/* =========================================
-   8. ANIMATIONS & TRANSITIONS
-========================================= */
-.hidden-stage {
-    opacity: 0;
-    pointer-events: none;
-    transform: scale(1.2);
-    filter: blur(15px);
-}
-
-.zoom-in-active {
-    animation: zoomIn 1.2s cubic-bezier(0.2, 0, 0, 1) forwards;
-}
-
-@keyframes zoomIn {
-    from { opacity: 0; transform: scale(1.2); filter: blur(15px); }
-    to { opacity: 1; transform: scale(1); filter: blur(0px); }
-}
-
-/* The Slow Float Simulation */
-@keyframes slow-float {
-    0%, 100% { margin-top: 0; margin-left: 0; }
-    25% { margin-top: -15px; margin-left: 10px; }
-    50% { margin-top: 10px; margin-left: -5px; }
-    75% { margin-top: -5px; margin-left: -15px; }
-}
-
-/* The Slow Rotation Simulation */
-@keyframes slow-rotate {
-    0% { transform: rotate(-5deg); }
-    50% { transform: rotate(5deg); }
-    100% { transform: rotate(-5deg); }
-}
-
-/* =========================================
-   9. INFINITE 3-COLOR PULSE ENGINE (15s)
-========================================= */
-.pulse-layer {
+/* Retro CRT Scanline Effect */
+.scanlines {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80vw;
-    height: 80vw;
-    border-radius: 50%;
-    opacity: 0; 
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 4px, 3px 100%;
     z-index: 1;
     pointer-events: none;
-    animation-duration: 15s; 
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-}
-
-.pulse-blue {
-    background: radial-gradient(circle, rgba(0, 102, 255, 0.2) 0%, transparent 60%);
-    animation-name: pulseBlueCycle;
-}
-
-.pulse-red {
-    background: radial-gradient(circle, rgba(229, 0, 0, 0.15) 0%, transparent 60%);
-    animation-name: pulseRedCycle;
-}
-
-.pulse-gold {
-    background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 60%);
-    animation-name: pulseGoldCycle;
-}
-
-@keyframes pulseBlueCycle {
-    0% { opacity: 0; }
-    16.6% { opacity: 1; }
-    33.3% { opacity: 0; }
-    100% { opacity: 0; }
-}
-
-@keyframes pulseRedCycle {
-    0% { opacity: 0; }
-    33.3% { opacity: 0; }
-    50% { opacity: 1; }
-    66.6% { opacity: 0; }
-    100% { opacity: 0; }
-}
-
-@keyframes pulseGoldCycle {
-    0% { opacity: 0; }
-    66.6% { opacity: 0; }
-    83.3% { opacity: 1; }
-    100% { opacity: 0; }
 }
 
 /* =========================================
-   10. MOBILE RESPONSIVENESS
+   4. THE ROUND TABLE: FLASHY ENTRANCE
+========================================= */
+.hidden-stage {
+    display: none;
+}
+
+.flash-entrance {
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    animation: blastOpen 1.5s var(--snap) forwards;
+}
+
+@keyframes blastOpen {
+    0% { opacity: 0; transform: scale(0.2) rotate(-45deg); filter: blur(20px); }
+    50% { opacity: 1; filter: blur(0px); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+/* =========================================
+   5. THE HOLOGRAPHIC RINGS
+========================================= */
+.holo-table {
+    position: absolute;
+    width: 40vw; /* Scales with screen */
+    height: 40vw;
+    max-width: 500px;
+    max-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none; /* Let clicks pass through */
+}
+
+.ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid transparent;
+}
+
+.ring-outer {
+    width: 100%; height: 100%;
+    border-top: 1px solid rgba(212, 175, 55, 0.3);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    animation: spinRight 20s linear infinite;
+}
+
+.ring-middle {
+    width: 80%; height: 80%;
+    border-left: 1px solid rgba(191, 148, 255, 0.3);
+    border-right: 1px solid rgba(191, 148, 255, 0.3);
+    animation: spinLeft 15s linear infinite;
+}
+
+.ring-inner {
+    width: 60%; height: 60%;
+    border: 1px dashed rgba(245, 245, 247, 0.2);
+    animation: spinRight 10s linear infinite;
+}
+
+.core-light {
+    width: 10%; height: 10%;
+    background: var(--vcs-gold);
+    border-radius: 50%;
+    filter: blur(25px);
+    opacity: 0.5;
+    animation: pulseCore 4s ease-in-out infinite;
+}
+
+@keyframes spinRight { 100% { transform: rotate(360deg); } }
+@keyframes spinLeft { 100% { transform: rotate(-360deg); } }
+@keyframes pulseCore { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.5); opacity: 0.7; } }
+
+/* =========================================
+   6. THE CATEGORIES (ORBITAL LAYOUT)
+========================================= */
+.orbital-container {
+    position: relative;
+    width: 10px; /* Center anchor point */
+    height: 10px;
+}
+
+.seat {
+    position: absolute;
+    top: 50%; left: 50%;
+    text-decoration: none;
+    transition: var(--snap);
+    /* Orbital Math: Translate out from center, then counter-rotate so text stays flat */
+    --radius: clamp(150px, 25vw, 300px); 
+}
+
+/* Positioning the 4 Knights */
+.seat-1 { transform: translate(-50%, -50%) rotate(0deg) translateY(calc(var(--radius) * -1)) rotate(0deg); }
+.seat-2 { transform: translate(-50%, -50%) rotate(90deg) translateY(calc(var(--radius) * -1)) rotate(-90deg); }
+.seat-3 { transform: translate(-50%, -50%) rotate(180deg) translateY(calc(var(--radius) * -1)) rotate(-180deg); }
+.seat-4 { transform: translate(-50%, -50%) rotate(270deg) translateY(calc(var(--radius) * -1)) rotate(-270deg); }
+
+.text-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.6); /* Backdrop to read over rings */
+    padding: 15px 30px;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 4px;
+    backdrop-filter: blur(10px);
+    transition: var(--snap);
+}
+
+.seat-label {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    color: var(--text-main);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    margin-right: -0.3em; 
+}
+
+/* =========================================
+   7. FLASHY HOVER EFFECTS
+========================================= */
+.seat:hover {
+    z-index: 100;
+}
+
+.seat:hover .text-group {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: rgba(212, 175, 55, 0.4);
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+    transform: scale(1.15);
+}
+
+.seat:hover .seat-label {
+    color: var(--vcs-gold);
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+    letter-spacing: 0.4em;
+}
+
+/* Dim the rings when hovering a category */
+.hidden-stage:has(.seat:hover) .holo-table {
+    opacity: 0.2;
+    transition: opacity 0.4s ease;
+}
+
+/* =========================================
+   8. MOBILE RESPONSIVENESS
 ========================================= */
 @media (max-width: 768px) {
-    .glass-pane {
-        flex-direction: column;
-        gap: 40px;
-        padding: 40px;
+    .holo-table {
+        width: 80vw;
+        height: 80vw;
     }
     
-    .divider { width: 60px; height: 1px; }
-
-    .archive  { top: 20%; left: 10%; }
-    .horizon  { bottom: 20%; right: 10%; }
-    .citizens { top: 50%; right: 0; }
-    .vanguard { top: 50%; left: 0; }
+    .seat {
+        /* Shrink the orbit radius on phones */
+        --radius: 35vw; 
+    }
+    
+    .text-group {
+        padding: 10px 15px;
+    }
 }
