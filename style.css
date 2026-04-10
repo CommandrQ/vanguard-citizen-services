@@ -52,7 +52,7 @@ body {
     text-transform: uppercase;
     text-align: center;
     transition: var(--snap);
-    margin-right: -0.3em; 
+    margin-right: -0.3em; /* Offsets the letter-spacing for true center */
 }
 
 .brand-text { font-size: 1.1rem; color: var(--text-main); }
@@ -112,7 +112,7 @@ body {
 }
 
 /* =========================================
-   5. TABLE.HTML: ROUND TABLE & TOP CREST
+   5. TABLE.HTML: CIRCUITRY & FLOATING LAYOUT
 ========================================= */
 .doorway-stage {
     display: grid;
@@ -120,59 +120,56 @@ body {
     height: 100vh;
     width: 100vw;
     position: relative;
-}
-
-.top-crest {
-    position: absolute;
-    top: 5vh; 
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 60px;
-    z-index: 20;
-}
-
-.helmet-svg {
-    width: 100%;
-    height: 100%;
-    fill: var(--vcs-gold);
-    filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.5));
+    /* Subtle Circuitry Background Pattern */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M10 10 L90 10 M90 10 L90 90 M90 90 L10 90 M10 90 L10 10 M30 30 L70 30 M70 30 L70 70 M70 70 L30 70 L30 30 M50 10 L50 30 M90 50 L70 50 M50 90 L50 70 M10 50 L30 50' stroke='%23333' stroke-width='0.5' fill='none'/%3E%3C/svg%3E");
+    background-size: 250px 250px;
+    /* Faded enough to not overpower the text or pulses */
+    box-shadow: inset 0 0 200px 100px var(--true-black); /* Fades edges into black */
 }
 
 .round-table-container {
     position: relative;
     z-index: 10;
-    width: min(85vw, 650px);
-    height: min(85vw, 650px);
+    width: min(90vw, 700px);
+    height: min(90vw, 700px);
+    display: grid;
+    place-items: center;
 }
 
 .seat { 
     position: absolute; 
-    text-decoration: none; 
+    text-decoration: none;
+    /* Continuous floating and rotating animations */
+    animation: slow-float 10s ease-in-out infinite, slow-rotate 15s linear infinite;
 }
 
-.archive  { top: 0; left: 50%; transform: translateX(-50%); }
-.horizon  { bottom: 0; left: 50%; transform: translateX(-50%); }
-.citizens { top: 50%; right: 0; transform: translateY(-50%); }
-.vanguard { top: 50%; left: 0; transform: translateY(-50%); }
+/* Organic, staggered positioning and animation delays */
+.archive  { top: 15%; left: 20%; animation-delay: -2s; }
+.horizon  { bottom: 15%; right: 20%; animation-delay: -5s; }
+.citizens { top: 50%; right: 5%; transform: translateY(-50%); animation-delay: -8s; }
+.vanguard { top: 50%; left: 5%; transform: translateY(-50%); animation-delay: -11s; }
 
 /* =========================================
    6. INTERACTIVE GLOWS & HOVERS
 ========================================= */
+/* Focus Fade (Dim others) */
 .glass-pane:has(.node:hover) .node:not(:hover),
 .round-table-container:has(.seat:hover) .seat:not(:hover) {
     opacity: 0.15;
     filter: blur(4px);
 }
 
+/* Shield/Table Hover (Gold) */
 .shield-node:hover .brand-text, 
 .seat:hover .seat-label { 
     color: var(--vcs-gold); 
     text-shadow: 0 0 15px rgba(212, 175, 55, 0.6); 
+    letter-spacing: 0.4em; /* Expands slightly on hover */
 }
 
+/* Scale the text group to avoid conflicting with the keyframe transforms */
 .seat:hover .text-group {
-    transform: scale(1.1);
+    transform: scale(1.15);
 }
 
 .shield-node:hover .icon-svg { 
@@ -180,6 +177,7 @@ body {
     filter: drop-shadow(0 0 15px var(--vcs-gold)); 
 }
 
+/* Sword Hover (Purple) */
 .sword-node:hover .brand-text { 
     color: var(--vcs-purple); 
     text-shadow: 0 0 15px rgba(191, 148, 255, 0.6); 
@@ -264,8 +262,23 @@ body {
     to { opacity: 1; transform: scale(1); filter: blur(0px); }
 }
 
+/* The Slow Float Simulation */
+@keyframes slow-float {
+    0%, 100% { margin-top: 0; margin-left: 0; }
+    25% { margin-top: -15px; margin-left: 10px; }
+    50% { margin-top: 10px; margin-left: -5px; }
+    75% { margin-top: -5px; margin-left: -15px; }
+}
+
+/* The Slow Rotation Simulation */
+@keyframes slow-rotate {
+    0% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+    100% { transform: rotate(-5deg); }
+}
+
 /* =========================================
-   9. INFINITE 3-COLOR PULSE ENGINE (SLOWED)
+   9. INFINITE 3-COLOR PULSE ENGINE (15s)
 ========================================= */
 .pulse-layer {
     position: absolute;
@@ -332,10 +345,8 @@ body {
     
     .divider { width: 60px; height: 1px; }
 
-    .top-crest { top: 8vh; width: 45px; height: 45px; }
-    
-    .round-table-container {
-        width: 90vw;
-        height: 90vw;
-    }
+    .archive  { top: 20%; left: 10%; }
+    .horizon  { bottom: 20%; right: 10%; }
+    .citizens { top: 50%; right: 0; }
+    .vanguard { top: 50%; left: 0; }
 }
