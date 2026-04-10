@@ -164,12 +164,14 @@
             50% { transform: translateY(-12px); }
         }
 
-        /* --- 7. TEXT BOX STYLING --- */
+        /* --- 7. TEXT BOX STYLING (NOW TRANSPARENT) --- */
         .text-group {
             display: flex; justify-content: center; align-items: center;
-            background: rgba(0, 0, 0, 0.7); padding: 15px 30px; 
-            border: 1px solid rgba(255,255,255,0.05); border-radius: 4px; 
-            backdrop-filter: blur(10px); transition: all 0.4s ease;
+            background: transparent; /* Removed dark background */
+            padding: 15px 30px; 
+            border: 1px solid transparent; /* Hidden border */
+            border-radius: 4px; 
+            transition: all 0.4s ease;
         }
 
         .seat-label {
@@ -184,8 +186,11 @@
         .seat:hover .floater { transform: scale(1.15); }
         
         .seat:hover .text-group {
-            background: rgba(212, 175, 55, 0.1); border-color: rgba(212, 175, 55, 0.4);
+            /* The glass box and glow reveal themselves on hover */
+            background: rgba(212, 175, 55, 0.1); 
+            border-color: rgba(212, 175, 55, 0.4);
             box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); 
+            backdrop-filter: blur(10px); 
         }
 
         .seat:hover .seat-label {
