@@ -113,12 +113,12 @@ body {
 
 /* 5. TYPOGRAPHY & POSITIONING */
 
-/* Force the group to center everything inside it */
 .text-group {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    width: 100%;
 }
 
 .brand-text, .seat-label {
@@ -127,7 +127,7 @@ body {
     text-transform: uppercase;
     text-align: center;
     transition: var(--snap);
-    margin-right: -0.3em; /* Pulls the text back to true center */
+    margin-right: -0.3em; /* Offsets the letter-spacing for true center */
 }
 
 .brand-text { font-size: 1.1rem; color: var(--text-main); }
@@ -140,7 +140,7 @@ body {
     color: var(--text-dim);
     margin-top: 10px;
     text-align: center;
-    margin-right: -0.5em; /* Pulls the text back to true center */
+    margin-right: -0.5em; /* Offsets the letter-spacing for true center */
 }
 
 /* CATEGORY POSITIONS */
