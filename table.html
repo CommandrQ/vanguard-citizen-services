@@ -90,7 +90,7 @@
         .cinematic-entrance {
             display: grid; place-items: center;
             height: 100vh; width: 100vw; position: relative;
-            animation: emergeFromBlack 2.5s ease-out forwards;
+            animation: emergeFromBlack 2s ease-out forwards;
         }
 
         @keyframes emergeFromBlack {
@@ -102,8 +102,8 @@
         .holo-table {
             position: absolute;
             width: 40vw; height: 40vw; max-width: 450px; max-height: 450px;
-            /* Shifted up to balance vertical empty space */
-            margin-top: -10vh; 
+            /* Balanced top padding applied to both mobile and desktop identically */
+            margin-top: -4vh; 
             display: flex; align-items: center; justify-content: center;
             pointer-events: none; z-index: 1;
         }
@@ -140,8 +140,8 @@
         .orbital-container {
             position: relative;
             width: 85vw; height: 85vw; max-width: 700px; max-height: 700px;
-            /* Shifted up to match the rings */
-            margin-top: -10vh; 
+            /* Balanced top padding applied to both mobile and desktop identically */
+            margin-top: -4vh; 
             z-index: 10;
         }
 
@@ -201,8 +201,8 @@
 
         /* --- 9. MOBILE RESPONSIVENESS --- */
         @media (max-width: 768px) {
-            .orbital-container { width: 95vw; height: 95vw; margin-top: -5vh; }
-            .holo-table { width: 55vw; height: 55vw; margin-top: -5vh; }
+            .orbital-container { width: 95vw; height: 95vw; }
+            .holo-table { width: 55vw; height: 55vw; }
             
             .pos-left   { left: 2%; }
             .pos-right  { right: 2%; }
@@ -308,18 +308,20 @@
                 if (progress < 100) {
                     setTimeout(simulateLoad, Math.random() * 200 + 50);
                 } else {
+                    // STAGE 1: Wait just 50ms at 100% to snap out of the loading text
                     setTimeout(() => {
-                        loaderContent.style.transition = 'opacity 0.3s ease';
-                        scanlines.style.transition = 'opacity 0.3s ease';
+                        loaderContent.style.transition = 'opacity 0.15s ease';
+                        scanlines.style.transition = 'opacity 0.15s ease';
                         loaderContent.style.opacity = '0';
                         scanlines.style.opacity = '0';
                         
+                        // STAGE 2: Reveal the table almost immediately after the blackout
                         setTimeout(() => {
                             loader.style.display = 'none';
                             mainStage.classList.remove('hidden-stage');
                             mainStage.classList.add('cinematic-entrance'); 
-                        }, 300); 
-                    }, 200); 
+                        }, 150); 
+                    }, 50); 
                 }
             }
             
