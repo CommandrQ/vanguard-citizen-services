@@ -218,16 +218,14 @@ body {
 .seat {
     position: absolute; top: 50%; left: 50%;
     text-decoration: none; transition: var(--snap);
-    /* Y is top/bottom. X is left/right. Notice X is smaller. */
-    --radius-y: clamp(150px, 25vw, 300px); 
-    --radius-x: clamp(100px, 16vw, 220px); 
+    --radius: clamp(150px, 25vw, 300px); 
 }
 
-/* Oval Orbital Math */
-.seat-1 { transform: translate(-50%, -50%) rotate(0deg) translateY(calc(var(--radius-y) * -1)) rotate(0deg); }
-.seat-2 { transform: translate(-50%, -50%) rotate(90deg) translateY(calc(var(--radius-x) * -1)) rotate(-90deg); }
-.seat-3 { transform: translate(-50%, -50%) rotate(180deg) translateY(calc(var(--radius-y) * -1)) rotate(-180deg); }
-.seat-4 { transform: translate(-50%, -50%) rotate(270deg) translateY(calc(var(--radius-x) * -1)) rotate(-270deg); }
+/* Stable Circular Math */
+.seat-1 { transform: translate(-50%, -50%) rotate(0deg) translateY(calc(var(--radius) * -1)) rotate(0deg); }
+.seat-2 { transform: translate(-50%, -50%) rotate(90deg) translateY(calc(var(--radius) * -1)) rotate(-90deg); }
+.seat-3 { transform: translate(-50%, -50%) rotate(180deg) translateY(calc(var(--radius) * -1)) rotate(-180deg); }
+.seat-4 { transform: translate(-50%, -50%) rotate(270deg) translateY(calc(var(--radius) * -1)) rotate(-270deg); }
 
 .orbital-container .text-group {
     display: flex; justify-content: center; align-items: center;
@@ -235,21 +233,21 @@ body {
     border: 1px solid rgba(255,255,255,0.05); border-radius: 4px; 
     backdrop-filter: blur(10px); transition: var(--snap);
     
-    /* Attach the floating animation */
-    animation: free-float 6s ease-in-out infinite;
+    /* Bulletproof Floating Animation */
+    animation: safe-float 6s ease-in-out infinite;
 }
 
-/* Stagger the float times so they move independently */
+/* Staggered float times */
 .seat-1 .text-group { animation-delay: 0s; animation-duration: 7s; }
 .seat-2 .text-group { animation-delay: -2s; animation-duration: 6.5s; }
 .seat-3 .text-group { animation-delay: -4s; animation-duration: 8s; }
 .seat-4 .text-group { animation-delay: -1.5s; animation-duration: 6s; }
 
-/* The Free-Floating Keyframes using the modern 'translate' property */
-@keyframes free-float {
-    0%, 100% { translate: 0 0; }
-    33% { translate: 3px -6px; }
-    66% { translate: -4px 4px; }
+/* Safe free-float using margins instead of translate */
+@keyframes safe-float {
+    0%, 100% { margin-top: 0; margin-left: 0; }
+    33% { margin-top: -5px; margin-left: 3px; }
+    66% { margin-top: 4px; margin-left: -4px; }
 }
 
 /* =========================================
@@ -260,7 +258,7 @@ body {
 .seat:hover .text-group {
     background: rgba(212, 175, 55, 0.1); border-color: rgba(212, 175, 55, 0.4);
     box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); 
-    transform: scale(1.15); /* Scale works perfectly alongside 'translate' */
+    transform: scale(1.15); 
 }
 
 .seat:hover .seat-label {
@@ -280,15 +278,14 @@ body {
     .glass-pane { flex-direction: column; gap: 40px; padding: 40px; }
     .divider { width: 60px; height: 1px; }
 
-    /* Table Mobile Adjustments */
+    /* Table Mobile Fixes */
     .holo-table { 
-        width: 55vw; 
-        height: 55vw; 
+        width: 50vw; 
+        height: 50vw; 
     }
     
     .seat { 
-        --radius-y: 35vw; 
-        --radius-x: 28vw; /* Keeps the oval shape tight on small screens */
+        --radius: 30vw; 
     }
     
     .orbital-container .text-group { 
