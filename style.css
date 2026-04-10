@@ -120,3 +120,102 @@ body {
     opacity: 0.15;
     filter: blur(2px);
 }
+/* TABLE BACKGROUND (Deep Obsidian) */
+.table-bg {
+    background-color: #050505;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* THE DOORWAY ENTRANCE ANIMATION */
+.doorway-stage {
+    animation: zoomIn 1.2s cubic-bezier(0.2, 0, 0, 1) forwards;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+@keyframes zoomIn {
+    0% { opacity: 0; transform: scale(1.5); filter: blur(20px); }
+    100% { opacity: 1; transform: scale(1); filter: blur(0px); }
+}
+
+/* THE FLOATING ROUND TABLE */
+.round-table {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* THE INDIVIDUAL SEATS */
+.seat {
+    position: absolute;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.4s ease;
+    animation: float 4s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.5s);
+}
+
+/* CIRCULAR POSITIONING */
+.archive  { top: 0; }
+.citizens { right: 0; }
+.horizon  { bottom: 0; }
+.vanguard { left: 0; }
+
+.seat-label {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.3em;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+/* HOVER EFFECT (GOLD GLOW FOR VCS SIDE) */
+.seat:hover .seat-label {
+    color: #D4AF37;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+    transform: scale(1.1);
+}
+
+/* THE CORE PULSE */
+.table-core {
+    width: 2px;
+    height: 2px;
+    background: #D4AF37;
+    box-shadow: 0 0 40px 10px rgba(212, 175, 55, 0.2);
+    border-radius: 50%;
+}
+
+.core-pulse {
+    width: 200px;
+    height: 200px;
+    border: 1px solid rgba(212, 175, 55, 0.1);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulseCircle 4s linear infinite;
+}
+
+/* ANIMATIONS */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes pulseCircle {
+    0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+    50% { opacity: 0.3; }
+    100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+}
