@@ -70,7 +70,21 @@
             z-index: 1; pointer-events: none;
         }
 
-        /* --- 2. MAIN STAGE & CINEMATIC ENTRANCE --- */
+        /* --- 2. EXIT FADE OVERLAY --- */
+        #fade-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--true-black);
+            opacity: 0; pointer-events: none;
+            z-index: 10000; /* Sits above absolutely everything */
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .fade-out-active {
+            opacity: 1 !important;
+            pointer-events: all !important;
+        }
+
+        /* --- 3. MAIN STAGE & CINEMATIC ENTRANCE --- */
         .hidden-stage { display: none; }
         
         .cinematic-entrance {
@@ -84,7 +98,7 @@
             100% { opacity: 1; transform: scale(1); filter: blur(0px); }
         }
 
-        /* --- 3. HOLOGRAPHIC RINGS --- */
+        /* --- 4. HOLOGRAPHIC RINGS --- */
         .holo-table {
             position: absolute;
             width: 40vw; height: 40vw; max-width: 450px; max-height: 450px;
@@ -120,7 +134,7 @@
         @keyframes spinLeft { 100% { transform: rotate(-360deg); } }
         @keyframes pulseCore { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.5); opacity: 0.7; } }
 
-        /* --- 4. COMPASS LAYOUT --- */
+        /* --- 5. COMPASS LAYOUT --- */
         .orbital-container {
             position: relative;
             width: 85vw; height: 85vw; max-width: 700px; max-height: 700px;
@@ -134,7 +148,7 @@
         .pos-left   { top: 50%; left: 0; transform: translateY(-50%); }
         .pos-right  { top: 50%; right: 0; transform: translateY(-50%); }
 
-        /* --- 5. THE SAFE FLOATING ANIMATION --- */
+        /* --- 6. THE SAFE FLOATING ANIMATION --- */
         .floater {
             animation: bob 6s ease-in-out infinite;
             transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1);
@@ -150,7 +164,7 @@
             50% { transform: translateY(-12px); }
         }
 
-        /* --- 6. TEXT BOX STYLING --- */
+        /* --- 7. TEXT BOX STYLING --- */
         .text-group {
             display: flex; justify-content: center; align-items: center;
             background: rgba(0, 0, 0, 0.7); padding: 15px 30px; 
@@ -164,8 +178,8 @@
             text-transform: uppercase; white-space: nowrap; margin-right: -0.3em; 
         }
 
-        /* --- 7. HOVER EFFECTS --- */
-        .seat:hover { z-index: 100; }
+        /* --- 8. HOVER EFFECTS --- */
+        .seat:hover { z-index: 100; cursor: pointer; }
         
         .seat:hover .floater { transform: scale(1.15); }
         
@@ -181,7 +195,7 @@
 
         .cinematic-entrance:has(.seat:hover) .holo-table { opacity: 0.2; transition: opacity 0.4s ease; }
 
-        /* --- 8. MOBILE RESPONSIVENESS --- */
+        /* --- 9. MOBILE RESPONSIVENESS --- */
         @media (max-width: 768px) {
             .orbital-container { width: 95vw; height: 95vw; }
             .holo-table { width: 55vw; height: 55vw; }
@@ -195,6 +209,8 @@
     </style>
 </head>
 <body>
+
+    <div id="fade-overlay"></div>
 
     <div id="loader-screen">
         <div class="loader-content">
@@ -248,6 +264,7 @@
 
     <script>
         (function() {
+            // Elements
             const loadText = document.getElementById('load-percent');
             const progressBar = document.getElementById('progress-bar');
             const loader = document.getElementById('loader-screen');
@@ -255,9 +272,12 @@
             const scanlines = document.querySelector('.scanlines');
             const mainStage = document.getElementById('main-stage');
             const sysLog = document.getElementById('sys-log');
+            const fadeOverlay = document.getElementById('fade-overlay');
+            const seats = document.querySelectorAll('.seat');
             
             if (!loadText || !loader || !mainStage) return;
 
+            // --- THE BOOT SEQUENCE ---
             let progress = 0;
             const logMessages = [
                 "ESTABLISHING SECURE CONNECTION...",
@@ -284,14 +304,12 @@
                 if (progress < 100) {
                     setTimeout(simulateLoad, Math.random() * 200 + 50);
                 } else {
-                    // STAGE 1: Wait 200ms, then quickly fade text & scanlines to pure black
                     setTimeout(() => {
                         loaderContent.style.transition = 'opacity 0.3s ease';
                         scanlines.style.transition = 'opacity 0.3s ease';
                         loaderContent.style.opacity = '0';
                         scanlines.style.opacity = '0';
                         
-                        // STAGE 2: 300ms later (total 500ms since 100%), load from black!
                         setTimeout(() => {
                             loader.style.display = 'none';
                             mainStage.classList.remove('hidden-stage');
@@ -302,6 +320,25 @@
             }
             
             setTimeout(simulateLoad, 300);
+
+            // --- THE EXIT PROTOCOL (Fade to Black) ---
+            seats.forEach(seat => {
+                seat.addEventListener('click', function(e) {
+                    // Stop the browser from instantly changing pages
+                    e.preventDefault(); 
+                    
+                    const targetUrl = this.getAttribute('href');
+                    
+                    // Trigger the black fade overlay
+                    fadeOverlay.classList.add('fade-out-active');
+                    
+                    // Wait 800ms for the animation to finish, then manually navigate
+                    setTimeout(() => {
+                        window.location.href = targetUrl;
+                    }, 800);
+                });
+            });
+
         })();
     </script>
 </body>
