@@ -43,7 +43,7 @@ body {
     text-transform: uppercase;
     text-align: center;
     transition: var(--snap);
-    margin-right: -0.3em; /* Offsets letter-spacing for true center */
+    margin-right: -0.3em; 
 }
 
 .brand-text { font-size: 1.1rem; color: var(--text-main); }
@@ -99,10 +99,204 @@ body {
     background: linear-gradient(to bottom, transparent, var(--glass-border), transparent);
 }
 
-/* Gateway Hovers */
 .glass-pane:has(.node:hover) .node:not(:hover) { opacity: 0.15; filter: blur(4px); }
 
 .shield-node:hover .brand-text { color: var(--vcs-gold); text-shadow: 0 0 15px rgba(212, 175, 55, 0.6); }
 .shield-node:hover .icon-svg { fill: var(--vcs-gold); filter: drop-shadow(0 0 15px var(--vcs-gold)); }
 
-.sword-node:hover .brand-text { color: var(--vcs-purple); text-shadow: 0 0 15px rgba(191,
+.sword-node:hover .brand-text { color: var(--vcs-purple); text-shadow: 0 0 15px rgba(191, 148, 255, 0.6); }
+.sword-node:hover .icon-svg { fill: var(--vcs-purple); filter: drop-shadow(0 0 15px var(--vcs-purple)); }
+
+/* =========================================
+   5. TABLE.HTML: REALISTIC LOADER
+========================================= */
+#loader-screen {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background-color: var(--true-black);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999; transition: opacity 0.5s ease;
+}
+
+.loader-content {
+    display: flex; flex-direction: column; align-items: center; gap: 15px;
+    width: 350px; z-index: 2;
+}
+
+.terminal-text {
+    font-family: 'Inter', monospace; font-size: 0.6rem;
+    letter-spacing: 0.4em; color: var(--text-dim); text-transform: uppercase;
+}
+
+#load-percent {
+    font-family: 'Inter', sans-serif; font-size: 2.5rem;
+    color: var(--vcs-gold); font-weight: 200; letter-spacing: 0.1em;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+}
+
+.progress-bar-container {
+    width: 100%; height: 2px;
+    background: rgba(255, 255, 255, 0.05); position: relative; overflow: hidden;
+}
+
+#progress-bar {
+    height: 100%; width: 0%;
+    background: var(--vcs-gold); box-shadow: 0 0 10px var(--vcs-gold);
+    transition: width 0.1s linear;
+}
+
+.scanlines {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 4px, 3px 100%;
+    z-index: 1; pointer-events: none;
+}
+
+/* =========================================
+   6. TABLE.HTML: FLASHY ENTRANCE
+========================================= */
+.hidden-stage { display: none; }
+
+.flash-entrance {
+    display: grid; place-items: center;
+    height: 100vh; width: 100vw; position: relative;
+    animation: blastOpen 1.5s var(--snap) forwards;
+}
+
+@keyframes blastOpen {
+    0% { opacity: 0; transform: scale(0.2) rotate(-45deg); filter: blur(20px); }
+    50% { opacity: 1; filter: blur(0px); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+/* =========================================
+   7. TABLE.HTML: HOLOGRAPHIC RINGS
+========================================= */
+.holo-table {
+    position: absolute;
+    width: 40vw; height: 40vw; max-width: 500px; max-height: 500px;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+}
+
+.ring { position: absolute; border-radius: 50%; border: 1px solid transparent; }
+
+.ring-outer {
+    width: 100%; height: 100%;
+    border-top: 1px solid rgba(212, 175, 55, 0.3);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    animation: spinRight 20s linear infinite;
+}
+
+.ring-middle {
+    width: 80%; height: 80%;
+    border-left: 1px solid rgba(191, 148, 255, 0.3);
+    border-right: 1px solid rgba(191, 148, 255, 0.3);
+    animation: spinLeft 15s linear infinite;
+}
+
+.ring-inner {
+    width: 60%; height: 60%;
+    border: 1px dashed rgba(245, 245, 247, 0.2);
+    animation: spinRight 10s linear infinite;
+}
+
+.core-light {
+    width: 10%; height: 10%; background: var(--vcs-gold);
+    border-radius: 50%; filter: blur(25px); opacity: 0.5;
+    animation: pulseCore 4s ease-in-out infinite;
+}
+
+@keyframes spinRight { 100% { transform: rotate(360deg); } }
+@keyframes spinLeft { 100% { transform: rotate(-360deg); } }
+@keyframes pulseCore { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.5); opacity: 0.7; } }
+
+/* =========================================
+   8. TABLE.HTML: ORBITAL CATEGORIES
+========================================= */
+.orbital-container { position: relative; width: 10px; height: 10px; }
+
+.seat {
+    position: absolute; top: 50%; left: 50%;
+    text-decoration: none; transition: var(--snap);
+    /* Y is top/bottom. X is left/right. Notice X is smaller. */
+    --radius-y: clamp(150px, 25vw, 300px); 
+    --radius-x: clamp(100px, 16vw, 220px); 
+}
+
+/* Oval Orbital Math */
+.seat-1 { transform: translate(-50%, -50%) rotate(0deg) translateY(calc(var(--radius-y) * -1)) rotate(0deg); }
+.seat-2 { transform: translate(-50%, -50%) rotate(90deg) translateY(calc(var(--radius-x) * -1)) rotate(-90deg); }
+.seat-3 { transform: translate(-50%, -50%) rotate(180deg) translateY(calc(var(--radius-y) * -1)) rotate(-180deg); }
+.seat-4 { transform: translate(-50%, -50%) rotate(270deg) translateY(calc(var(--radius-x) * -1)) rotate(-270deg); }
+
+.orbital-container .text-group {
+    display: flex; justify-content: center; align-items: center;
+    background: rgba(0, 0, 0, 0.6); padding: 15px 30px; 
+    border: 1px solid rgba(255,255,255,0.05); border-radius: 4px; 
+    backdrop-filter: blur(10px); transition: var(--snap);
+    
+    /* Attach the floating animation */
+    animation: free-float 6s ease-in-out infinite;
+}
+
+/* Stagger the float times so they move independently */
+.seat-1 .text-group { animation-delay: 0s; animation-duration: 7s; }
+.seat-2 .text-group { animation-delay: -2s; animation-duration: 6.5s; }
+.seat-3 .text-group { animation-delay: -4s; animation-duration: 8s; }
+.seat-4 .text-group { animation-delay: -1.5s; animation-duration: 6s; }
+
+/* The Free-Floating Keyframes using the modern 'translate' property */
+@keyframes free-float {
+    0%, 100% { translate: 0 0; }
+    33% { translate: 3px -6px; }
+    66% { translate: -4px 4px; }
+}
+
+/* =========================================
+   9. TABLE.HTML: HOVER EFFECTS
+========================================= */
+.seat:hover { z-index: 100; }
+
+.seat:hover .text-group {
+    background: rgba(212, 175, 55, 0.1); border-color: rgba(212, 175, 55, 0.4);
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); 
+    transform: scale(1.15); /* Scale works perfectly alongside 'translate' */
+}
+
+.seat:hover .seat-label {
+    color: var(--vcs-gold); text-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+    letter-spacing: 0.4em;
+}
+
+.flash-entrance:has(.seat:hover) .holo-table {
+    opacity: 0.2; transition: opacity 0.4s ease;
+}
+
+/* =========================================
+   10. MOBILE RESPONSIVENESS
+========================================= */
+@media (max-width: 768px) {
+    /* Gateway Mobile Adjustments */
+    .glass-pane { flex-direction: column; gap: 40px; padding: 40px; }
+    .divider { width: 60px; height: 1px; }
+
+    /* Table Mobile Adjustments */
+    .holo-table { 
+        width: 55vw; 
+        height: 55vw; 
+    }
+    
+    .seat { 
+        --radius-y: 35vw; 
+        --radius-x: 28vw; /* Keeps the oval shape tight on small screens */
+    }
+    
+    .orbital-container .text-group { 
+        padding: 8px 12px; 
+    }
+
+    .seat-label {
+        font-size: clamp(0.6rem, 3vw, 0.85rem);
+        letter-spacing: 0.2em;
+    }
+}
