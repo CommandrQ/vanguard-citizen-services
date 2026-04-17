@@ -61,11 +61,11 @@ btnNext.addEventListener('click', () => {
     }
 });
 
-// Utility function to clear CSS animation states so they can be re-triggered
+// Utility function to clear CSS animation states so they can be re-triggered cleanly
 function resetAnimations() {
     questionText.classList.remove('fade-in');
     questionText.classList.remove('pop-in');
-    // Forcing a browser reflow so the animation restarts cleanly
+    // Forcing a browser reflow so the animation restarts smoothly
     void questionText.offsetWidth; 
 }
 
