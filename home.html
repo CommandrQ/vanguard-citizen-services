@@ -14,48 +14,54 @@
 <body>
 
     <div id="flash-overlay" class="flash-active"></div>
-
     <div id="wipe-overlay"></div>
-
     <div id="hub-background"></div>
 
     <main class="fullscreen-flex">
         
-        <header class="hud-header rpg-box">
-            <h1 class="cinzel-heading relic-gold-text">Welcome to The Vanguard Citadel</h1>
-            <div class="os-status-container">
+        <header class="main-header">
+            <h1 class="cinzel-heading relic-gold-text centered-text">Welcome to The Vanguard Citadel</h1>
+            <div class="os-status-container centered-flex">
                 <p class="iron-mist-text">Vanguard OS Active</p>
                 <div class="status-dot"></div>
             </div>
         </header>
 
+        <div class="vertical-spacer"></div>
+
         <section class="mirrorgates-viewport">
+            
+            <div class="floating-controls">
+                <button id="btn-prev" class="rpg-box hover-glow">PREVIOUS</button>
+                <button id="btn-next" class="rpg-box hover-glow">NEXT</button>
+            </div>
+
             <div id="carousel-track" class="carousel-track">
                 
-                <div class="mirrorgate-node rpg-box hover-glow" data-destination="mission.html">
+                <div class="mirrorgate-node rpg-box" data-destination="mission.html">
                     <div class="gate-image-container">
-                        <img src="https://via.placeholder.com/180x120/0D0D0D/D4AF37?text=MISSION" alt="Mission">
+                        <img src="https://via.placeholder.com/200x150/0D0D0D/D4AF37?text=THE+MISSION" alt="Mission">
                     </div>
                     <h2 class="cinzel-heading starlight-text">The Mission</h2>
                 </div>
                 
-                <div class="mirrorgate-node rpg-box hover-glow" data-destination="roster.html">
+                <div class="mirrorgate-node rpg-box" data-destination="roster.html">
                     <div class="gate-image-container">
-                        <img src="https://via.placeholder.com/180x120/0D0D0D/D4AF37?text=ROSTER" alt="Roster">
+                        <img src="https://via.placeholder.com/200x150/0D0D0D/D4AF37?text=THE+ROSTER" alt="Roster">
                     </div>
                     <h2 class="cinzel-heading starlight-text">The Roster</h2>
                 </div>
                 
-                <div class="mirrorgate-node rpg-box hover-glow" data-destination="skyfox.html">
+                <div class="mirrorgate-node rpg-box" data-destination="skyfox.html">
                     <div class="gate-image-container">
-                        <img src="https://via.placeholder.com/180x120/0D0D0D/D4AF37?text=SKYFOX" alt="Sky Fox">
+                        <img src="https://via.placeholder.com/200x150/0D0D0D/D4AF37?text=SKY+FOX" alt="Sky Fox">
                     </div>
                     <h2 class="cinzel-heading starlight-text">The Sky Fox</h2>
                 </div>
 
-                <div class="mirrorgate-node rpg-box hover-glow" data-destination="support.html">
+                <div class="mirrorgate-node rpg-box" data-destination="support.html">
                     <div class="gate-image-container">
-                        <img src="https://via.placeholder.com/180x120/0D0D0D/D4AF37?text=SUPPORT" alt="Support">
+                        <img src="https://via.placeholder.com/200x150/0D0D0D/D4AF37?text=SUPPORT" alt="Support">
                     </div>
                     <h2 class="cinzel-heading starlight-text">Stand With Us</h2>
                 </div>
@@ -63,11 +69,9 @@
             </div>
         </section>
 
-        <div class="carousel-controls">
-            <button id="btn-prev" class="rpg-box hover-glow">◄ Rotate</button>
-            <button id="btn-enter" class="rpg-box hover-glow">Access Mirrorgate</button>
-            <button id="btn-next" class="rpg-box hover-glow">Rotate ►</button>
-        </div>
+        <footer class="centered-footer">
+            <button id="btn-enter" class="rpg-box hover-glow pulse-border">ACCESS MIRRORGATE</button>
+        </footer>
         
     </main>
 
