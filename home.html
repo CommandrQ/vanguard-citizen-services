@@ -1,1 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanguard Citizen Knights | The Grand Citadel</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
 
+    <div id="flash-overlay" class="flash-active"></div>
+
+    <div id="wipe-overlay"></div>
+
+    <div id="hub-background"></div>
+
+    <main class="fullscreen-flex">
+        
+        <header class="hud-header rpg-box">
+            <h1 class="cinzel-heading relic-gold-text">The Grand Citadel</h1>
+            <p class="iron-mist-text">Status: Sovereign | User: Initiated</p>
+        </header>
+
+        <section class="mirrorgates-viewport">
+            <div id="carousel-track" class="carousel-track">
+                <div class="mirrorgate-node rpg-box hover-glow" data-destination="mission.html" data-angle="0">
+                    <h2 class="cinzel-heading starlight-text">The Mission</h2>
+                    <p class="iron-mist-text">Empower. Educate. Elevate.</p>
+                </div>
+                
+                <div class="mirrorgate-node rpg-box hover-glow" data-destination="roster.html" data-angle="120">
+                    <h2 class="cinzel-heading starlight-text">The Roster</h2>
+                    <p class="iron-mist-text">Meet the Vanguard.</p>
+                </div>
+                
+                <div class="mirrorgate-node rpg-box hover-glow" data-destination="skyfox.html" data-angle="240">
+                    <h2 class="cinzel-heading starlight-text">The Sky Fox</h2>
+                    <p class="iron-mist-text">Forward Operations.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="carousel-controls">
+            <button id="btn-prev" class="rpg-box hover-glow">◄ Rotate Left</button>
+            <button id="btn-enter" class="rpg-box hover-glow">Enter Mirrorgate</button>
+            <button id="btn-next" class="rpg-box hover-glow">Rotate Right ►</button>
+        </div>
+        
+        <footer class="hud-footer">
+            <button id="btn-support" class="rpg-box hover-glow">Stand With Us</button>
+        </footer>
+    </main>
+
+    <script src="js/hub.js"></script>
+</body>
+</html>
