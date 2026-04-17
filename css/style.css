@@ -8,9 +8,6 @@
     --aura-purple: #BF94FF;
     --starlight-white: #F5F5F7;
     --iron-mist: #86868B;
-    /* Tech Background Colors */
-    --tech-blue: #0055FF;
-    --tech-red: #FF0055;
 }
 
 /* ==========================================================================
@@ -56,7 +53,7 @@ body {
 }
 
 /* ==========================================================================
-   THE ANIMATED TECH BACKGROUND
+   THE BACKGROUND & THE 3-COLOR AURA
    ========================================================================== */
 #tech-background {
     position: absolute;
@@ -64,21 +61,35 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: -1;
-    /* Subtle tech grid using linear gradients */
-    background-image: 
-        linear-gradient(rgba(245, 245, 247, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(245, 245, 247, 0.03) 1px, transparent 1px);
-    background-size: 50px 50px;
+    z-index: -2;
     background-color: var(--deep-shadow);
-    /* 9 second total loop = 3 seconds per color */
-    animation: techPulse 9s infinite;
+    /* High-contrast static tech grid */
+    background-image: 
+        linear-gradient(rgba(245, 245, 247, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(245, 245, 247, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
 }
 
-@keyframes techPulse {
-    0%, 100% { box-shadow: inset 0 0 200px rgba(0, 85, 255, 0.2); } /* Blue */
-    33% { box-shadow: inset 0 0 200px rgba(255, 0, 85, 0.2); }    /* Red */
-    66% { box-shadow: inset 0 0 200px rgba(212, 175, 55, 0.2); }  /* Gold */
+#center-aura {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    z-index: -1; /* Sits directly behind the button */
+    pointer-events: none;
+    /* 9-second looping animation (3 seconds per color) */
+    animation: auraPulse 9s infinite;
+}
+
+/* Centralized glowing orb behind the button */
+@keyframes auraPulse {
+    0%   { box-shadow: 0 0 200px 120px rgba(0, 85, 255, 0.5); }   /* Blue */
+    33%  { box-shadow: 0 0 200px 120px rgba(255, 0, 85, 0.5); }   /* Red */
+    66%  { box-shadow: 0 0 200px 120px rgba(212, 175, 55, 0.5); } /* Gold */
+    100% { box-shadow: 0 0 200px 120px rgba(0, 85, 255, 0.5); }   /* Blue (Loops) */
 }
 
 /* ==========================================================================
@@ -93,6 +104,7 @@ body {
     color: var(--starlight-white);
     text-align: center;
     position: relative;
+    z-index: 1; /* Elevates boxes above the aura */
 }
 
 button.rpg-box {
@@ -110,13 +122,14 @@ button.rpg-box {
     transform: scale(1.03);
 }
 
+/* Subtle button-specific pulse to make it feel alive */
 .idle-pulse {
     animation: buttonPulse 3s infinite alternate ease-in-out;
 }
 
 @keyframes buttonPulse {
     0% { box-shadow: inset 0 0 10px rgba(0,0,0,0.9), 0 0 5px rgba(212, 175, 55, 0.3); }
-    100% { box-shadow: inset 0 0 15px rgba(191, 148, 255, 0.2), 0 0 20px rgba(212, 175, 55, 0.6); }
+    100% { box-shadow: inset 0 0 15px rgba(191, 148, 255, 0.2), 0 0 15px rgba(212, 175, 55, 0.5); }
 }
 
 /* Act I: Dialogue Box */
@@ -124,7 +137,7 @@ button.rpg-box {
     min-width: 600px;
     min-height: 180px;
     display: flex;
-    flex-direction: column; /* Stack text and button */
+    flex-direction: column; 
     align-items: center;
     justify-content: center;
     gap: 1.5rem;
