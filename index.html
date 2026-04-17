@@ -75,6 +75,7 @@
             width: 100%;
             max-width: 600px;
             padding: 20px;
+            perspective: 1000px;
         }
 
         /* RPG Box Style Button */
@@ -88,28 +89,32 @@
             letter-spacing: 2px;
             cursor: pointer;
             position: relative;
-            transition: all 0.3s ease;
+            transition: background 0.3s, color 0.3s, box-shadow 0.3s;
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
             animation: pulseBtn 2s infinite;
         }
 
-        .rpg-btn:hover {
-            background: var(--relic-gold);
-            color: var(--void-obsidian);
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+        /* Fall Away Animation */
+        .fall-away {
+            animation: fallAway 0.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards !important;
+            pointer-events: none;
+        }
+
+        @keyframes fallAway {
+            0% { transform: translateY(0) rotateX(0); opacity: 1; }
+            100% { transform: translateY(200px) rotateX(-30deg); opacity: 0; }
         }
 
         @keyframes pulseBtn {
-            0% { transform: scale(1); box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
-            50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(212, 175, 55, 0.4); }
-            100% { transform: scale(1); box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         /* Question Sequence */
         .question-box {
             display: none;
             opacity: 0;
-            transition: opacity 1s ease-in;
         }
 
         .question-text {
@@ -118,6 +123,17 @@
             margin-bottom: 30px;
             color: var(--starlight-white);
             text-shadow: 0 0 10px rgba(191, 148, 255, 0.5);
+        }
+
+        /* Quick Fade Animation */
+        .quick-fade {
+            display: block !important;
+            animation: quickFadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes quickFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .proceed-btn {
@@ -137,16 +153,6 @@
             color: var(--void-obsidian);
         }
 
-        /* Pop-in animation */
-        .pop-in {
-            animation: pop 0.4s cubic-bezier(0.26, 0.53, 0.74, 1.48) forwards;
-        }
-
-        @keyframes pop {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
         /* Flash Transition */
         #flash-overlay {
             position: fixed;
@@ -162,7 +168,6 @@
         }
 
         .hidden { display: none !important; }
-        .visible { display: block !important; opacity: 1 !important; }
 
     </style>
 </head>
@@ -195,30 +200,34 @@
         const gateBtn = document.getElementById('gate-btn');
         const flashOverlay = document.getElementById('flash-overlay');
 
-        // Initialize First Interaction
+        // Interaction: Button Falls Away, then Q1 Fades In
         gateBtn.addEventListener('click', () => {
-            gateBtn.classList.add('hidden');
-            const q1 = document.getElementById('q1');
-            q1.classList.add('visible');
+            gateBtn.classList.add('fall-away');
+            
+            // Wait for the fall-away to halfway finish before showing Q1
+            setTimeout(() => {
+                gateBtn.classList.add('hidden');
+                document.getElementById('q1').classList.add('quick-fade');
+            }, 500);
         });
 
-        // Question Progression
+        // Question Progression logic
         function showNext(currentId, nextId) {
             const current = document.getElementById(currentId);
             const next = document.getElementById(nextId);
             
-            current.classList.remove('visible');
-            current.classList.add('hidden');
+            // Fast clear of current question
+            current.style.display = 'none';
             
-            next.classList.add('visible');
-            next.classList.add('pop-in');
+            // Instant trigger of next question's fade
+            next.classList.add('quick-fade');
         }
 
         // Final Transition to Home
         function triggerFinalTransition() {
             flashOverlay.style.opacity = '1';
             setTimeout(() => {
-                // Redirecting to home.html after the flash
+                // Moving to the next page
                 window.location.href = 'home.html';
             }, 1500);
         }
