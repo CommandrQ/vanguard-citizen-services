@@ -1,1 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Project V</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
+        /* Fade In Overlay from previous screen */
+        #fade-in-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: black;
+            z-index: 9999;
+            pointer-events: none;
+            animation: fadeOut 1.5s ease-out forwards;
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* Space Canvas Background */
+        #space-canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+        }
+
+        /* Main UI Layer */
+        #ui-layer {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            padding-top: 10vh; /* Pushes content down from the very top */
+        }
+
+        /* Floating Logo Container */
+        .logo-container {
+            position: relative;
+            width: 400px; /* Adjust size based on your actual logo */
+            max-width: 80%;
+            animation: float 4s ease-in-out infinite;
+            margin-bottom: 4rem;
+        }
+        .logo-container img {
+            width: 100%;
+            display: block;
+        }
+        
+        /* The Sheen Effect */
+        .logo-sheen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8), transparent);
+            /* Masking ensures the sheen only appears over the pixels of your logo image */
+            mask-image: url('images/vanguardorglogo.png');
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            mask-position: center;
+            -webkit-mask-image: url('images/vanguardorglogo.png');
+            -webkit-mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            animation: sheen 3s infinite;
+        }
+
+        /* Animations for Logo */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        @keyframes sheen {
+            0% { transform: skewX(-25deg) translateX(-150%); }
+            30% { transform: skewX(-25deg) translateX(150%); }
+            100% { transform: skewX(-25deg) translateX(150%); } /* Pauses before next sheen */
+        }
+
+        /* Menu Options */
+        .menu-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            text-align: center;
+            width: 300px;
+        }
+        .menu-list li a {
+            display: block;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: #00ffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 15px 0;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+        .menu-list li a:hover {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            transform: scale(1.05);
+            color: #fff;
+            text-shadow: 0 0 8px #00ffff;
+        }
+
+        /* Footer Banner */
+        .footer-banner {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px; /* Banner height */
+            background: rgba(10, 15, 30, 0.9);
+            border-top: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 -5px 15px rgba(0, 255, 255, 0.1);
+            overflow: hidden; /* Hides the text not currently in view */
+        }
+
+        /* Container that moves up and down */
+        .footer-text-container {
+            display: flex;
+            flex-direction: column;
+            animation: bannerWipe 8s infinite cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        .footer-text {
+            height: 50px; /* Matches banner height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            color: #a0c4ff;
+        }
+
+        .highlight-text {
+            color: #00ffff;
+            font-weight: 700;
+            text-shadow: 0 0 5px #00ffff;
+        }
+
+        /* Wipes down, holds, and loops seamlessly */
+        @keyframes bannerWipe {
+            0%, 40% { transform: translateY(0); } /* Show Copyright */
+            45%, 85% { transform: translateY(-50px); } /* Slide to Motto */
+            90%, 100% { transform: translateY(-100px); } /* Slide to duplicated Copyright for seamless loop */
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="fade-in-overlay"></div>
+
+    <canvas id="space-canvas"></canvas>
+
+    <div id="ui-layer">
+        <div class="logo-container">
+            <img src="images/vanguardorglogo.png" alt="Vanguard Organization Logo">
+            <div class="logo-sheen"></div>
+        </div>
+
+        <ul class="menu-list">
+            <li><a href="#">About The Vanguard</a></li>
+            <li><a href="#">Our Team</a></li>
+            <li><a href="#">Contact Us</a></li>
+        </ul>
+    </div>
+
+    <div class="footer-banner">
+        <div class="footer-text-container">
+            <div class="footer-text">&copy; 2026 Vanguard Citizen Services</div>
+            <div class="footer-text highlight-text">Empower . Educate . Elevate</div>
+            <div class="footer-text">&copy; 2026 Vanguard Citizen Services</div>
+        </div>
+    </div>
+
+    <script>
+        // --- 3D Space Warp Effect Logic ---
+        const canvas = document.getElementById('space-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let stars = [];
+        const numStars = 500; // Density of the starfield
+        const speed = 3; // Speed of flying through space
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        class Star {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = (Math.random() - 0.5) * width;
+                this.y = (Math.random() - 0.5) * height;
+                this.z = Math.random() * width;
+                this.pz = this.z;
+            }
+            update() {
+                this.z -= speed;
+                if (this.z < 1) {
+                    this.reset();
+                    this.z = width;
+                }
+            }
+            draw() {
+                let sx = (this.x / this.z) * width + width / 2;
+                let sy = (this.y / this.z) * height + height / 2;
+                let r = (1 - this.z / width) * 3; 
+
+                let px = (this.x / this.pz) * width + width / 2;
+                let py = (this.y / this.pz) * height + height / 2;
+                
+                this.pz = this.z;
+
+                ctx.beginPath();
+                ctx.moveTo(px, py);
+                ctx.lineTo(sx, sy);
+                ctx.lineWidth = r;
+                ctx.strokeStyle = `rgba(200, 240, 255, ${1 - this.z / width})`; 
+                ctx.stroke();
+            }
+        }
+
+        function initStars() {
+            stars = [];
+            for (let i = 0; i < numStars; i++) {
+                stars.push(new Star());
+            }
+        }
+
+        function animate() {
+            // Fills screen with slight opacity to create light trails behind stars
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)'; 
+            ctx.fillRect(0, 0, width, height);
+            
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+            
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        initStars();
+        animate();
+    </script>
+</body>
+</html>
