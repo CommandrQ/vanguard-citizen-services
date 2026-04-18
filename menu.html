@@ -19,7 +19,7 @@
             align-items: center;
         }
 
-        /* Fade In Overlay from previous screen */
+        /* Fade In Overlay */
         #fade-in-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -49,86 +49,121 @@
             align-items: center;
             width: 100%;
             height: 100%;
-            padding-top: 10vh; /* Pushes content down from the very top */
+            padding-top: 15vh; /* Center weighting */
         }
 
         /* Floating Logo Container */
         .logo-container {
             position: relative;
-            width: 400px; /* Adjust size based on your actual logo */
+            width: 200px; /* Made the logo much smaller */
             max-width: 80%;
             animation: float 4s ease-in-out infinite;
-            margin-bottom: 4rem;
+            margin-bottom: 2rem;
         }
         .logo-container img {
             width: 100%;
+            height: auto;
             display: block;
         }
         
         /* The Sheen Effect */
         .logo-sheen {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8), transparent);
-            /* Masking ensures the sheen only appears over the pixels of your logo image */
-            /* Updated to explicit relative paths */
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none; /* Let clicks pass through */
+            background: linear-gradient(60deg, transparent 20%, rgba(255, 255, 255, 0.9) 50%, transparent 80%);
+            /* Strict masking ensures it adheres to your image alpha channel */
             mask-image: url('./images/vanguardorglogo.png');
-            mask-size: contain;
+            mask-size: 100% 100%;
             mask-repeat: no-repeat;
-            mask-position: center;
             -webkit-mask-image: url('./images/vanguardorglogo.png');
-            -webkit-mask-size: contain;
+            -webkit-mask-size: 100% 100%;
             -webkit-mask-repeat: no-repeat;
-            -webkit-mask-position: center;
             animation: sheen 3s infinite;
         }
 
         /* Animations for Logo */
         @keyframes float {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
+            50% { transform: translateY(-10px); }
             100% { transform: translateY(0px); }
         }
         @keyframes sheen {
-            0% { transform: skewX(-25deg) translateX(-150%); }
-            30% { transform: skewX(-25deg) translateX(150%); }
-            100% { transform: skewX(-25deg) translateX(150%); } /* Pauses before next sheen */
+            0% { transform: translateX(-100%); }
+            30%, 100% { transform: translateX(100%); } /* Quick sweep, then pause */
         }
 
-        /* Menu Options */
-        .menu-list {
-            list-style: none;
+        /* Carousel Menu Container */
+        .menu-carousel {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
-            text-align: center;
-            width: 300px;
+            align-items: center;
+            gap: 1rem;
         }
-        .menu-list li a {
-            display: block;
+
+        /* Up / Down Navigation Arrows */
+        .nav-arrow {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            transition: transform 0.2s, filter 0.2s;
+            outline: none;
+        }
+        .nav-arrow:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 10px #00ffff);
+        }
+        .nav-arrow svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* The Box Displaying the Link */
+        .menu-display {
+            width: 320px;
+            height: 60px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 5px;
+            backdrop-filter: blur(5px);
+            box-shadow: inset 0 0 15px rgba(0,255,255,0.1), 0 0 10px rgba(0,255,255,0.2);
+        }
+
+        /* The Actual Link Text */
+        #current-menu-item {
             text-decoration: none;
             font-family: 'Orbitron', sans-serif;
             font-size: 1.3rem;
             color: #00ffff;
             text-transform: uppercase;
             letter-spacing: 2px;
-            padding: 15px 0;
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            background: rgba(0, 255, 255, 0.05);
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(5px);
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            transition: color 0.3s, text-shadow 0.3s;
         }
-        .menu-list li a:hover {
-            background: rgba(0, 255, 255, 0.2);
-            border-color: #00ffff;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-            transform: scale(1.05);
+        #current-menu-item:hover {
             color: #fff;
-            text-shadow: 0 0 8px #00ffff;
+            text-shadow: 0 0 12px #00ffff;
         }
+
+        /* JS Trigerred Animation Classes */
+        .slide-out-up { animation: slideOutUp 0.3s forwards; }
+        .slide-in-up { animation: slideInUp 0.3s forwards; }
+        .slide-out-down { animation: slideOutDown 0.3s forwards; }
+        .slide-in-down { animation: slideInDown 0.3s forwards; }
+
+        @keyframes slideOutUp { to { transform: translateY(-150%); opacity: 0; } }
+        @keyframes slideInUp { from { transform: translateY(150%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideOutDown { to { transform: translateY(150%); opacity: 0; } }
+        @keyframes slideInDown { from { transform: translateY(-150%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         /* Footer Banner */
         .footer-banner {
@@ -136,14 +171,13 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 50px; /* Banner height */
+            height: 50px; 
             background: rgba(10, 15, 30, 0.9);
             border-top: 1px solid rgba(0, 255, 255, 0.3);
             box-shadow: 0 -5px 15px rgba(0, 255, 255, 0.1);
-            overflow: hidden; /* Hides the text not currently in view */
+            overflow: hidden; 
         }
 
-        /* Container that moves up and down */
         .footer-text-container {
             display: flex;
             flex-direction: column;
@@ -151,7 +185,7 @@
         }
 
         .footer-text {
-            height: 50px; /* Matches banner height */
+            height: 50px; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -167,11 +201,10 @@
             text-shadow: 0 0 5px #00ffff;
         }
 
-        /* Wipes down, holds, and loops seamlessly */
         @keyframes bannerWipe {
-            0%, 40% { transform: translateY(0); } /* Show Copyright */
-            45%, 85% { transform: translateY(-50px); } /* Slide to Motto */
-            90%, 100% { transform: translateY(-100px); } /* Slide to duplicated Copyright for seamless loop */
+            0%, 40% { transform: translateY(0); } 
+            45%, 85% { transform: translateY(-50px); } 
+            90%, 100% { transform: translateY(-100px); } 
         }
         
     </style>
@@ -187,11 +220,23 @@
             <div class="logo-sheen"></div>
         </div>
 
-        <ul class="menu-list">
-            <li><a href="#">About The Vanguard</a></li>
-            <li><a href="#">Our Team</a></li>
-            <li><a href="#">Contact Us</a></li>
-        </ul>
+        <div class="menu-carousel">
+            <button id="btn-up" class="nav-arrow" aria-label="Previous Menu Option">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#00ffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
+            </button>
+            
+            <div class="menu-display">
+                <a href="#" id="current-menu-item">About The Vanguard</a>
+            </div>
+
+            <button id="btn-down" class="nav-arrow" aria-label="Next Menu Option">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#00ffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+        </div>
     </div>
 
     <div class="footer-banner">
@@ -205,14 +250,66 @@
     <script src="force-refresh.js"></script>
 
     <script>
+        // --- Menu Carousel Logic ---
+        const menuItems = [
+            { text: "About The Vanguard", link: "#" },
+            { text: "Our Team", link: "#" },
+            { text: "Contact Us", link: "#" }
+        ];
+        
+        let currentIndex = 0;
+        const currentMenuItem = document.getElementById('current-menu-item');
+        const btnUp = document.getElementById('btn-up');
+        const btnDown = document.getElementById('btn-down');
+        let isAnimating = false; // Prevents spam clicking the arrows
+
+        function cycleMenu(direction) {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            // Determine exit and entry animations
+            const exitClass = direction === 'up' ? 'slide-out-up' : 'slide-out-down';
+            const enterClass = direction === 'up' ? 'slide-in-up' : 'slide-in-down';
+
+            // Trigger exit
+            currentMenuItem.classList.add(exitClass);
+
+            setTimeout(() => {
+                // Update Index
+                if (direction === 'up') {
+                    currentIndex = (currentIndex - 1 + menuItems.length) % menuItems.length;
+                } else {
+                    currentIndex = (currentIndex + 1) % menuItems.length;
+                }
+
+                // Update DOM content
+                currentMenuItem.textContent = menuItems[currentIndex].text;
+                currentMenuItem.href = menuItems[currentIndex].link;
+
+                // Swap classes to trigger entry animation
+                currentMenuItem.classList.remove(exitClass);
+                currentMenuItem.classList.add(enterClass);
+
+                // Clean up classes and release lock
+                setTimeout(() => {
+                    currentMenuItem.classList.remove(enterClass);
+                    isAnimating = false;
+                }, 300); // Wait for entry to finish
+            }, 300); // Wait for exit to finish
+        }
+
+        btnUp.addEventListener('click', () => cycleMenu('up'));
+        btnDown.addEventListener('click', () => cycleMenu('down'));
+
+
         // --- 3D Space Warp Effect Logic ---
         const canvas = document.getElementById('space-canvas');
         const ctx = canvas.getContext('2d');
         
         let width, height;
         let stars = [];
-        const numStars = 500; // Density of the starfield
-        const speed = 3; // Speed of flying through space
+        const numStars = 500; 
+        const speed = 3; 
 
         function resize() {
             width = canvas.width = window.innerWidth;
@@ -263,7 +360,6 @@
         }
 
         function animate() {
-            // Fills screen with slight opacity to create light trails behind stars
             ctx.fillStyle = 'rgba(0, 0, 0, 0.3)'; 
             ctx.fillRect(0, 0, width, height);
             
