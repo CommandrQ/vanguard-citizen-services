@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu - Project V</title>
+    <title>Contact - Vanguard Citizen Services</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
@@ -13,16 +13,23 @@
             background-color: #000;
             color: #fff;
             font-family: 'Rajdhani', sans-serif;
-            overflow: hidden;
-            height: 100vh;
+            overflow-x: hidden;
+            min-height: 100vh;
             width: 100vw;
             display: flex;
             flex-direction: column;
-            justify-content: center; 
-            align-items: center;     
+            align-items: center;
+            justify-content: center;
+            padding: 40px 0;
         }
 
-        /* Fade Overlays */
+        #contact-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at top right, #0a1a33 0%, #000 100%);
+            z-index: 1;
+        }
+
         #fade-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -33,325 +40,165 @@
             transition: opacity 0.8s ease-out;
         }
 
-        /* Space Canvas */
-        #space-canvas {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1;
-        }
-
-        /* Main UI Layer */
-        #ui-layer {
+        .comm-window {
             position: relative;
             z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
+            width: 90%;
             max-width: 600px;
-            padding: 20px;
+            background: rgba(10, 25, 45, 0.85);
+            border: 1px solid #00ffff;
+            border-radius: 10px;
+            padding: 40px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.15);
+            text-align: center;
         }
 
-        /* Logo */
-        .logo-container {
-            position: relative;
-            width: 180px; 
-            animation: float 4s ease-in-out infinite;
-            margin-bottom: 2rem;
-        }
-        .logo-container img { width: 100%; height: auto; display: block; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+        .comm-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            color: #00ffff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+            padding-bottom: 15px;
         }
 
-        /* Carousel Menu */
-        .menu-carousel {
+        .protocol-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #a0c4ff;
+            margin-bottom: 30px;
+        }
+
+        .signal-grid {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
+            gap: 15px;
+            width: 100%;
         }
 
-        .nav-arrow {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            transition: 0.2s;
-            outline: none;
-        }
-        .nav-arrow:hover { filter: drop-shadow(0 0 8px #00ffff); transform: scale(1.1); }
-        .nav-arrow svg { width: 100%; height: 100%; }
-
-        .menu-display {
-            width: 300px;
-            height: 60px;
+        .signal-btn {
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            padding: 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid rgba(0, 255, 255, 0.4);
-            background: rgba(0, 255, 255, 0.05);
-            border-radius: 5px;
-            backdrop-filter: blur(8px);
-            box-shadow: inset 0 0 10px rgba(0,255,255,0.1);
         }
 
-        #current-menu-item {
-            text-decoration: none;
+        .signal-btn:hover {
+            background: rgba(0, 255, 255, 0.15);
+            border-color: #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            transform: translateX(5px);
+        }
+
+        .signal-label {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             color: #00ffff;
             text-transform: uppercase;
             letter-spacing: 2px;
-            position: absolute;
-            width: 100%;
-            text-align: center;
-            transition: 0.3s;
+            margin-bottom: 5px;
         }
-        #current-menu-item:hover { color: #fff; text-shadow: 0 0 15px #00ffff; }
 
-        /* Carousel Animations */
-        .slide-out-up { animation: slideOutUp 0.3s forwards; }
-        .slide-in-up { animation: slideInUp 0.3s forwards; }
-        .slide-out-down { animation: slideOutDown 0.3s forwards; }
-        .slide-in-down { animation: slideInDown 0.3s forwards; }
+        .signal-desc {
+            font-size: 0.85rem;
+            color: #ccc;
+        }
 
-        @keyframes slideOutUp { to { transform: translateY(-150%); opacity: 0; } }
-        @keyframes slideInUp { from { transform: translateY(150%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes slideOutDown { to { transform: translateY(150%); opacity: 0; } }
-        @keyframes slideInDown { from { transform: translateY(-150%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .back-btn-container {
+            margin-top: 40px;
+            z-index: 10;
+        }
 
-        /* Legal Links */
-        .legal-mini-links {
-            margin-top: 1.5rem;
-            display: flex;
-            gap: 20px;
-        }
-        .legal-link {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 0.8rem;
-            color: rgba(160, 196, 255, 0.4);
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .legal-link:hover { color: #00ffff; }
-
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            display: none; 
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-        }
-        .modal-window {
-            background: #0a0f1e;
-            border: 1px solid #00ffff;
-            width: 90%;
-            max-width: 500px;
-            max-height: 70vh;
-            padding: 30px;
-            border-radius: 10px;
-            position: relative;
-            overflow-y: auto;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
-        }
-        .modal-window h2 {
-            font-family: 'Orbitron', sans-serif;
-            color: #00ffff;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-            text-transform: uppercase;
-        }
-        .close-modal {
-            position: absolute;
-            top: 15px; right: 15px;
+        .back-btn {
+            background: transparent;
+            border: 1px solid #ff3366;
             color: #ff3366;
-            font-weight: bold;
-            cursor: pointer;
+            padding: 12px 40px;
             font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            letter-spacing: 3px;
+            transition: 0.3s;
         }
 
-        /* Footer */
-        .footer-banner {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; 
-            background: rgba(10, 15, 30, 0.9);
-            border-top: 1px solid rgba(0, 255, 255, 0.3);
-            z-index: 20; overflow: hidden; 
+        .back-btn:hover {
+            background: #ff3366;
+            color: #fff;
+            box-shadow: 0 0 25px #ff3366;
         }
-        .footer-text-container { display: flex; flex-direction: column; animation: bannerWipe 8s infinite cubic-bezier(0.65, 0, 0.35, 1); }
-        .footer-text { height: 50px; display: flex; justify-content: center; align-items: center; font-family: 'Orbitron', sans-serif; font-size: 0.8rem; letter-spacing: 2px; color: #a0c4ff; text-align: center; }
-        .highlight-text { color: #00ffff; font-weight: 700; text-shadow: 0 0 5px #00ffff; }
 
-        @keyframes bannerWipe {
-            0%, 40% { transform: translateY(0); } 
-            45%, 85% { transform: translateY(-50px); } 
-            90%, 100% { transform: translateY(-100px); } 
+        @media (max-width: 480px) {
+            .comm-window { padding: 25px; }
+            .comm-header { font-size: 1.2rem; }
+            .signal-label { font-size: 0.8rem; }
+            .protocol-text { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
 
     <div id="fade-overlay"></div>
-    <canvas id="space-canvas"></canvas>
+    <div id="contact-bg"></div>
 
-    <div id="ui-layer">
-        <div class="logo-container">
-            <img src="./images/vanguardorglogo.png" alt="Vanguard Organization Logo">
-        </div>
+    <div class="comm-window">
+        <h1 class="comm-header">Mail Room</h1>
+        
+        <p class="protocol-text">
+            To reach the team, select the category that best fits your inquiry below. This will open your email client with a pre-filled subject line. Once sent, we will review your message and get back to you as soon as possible.
+        </p>
 
-        <div class="menu-carousel">
-            <button id="btn-up" class="nav-arrow">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#00ffff" stroke-width="2"><polyline points="18 15 12 9 6 15"></polyline></svg>
-            </button>
+        <div class="signal-grid">
+            <a href="mailto:commandrq@gmail.com?subject=[Vanguard%20Intel]%20General%20Inquiry" class="signal-btn">
+                <span class="signal-label">General Inquiry</span>
+                <span class="signal-desc">Standard communication and academy questions.</span>
+            </a>
+
+            <a href="mailto:commandrq@gmail.com?subject=[Vanguard%20Support]%20Assistance%20Required" class="signal-btn">
+                <span class="signal-label">Service Support</span>
+                <span class="signal-desc">Request aid with existing tools or services.</span>
+            </a>
+
+            <a href="mailto:commandrq@gmail.com?subject=[Vanguard%20Alliance]%20Partnership%20Proposal" class="signal-btn">
+                <span class="signal-label">Alliance Proposal</span>
+                <span class="signal-desc">For collaborative efforts and business ventures.</span>
+            </a>
             
-            <div class="menu-display">
-                <a href="about.html" id="current-menu-item">About The Vanguard</a>
-            </div>
-
-            <button id="btn-down" class="nav-arrow">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#00ffff" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </button>
-        </div>
-
-        <div class="legal-mini-links">
-            <span class="legal-link" onclick="openModal('privacy')">Privacy Policy</span>
-            <span class="legal-link" onclick="openModal('terms')">Terms of Use</span>
+            <a href="mailto:commandrq@gmail.com?subject=[Vanguard%20Recruit]%20Knight%20Application" class="signal-btn">
+                <span class="signal-label">Knight Recruitment</span>
+                <span class="signal-desc">Apply to join the collective of Vanguard Knights.</span>
+            </a>
         </div>
     </div>
 
-    <div id="modal-overlay" class="modal-overlay" onclick="closeModal()">
-        <div class="modal-window" onclick="event.stopPropagation()">
-            <span class="close-modal" onclick="closeModal()">[X]</span>
-            <div id="modal-content"></div>
-        </div>
-    </div>
-
-    <div class="footer-banner">
-        <div class="footer-text-container">
-            <div class="footer-text">&copy; 2026 Vanguard Citizen Services</div>
-            <div class="footer-text highlight-text">Empower . Educate . Elevate</div>
-            <div class="footer-text">&copy; 2026 Vanguard Citizen Services</div>
-        </div>
+    <div class="back-btn-container">
+        <button class="back-btn" onclick="goBack()">Return to Menu</button>
     </div>
 
     <script src="force-refresh.js"></script>
 
     <script>
-        /**
-         * MENU CONFIGURATION
-         * Add or remove objects here to update your menu automatically.
-         */
-        const menuItems = [
-            { text: "About The Vanguard", link: "about.html" },
-            { text: "Our Team",           link: "team.html" },
-            { text: "Contact Us",         link: "contact.html" }
-        ];
-
-        // Policy Content
-        const policyText = {
-            privacy: `<h2>Privacy Policy</h2><p>Vanguard Citizen Services shields your data with Academy-grade encryption.</p>`,
-            terms: `<h2>Terms of Use</h2><p>By using Project V, you pledge to defend Musubi from entropic collapse.</p>`
+        window.onload = () => { 
+            document.getElementById('fade-overlay').style.opacity = '0'; 
         };
 
-        let currentIndex = 0;
-        const currentMenuItem = document.getElementById('current-menu-item');
-        const overlay = document.getElementById('fade-overlay');
-
-        window.onload = () => { overlay.style.opacity = '0'; };
-
-        // Handle navigation with fade out
-        currentMenuItem.addEventListener('click', (e) => {
-            e.preventDefault();
-            const target = menuItems[currentIndex].link;
+        function goBack() {
+            const overlay = document.getElementById('fade-overlay');
             overlay.style.transition = "opacity 0.5s ease-in";
             overlay.style.opacity = '1';
-            setTimeout(() => { window.location.href = target; }, 600);
-        });
-
-        // Carousel Logic
-        let isAnimating = false;
-        function cycleMenu(direction) {
-            if (isAnimating) return;
-            isAnimating = true;
-            const exit = direction === 'up' ? 'slide-out-up' : 'slide-out-down';
-            const enter = direction === 'up' ? 'slide-in-up' : 'slide-in-down';
-            
-            currentMenuItem.classList.add(exit);
-            
-            setTimeout(() => {
-                if(direction === 'up') {
-                    currentIndex = (currentIndex - 1 + menuItems.length) % menuItems.length;
-                } else {
-                    currentIndex = (currentIndex + 1) % menuItems.length;
-                }
-                
-                currentMenuItem.textContent = menuItems[currentIndex].text;
-                currentMenuItem.classList.remove(exit);
-                currentMenuItem.classList.add(enter);
-                
-                setTimeout(() => { 
-                    currentMenuItem.classList.remove(enter); 
-                    isAnimating = false; 
-                }, 300);
-            }, 300);
+            setTimeout(() => { 
+                window.location.href = 'menu.html'; 
+            }, 600);
         }
-
-        document.getElementById('btn-up').addEventListener('click', () => cycleMenu('up'));
-        document.getElementById('btn-down').addEventListener('click', () => cycleMenu('down'));
-
-        // Modal Logic
-        function openModal(type) {
-            document.getElementById('modal-content').innerHTML = policyText[type];
-            document.getElementById('modal-overlay').style.display = 'flex';
-        }
-        function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
-
-        // Space Background
-        const canvas = document.getElementById('space-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height, stars = [];
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            stars = [];
-            for (let i = 0; i < 400; i++) stars.push({
-                x: (Math.random() - 0.5) * width,
-                y: (Math.random() - 0.5) * height,
-                z: Math.random() * width
-            });
-        }
-        function animate() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-            ctx.fillRect(0, 0, width, height);
-            stars.forEach(s => {
-                s.z -= 4;
-                if (s.z < 1) s.z = width;
-                let sx = (s.x / s.z) * width + width/2;
-                let sy = (s.y / s.z) * height + height/2;
-                let r = (1 - s.z / width) * 2;
-                ctx.beginPath();
-                ctx.fillStyle = "white";
-                ctx.arc(sx, sy, r, 0, Math.PI*2);
-                ctx.fill();
-            });
-            requestAnimationFrame(animate);
-        }
-        window.addEventListener('resize', resize);
-        resize();
-        animate();
     </script>
 </body>
 </html>
