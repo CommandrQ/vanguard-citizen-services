@@ -3,22 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vanguard Citizen Services</title>
+  <title>The Citadel | Musubi</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
   
   <style>
-    /* Reset margins and set the global font */
     body, html {
       margin: 0;
       padding: 0;
       height: 100%;
       font-family: 'Orbitron', sans-serif;
-      background-color: #050505; /* Deep black behind everything */
-      overflow: hidden; /* Prevents scrolling on the title screen */
+      background-color: #050505; 
+      overflow: hidden; 
     }
 
-    /* Background setup using your specific image path */
     #title-screen {
       height: 100vh;
       width: 100vw;
@@ -29,18 +27,16 @@
       align-items: center;
       justify-content: center;
       position: relative;
-      transition: opacity 1.5s ease-in-out; /* Smooth fade out later */
+      transition: opacity 1.5s ease-in-out; 
     }
 
-    /* Dark gradient overlay so the glowing text is readable */
     #title-screen::before {
       content: "";
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
+      background: radial-gradient(circle, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.85) 100%);
     }
 
-    /* Container for text to keep it above the overlay */
     .title-container {
       position: relative;
       z-index: 1;
@@ -56,15 +52,22 @@
       color: #a0a0a0;
     }
 
-    /* Big, glowing game title */
     .game-title {
-      font-size: 6rem;
-      margin: 0 0 50px 0;
-      letter-spacing: 8px;
+      font-size: 4.5rem;
+      margin: 0;
+      letter-spacing: 6px;
       text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 40px #00ffff;
     }
 
-    /* SAO/Retro style start button */
+    .location-text {
+      font-size: 1.5rem;
+      color: #ff0055; /* A contrasting neon pink/red for the zone name */
+      letter-spacing: 3px;
+      margin-top: 15px;
+      margin-bottom: 50px;
+      text-shadow: 0 0 10px #ff0055;
+    }
+
     #start-button {
       padding: 15px 50px;
       font-size: 1.5rem;
@@ -76,7 +79,7 @@
       cursor: pointer;
       text-transform: uppercase;
       transition: all 0.3s ease;
-      animation: pulse 2s infinite; /* Pulsing effect */
+      animation: pulse 2s infinite; 
     }
 
     #start-button:hover {
@@ -85,14 +88,12 @@
       box-shadow: 0 0 20px #00ffff inset, 0 0 30px #00ffff;
     }
 
-    /* Makes the button slowly blink like "Press Start" screens */
     @keyframes pulse {
       0% { opacity: 1; }
       50% { opacity: 0.6; }
       100% { opacity: 1; }
     }
 
-    /* Temporary styling for the hidden game world */
     #game-world {
       color: #00ffff;
       padding: 50px;
@@ -105,14 +106,15 @@
   <div id="title-screen">
     <div class="title-container">
       <h2 class="company-name">Vanguard Citizen Services</h2>
-      <h1 class="game-title">MUSUBI</h1>
-      <button id="start-button">LINK START</button>
+      <h1 class="game-title">WELCOME TO MUSUBI</h1>
+      <h3 class="location-text">/// DESTINATION: THE CITADEL ///</h3>
+      <button id="start-button">PRESS START</button>
     </div>
   </div>
 
   <div id="game-world" style="display: none;">
-    <h1>Welcome to Musubi, Hero.</h1>
-    <p>Your journey begins here...</p>
+    <h1>The Citadel Terminal Online.</h1>
+    <p>Awaiting hero input...</p>
     </div>
 
   <script>
@@ -120,23 +122,19 @@
       const titleScreen = document.getElementById('title-screen');
       const gameWorld = document.getElementById('game-world');
 
-      // Play a quick visual cue on the button
       this.style.background = '#ffffff';
       this.style.color = '#000000';
-      this.innerText = 'LOGGING IN...';
+      this.innerText = 'LOADING CITADEL...';
 
-      // Fade out the title screen after a short delay
       setTimeout(() => {
         titleScreen.style.opacity = '0';
         
-        // Once faded out, hide it completely and show the game world
         setTimeout(() => {
           titleScreen.style.display = 'none';
           gameWorld.style.display = 'block';
-          // Re-enable scrolling now that they are in the site
           document.body.style.overflow = 'auto'; 
-        }, 1500); // 1.5 seconds to match the CSS transition
-      }, 800); // 0.8 seconds delay before fading starts
+        }, 1500); 
+      }, 800); 
     });
   </script>
 </body>
