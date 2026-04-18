@@ -60,37 +60,6 @@
     }
     #loading-text { font-size: 2rem; opacity: 0; transition: opacity 0.5s; text-shadow: 0 0 10px #00ffff; }
 
-    /* --- TERMINAL WORLD --- */
-    #terminal-world {
-      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-      background-color: #000; z-index: 5; display: flex;
-      flex-direction: column; justify-content: center; align-items: center;
-      padding: 20px; box-sizing: border-box;
-    }
-    .terminal-line { font-size: clamp(1.2rem, 4vw, 2.5rem); text-shadow: 0 0 10px #00ffff; text-align: center; min-height: 3rem; }
-    .cursor::after { content: '█'; animation: blinkCursor 1s infinite; }
-    @keyframes blinkCursor { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-    /* --- INPUT FIELD & ANSWER BUTTON --- */
-    #hero-input-container { 
-      display: none; flex-direction: column; align-items: center; 
-      margin-top: 20px; opacity: 0; transition: opacity 1s; 
-    }
-    #hero-name {
-      background: transparent; border: none; border-bottom: 2px solid #00ffff;
-      color: #00ffff; font-family: 'Orbitron', sans-serif; font-size: 1.5rem;
-      text-align: center; padding: 5px; outline: none; width: 250px;
-      text-shadow: 0 0 10px #00ffff; text-transform: uppercase;
-    }
-    #hero-name::placeholder { color: rgba(0, 255, 255, 0.3); }
-    #answer-btn {
-      margin-top: 20px; padding: 10px 30px; font-size: 1.2rem;
-      font-family: 'Orbitron', sans-serif; background: transparent; 
-      color: #00ffff; border: 1px solid #00ffff; cursor: pointer; 
-      transition: all 0.3s; text-transform: uppercase;
-    }
-    #answer-btn:hover { background: #00ffff; color: #000; box-shadow: 0 0 15px #00ffff; }
-
     /* --- MODALS --- */
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -138,18 +107,10 @@
     <div id="loading-text">LOADING... 0%</div>
   </div>
 
-  <div id="terminal-world">
-    <div class="terminal-line cursor" id="typing-output1"></div>
-    <div id="hero-input-container">
-      <input type="text" id="hero-name" placeholder="Enter Hero Name" autocomplete="off">
-      <button id="answer-btn">ANSWER</button>
-    </div>
-  </div>
-
   <div class="modal-overlay" id="agreement-modal">
     <div class="modal-box">
       <h2 style="margin-top: 0;">LINK INITIALIZATION</h2>
-      <p>Hero <span id="display-hero-name" style="color: #fff;"></span>, to proceed into Musubi, you must review our 
+      <p>Recruit, to proceed into Musubi, you must review our 
         <span class="modal-link" onclick="openDoc('terms')">Terms of Use</span> and 
         <span class="modal-link" onclick="openDoc('privacy')">Privacy Policy</span>.
       </p>
@@ -174,23 +135,20 @@
     const wipeCurtain = document.getElementById('wipe-curtain');
     const loadingText = document.getElementById('loading-text');
     const titleScreen = document.getElementById('title-screen');
-    const typingOutput1 = document.getElementById('typing-output1');
-    const heroInputContainer = document.getElementById('hero-input-container');
-    const heroInput = document.getElementById('hero-name');
-    const answerBtn = document.getElementById('answer-btn');
     const agreementModal = document.getElementById('agreement-modal');
     const docModal = document.getElementById('doc-modal');
     const docTitle = document.getElementById('doc-title');
     const docContent = document.getElementById('doc-content');
     const finalFade = document.getElementById('final-fade');
 
-    let heroNameStr = "";
-
+    /* --- STEP 1: PRESS START & LOAD --- */
     startBtn.addEventListener('click', () => {
       wipeCurtain.style.top = '0';
+      
       setTimeout(() => {
         titleScreen.style.display = 'none';
         loadingText.style.opacity = '1';
+        
         let progress = 0;
         let loadInterval = setInterval(() => {
           progress += Math.floor(Math.random() * 15) + 5; 
@@ -198,20 +156,20 @@
             progress = 100;
             clearInterval(loadInterval);
             loadingText.innerText = `LOADING... 100%`;
+            
             setTimeout(() => {
               loadingText.style.opacity = '0'; 
+              
               setTimeout(() => {
                 wipeCurtain.style.display = 'none'; 
-                typeString(typingOutput1, "hey, you awake?", () => {
-                  setTimeout(() => {
-                    heroInputContainer.style.display = 'flex';
-                    setTimeout(() => {
-                      heroInputContainer.style.opacity = '1';
-                      heroInput.focus();
-                    }, 50);
-                  }, 500);
-                });
-              }, 2000); 
+                
+                // --- STEP 2: SHOW MODAL DIRECTLY ---
+                agreementModal.style.display = 'flex';
+                setTimeout(() => {
+                  agreementModal.style.opacity = '1'; 
+                }, 50);
+
+              }, 500); 
             }, 500); 
           } else {
             loadingText.innerText = `LOADING... ${progress}%`;
@@ -220,26 +178,7 @@
       }, 1000); 
     });
 
-    function submitHeroName() {
-      if(heroInput.value.trim() !== "") {
-        heroNameStr = heroInput.value.trim().toUpperCase();
-        document.getElementById('display-hero-name').innerText = heroNameStr;
-        heroInputContainer.style.opacity = '0';
-        setTimeout(() => {
-          heroInputContainer.style.display = 'none';
-          agreementModal.style.display = 'flex';
-          setTimeout(() => {
-            agreementModal.style.opacity = '1'; 
-          }, 50);
-        }, 500);
-      }
-    }
-
-    answerBtn.addEventListener('click', submitHeroName);
-    heroInput.addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') submitHeroName();
-    });
-
+    /* --- STEP 3: DOCUMENT VIEWER LOGIC --- */
     const fakeTerms = "Here are the terms of use for Musubi. By logging in, you agree to protect the realm, uphold the values of Vanguard Citizen Services, and accept that your digital consciousness may be temporarily stored on our servers. <br><br> Just kidding, you're good to go.";
     const fakePrivacy = "We respect your privacy. Vanguard Citizen Services will not share your hero data with third-party goblin factions or corporate entities outside of the Musubi network.";
 
@@ -268,27 +207,15 @@
       }, 300);
     }
 
+    /* --- STEP 4: ACCEPT & PROCEED --- */
     document.getElementById('accept-btn').addEventListener('click', () => {
-      localStorage.setItem('musubiHeroName', heroNameStr);
+      // Assign a default hero name since input was bypassed
+      localStorage.setItem('musubiHeroName', 'VANGUARD RECRUIT');
       localStorage.setItem('musubiBadges', '0'); 
+      
       finalFade.style.opacity = '1'; 
       setTimeout(() => { window.location.href = "menu.html"; }, 500); 
     });
-
-    function typeString(element, text, callback) {
-      element.innerHTML = "";
-      let i = 0;
-      function typing() {
-        if (i < text.length) {
-          element.innerHTML += text.charAt(i);
-          i++;
-          setTimeout(typing, Math.floor(Math.random() * 30) + 20); 
-        } else {
-          if(callback) callback();
-        }
-      }
-      typing();
-    }
   </script>
 </body>
 </html>
