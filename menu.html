@@ -1,1 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Command Center | Musubi</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    /* --- GLOBAL CSS --- */
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: 'Orbitron', sans-serif;
+      background-color: #020202;
+      color: #00ffff; overflow: hidden;
+      background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 30px 30px;
+    }
 
+    /* --- INITIAL FADE IN --- */
+    #fade-in-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: #000000; z-index: 9999;
+      transition: opacity 1s ease-out; pointer-events: none;
+    }
+
+    /* --- HUD CORNERS --- */
+    .hud-element {
+      position: absolute; padding: 15px 20px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid #00ffff; box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+      backdrop-filter: blur(4px); z-index: 10;
+    }
+    
+    #hud-top-left { top: 20px; left: 20px; border-left: 4px solid #00ffff; }
+    .hero-name-display { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; margin: 0; }
+    .hero-status { font-size: 0.8rem; color: #a0a0a0; margin-top: 5px; letter-spacing: 1px;}
+    
+    #hud-top-right { top: 20px; right: 20px; border-right: 4px solid #00ffff; text-align: right; }
+    .hud-location { font-size: 1rem; margin: 0; color: #fff; }
+    .hud-time { font-size: 0.9rem; color: #a0a0a0; margin-top: 5px; }
+
+    /* --- DEMO MODE OVERRIDES --- */
+    .demo-mode-ui { border-color: #ff0055 !important; color: #ff0055 !important; box-shadow: 0 0 10px rgba(255, 0, 85, 0.2) !important; }
+    .demo-mode-text { color: #ff0055 !important; text-shadow: 0 0 5px #ff0055; }
+
+    /* --- CENTRAL COMMAND MENU --- */
+    #command-center {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%; max-width: 800px;
+      text-align: center;
+    }
+
+    .menu-title {
+      font-size: clamp(2rem, 5vw, 3.5rem); letter-spacing: 5px;
+      margin-bottom: 40px; text-shadow: 0 0 15px #00ffff;
+    }
+
+    .menu-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;
+    }
+
+    .menu-btn {
+      background: rgba(0, 255, 255, 0.05); border: 1px solid #00ffff;
+      padding: 20px; color: #00ffff; font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease;
+      text-transform: uppercase; position: relative; overflow: hidden;
+    }
+
+    .menu-btn:hover { background: rgba(0, 255, 255, 0.2); box-shadow: 0 0 15px #00ffff; transform: translateY(-2px); }
+    
+    .menu-btn.locked {
+      border-color: #555; color: #555; cursor: not-allowed;
+      background: rgba(255, 255, 255, 0.02); box-shadow: none;
+    }
+    .menu-btn.locked:hover { transform: none; box-shadow: none; }
+    .menu-btn.locked::after { content: " [LOCKED]"; font-size: 0.8rem; color: #ff0055; display: block; margin-top: 5px; }
+
+  </style>
+</head>
+<body>
+
+  <div id="fade-in-overlay"></div>
+
+  <div class="hud-element" id="hud-top-left">
+    <h2 class="hero-name-display" id="ui-hero-name">LOADING...</h2>
+    <div class="hero-status" id="ui-hero-status">STATUS: AUTHENTICATING</div>
+    <div class="hero-status" id="ui-hero-badges" style="color: gold; margin-top: 5px;">BADGES: 0</div>
+  </div>
+
+  <div class="hud-element" id="hud-top-right">
+    <h3 class="hud-location">ZONE: THE CITADEL</h3>
+    <div class="hud-time" id="ui-time">00:00:00</div>
+  </div>
+
+  <div id="command-center">
+    <h1 class="menu-title" id="menu-header">MAIN TERMINAL</h1>
+    
+    <div class="menu-grid">
+      <button class="menu-btn" onclick="navigateTo('training.html')">Training Facility</button>
+      <button class="menu-btn locked" id="armory-btn">The Armory</button>
+      <button class="menu-btn locked" id="missions-btn">Mission Board</button>
+      <button class="menu-btn" onclick="navigateTo('settings.html')">System Settings</button>
+    </div>
+  </div>
+
+  <script>
+    window.onload = () => {
+      const overlay = document.getElementById('fade-in-overlay');
+      overlay.style.opacity = '0';
+      setTimeout(() => overlay.style.display = 'none', 1000);
+      
+      startClock();
+      initializeHUD();
+    };
+
+    function initializeHUD() {
+      const savedName = localStorage.getItem('musubiHeroName');
+      const savedBadges = localStorage.getItem('musubiBadges') || '0';
+
+      const nameElement = document.getElementById('ui-hero-name');
+      const statusElement = document.getElementById('ui-hero-status');
+      const badgesElement = document.getElementById('ui-hero-badges');
+      const menuHeader = document.getElementById('menu-header');
+
+      if (savedName) {
+        nameElement.innerText = savedName;
+        statusElement.innerText = "STATUS: VERIFIED CITIZEN";
+        badgesElement.innerText = `BADGES: ${savedBadges}`;
+        
+        document.getElementById('armory-btn').classList.remove('locked');
+        document.getElementById('armory-btn').setAttribute('onclick', "navigateTo('armory.html')");
+        
+        document.getElementById('missions-btn').classList.remove('locked');
+        document.getElementById('missions-btn').setAttribute('onclick', "navigateTo('missions.html')");
+
+      } else {
+        nameElement.innerText = "ANONYMOUS ENTITY";
+        statusElement.innerText = "STATUS: DEMO MODE (UNVERIFIED)";
+        badgesElement.innerText = "BADGES: DISABLED";
+        menuHeader.innerText = "GUEST TERMINAL";
+
+        document.getElementById('hud-top-left').classList.add('demo-mode-ui');
+        nameElement.classList.add('demo-mode-text');
+        
+        document.getElementById('armory-btn').addEventListener('click', () => alert('Access Denied: Verification Required.'));
+        document.getElementById('missions-btn').addEventListener('click', () => alert('Access Denied: Verification Required.'));
+      }
+    }
+
+    function startClock() {
+      const timeElement = document.getElementById('ui-time');
+      setInterval(() => {
+        const now = new Date();
+        timeElement.innerText = now.toLocaleTimeString('en-US', { hour12: false });
+      }, 1000);
+    }
+
+    function navigateTo(url) {
+      window.location.href = url;
+    }
+  </script>
+</body>
+</html>
