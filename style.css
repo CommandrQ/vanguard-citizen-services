@@ -1,0 +1,119 @@
+/* Global Reset & Logic */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: #0a0a0a; /* Deep Black Foundation */
+    color: #ffffff;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Navigation - Glassmorphism */
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.01);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem 5%;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: #A855F7; /* VCS Purple Wordmark */
+    letter-spacing: 1px;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+}
+
+nav ul li {
+    margin-left: 2rem;
+}
+
+nav ul li a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+nav ul li a:hover {
+    color: #A855F7;
+}
+
+/* Main Content Structure */
+main {
+    padding-top: 100px;
+}
+
+section {
+    padding: 80px 10%;
+    margin-bottom: 20px;
+}
+
+/* VCS Glassmorphism Cards */
+#mission, #services, .roster-vcs {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    margin: 20px 10%;
+}
+
+h1, h2, h3 {
+    margin-bottom: 1.5rem;
+}
+
+/* The Vanguard Knights - Neon Gold on Dark */
+#knights, .roster-knights {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #D4AF37; /* Gold Motif */
+    border-radius: 20px;
+    margin: 40px 10%;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+}
+
+#knights h2, .roster-knights h3 {
+    color: #D4AF37;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.8); /* Neon Glow */
+}
+
+.roster-knights li {
+    color: #f0e68c;
+    border-left: 3px solid #D4AF37;
+    padding-left: 10px;
+    margin-bottom: 10px;
+    list-style: none;
+}
+
+/* Physical Action: Buttons & Links */
+ul li {
+    margin-bottom: 0.5rem;
+}
+
+footer {
+    text-align: center;
+    padding: 40px;
+    font-size: 0.8rem;
+    color: #666;
+}
