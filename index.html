@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vanguard Citizen Services | Empower. Educate. Elevate.</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --gold: #D4AF37;
             --gold-glow: rgba(212, 175, 55, 0.5);
-            --ambient-glow: rgba(212, 175, 55, 0.15);
+            --ambient-glow: rgba(212, 175, 55, 0.2);
             --dark-glass: rgba(10, 10, 10, 0.85);
             --border-gold: rgba(212, 175, 55, 0.4);
         }
@@ -26,14 +27,14 @@
             background-color: #000;
             color: white;
             overflow-x: hidden;
-            background: radial-gradient(circle at center, #111 0%, #000 100%);
         }
 
-        /* --- ANIMATED STARFIELD ENGINE --- */
+        /* --- STARFIELD FLIGHT ENGINE --- */
         .stars-container {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
             overflow: hidden;
         }
 
@@ -41,51 +42,47 @@
             position: absolute;
             top: -100%; left: 0; width: 200%; height: 200%;
             background-repeat: repeat;
-            opacity: 0;
             animation: move-stars linear infinite;
         }
 
-        /* Layer 1: Small, distant stars */
+        /* Distant Stars */
         .layer-1 {
             background-image: 
                 radial-gradient(1px 1px at 10% 10%, #fff, transparent),
-                radial-gradient(1.5px 1.5px at 20% 50%, #eee, transparent),
-                radial-gradient(1px 1px at 90% 90%, #fff, transparent);
+                radial-gradient(1px 1px at 50% 50%, #fff, transparent),
+                radial-gradient(1px 1px at 90% 20%, #fff, transparent);
             background-size: 300px 300px;
-            animation-duration: 100s;
+            animation-duration: 120s;
             opacity: 0.3;
         }
 
-        /* Layer 2: Medium stars */
+        /* Medium Stars */
         .layer-2 {
             background-image: 
-                radial-gradient(2px 2px at 30% 20%, #fff, transparent),
-                radial-gradient(3px 3px at 70% 60%, var(--gold), transparent),
-                radial-gradient(2px 2px at 50% 10%, #fff, transparent);
+                radial-gradient(2px 2px at 20% 80%, #fff, transparent),
+                radial-gradient(2px 2px at 80% 10%, var(--gold), transparent);
             background-size: 400px 400px;
-            animation-duration: 60s;
+            animation-duration: 80s;
             opacity: 0.5;
         }
 
-        /* Layer 3: Large, close stars (the "Flight" effect) */
+        /* Large Close Stars (Flight Illusion) */
         .layer-3 {
             background-image: 
-                radial-gradient(4px 4px at 15% 15%, #fff, transparent),
-                radial-gradient(5px 5px at 85% 80%, #fff, transparent),
-                radial-gradient(4px 4px at 40% 70%, var(--gold), transparent);
+                radial-gradient(4px 4px at 40% 40%, #fff, transparent),
+                radial-gradient(5px 5px at 10% 90%, #fff, transparent),
+                radial-gradient(4px 4px at 70% 30%, var(--gold), transparent);
             background-size: 600px 600px;
-            animation-duration: 30s;
+            animation-duration: 40s;
             opacity: 0.7;
         }
 
         @keyframes move-stars {
-            from { transform: translateY(0); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            to { transform: translateY(50%); opacity: 0; }
+            from { transform: translateY(0); }
+            to { transform: translateY(50%); }
         }
 
-        /* --- UI COMPONENTS --- */
+        /* --- NAVIGATION --- */
         nav {
             position: fixed;
             top: 0; width: 100%;
@@ -95,36 +92,53 @@
             background: rgba(0,0,0,0.85);
             border-bottom: 1px solid var(--border-gold);
             z-index: 1000;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px);
         }
 
-        nav ul { display: flex; list-style: none; gap: 50px; }
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 50px;
+        }
+
         nav ul li a {
-            text-decoration: none; color: var(--gold);
-            font-family: 'Cinzel', serif; font-weight: bold;
-            font-size: 0.9rem; letter-spacing: 2px;
-            text-transform: uppercase; transition: 0.4s;
+            text-decoration: none;
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: 0.4s;
         }
-        nav ul li a:hover { color: white; text-shadow: 0 0 15px var(--gold); }
 
+        nav ul li a:hover {
+            color: white;
+            text-shadow: 0 0 15px var(--gold);
+        }
+
+        /* --- HERO SECTION --- */
         .hero {
             height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            text-align: center;
             position: relative;
         }
 
         .hero-logo {
             width: 280px;
             margin-bottom: 40px;
-            filter: drop-shadow(0 0 25px rgba(212, 175, 55, 0.5));
+            filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.4));
         }
 
         .slogan {
-            font-family: 'Cinzel', serif; font-size: 2rem;
-            letter-spacing: 8px; color: white;
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            letter-spacing: 8px;
+            color: white;
             animation: pulse-glow 3.5s infinite ease-in-out;
         }
 
@@ -134,9 +148,13 @@
         }
 
         .scroll-arrow {
-            position: absolute; bottom: 40px;
-            cursor: pointer; animation: bounce 2s infinite;
-            text-decoration: none; color: var(--gold); font-size: 2rem;
+            position: absolute;
+            bottom: 40px;
+            cursor: pointer;
+            animation: bounce 2s infinite;
+            text-decoration: none;
+            color: var(--gold);
+            font-size: 2.5rem;
         }
 
         @keyframes bounce {
@@ -144,6 +162,7 @@
             40% {transform: translateY(-15px);}
         }
 
+        /* --- GLASS PANELS --- */
         section {
             height: 100vh;
             display: flex;
@@ -158,19 +177,48 @@
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--border-gold);
             border-radius: 24px;
-            padding: 60px;
+            padding: 70px;
             max-width: 850px;
             text-align: center;
             position: relative;
-            box-shadow: 0 0 80px 10px var(--ambient-glow);
+            /* Golden Back-Glow */
+            box-shadow: 0 0 100px 10px var(--ambient-glow);
         }
 
-        h2 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 2.8rem; margin-bottom: 25px; }
-        p { font-size: 1.1rem; line-height: 1.9; color: #ececec; }
+        h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-size: 3rem;
+            margin-bottom: 25px;
+            letter-spacing: 4px;
+        }
+
+        p {
+            font-size: 1.15rem;
+            line-height: 2;
+            color: #ececec;
+            font-weight: 300;
+        }
 
         .internal-arrow {
-            display: inline-block; margin-top: 40px;
-            color: var(--gold); font-size: 1.8rem;
+            display: inline-block;
+            margin-top: 40px;
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 2rem;
+            transition: 0.3s;
+        }
+
+        .internal-arrow:hover { transform: scale(1.2); }
+
+        footer {
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            font-size: 0.75rem;
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            opacity: 0.6;
         }
     </style>
 </head>
@@ -183,11 +231,8 @@
     </div>
 
     <nav>
-        <ul>
-            <li><a href="story.html">Our Story</a></li>
-            <li><a href="team.html">Our Team</a></li>
-            <li><a href="contact.html">Contact Us</a></li>
-        </ul>
+        <ul id="main-nav">
+            </ul>
     </nav>
 
     <header class="hero">
@@ -203,7 +248,8 @@
                 The Vanguard Knights represent a standard of unwavering excellence. 
                 We are a dedicated collective of specialists committed to the 
                 fortification of civic life. Through strategic intervention and 
-                steadfast support, we ensure that every citizen has the vantage point needed to thrive.
+                steadfast support, we ensure that every citizen has the vantage 
+                point needed to thrive in an ever-changing world.
             </p>
             <a href="#mission" class="internal-arrow">▼</a>
         </div>
@@ -216,10 +262,36 @@
                 To serve as the vanguard of progress within our community. 
                 Our mission is rooted in the belief that through focused 
                 empowerment and professional education, we can elevate 
-                the collective standard of living for all citizens.
+                the collective standard of living and security for all citizens.
             </p>
         </div>
     </section>
+
+    <footer>VCS &copy; 2026</footer>
+
+    <script>
+        async function loadNavigation() {
+            const navContainer = document.getElementById('main-nav');
+            try {
+                const response = await fetch('json/nav.json');
+                const navData = await response.json();
+                navContainer.innerHTML = '';
+                navData.forEach(item => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = item.link;
+                    a.textContent = item.name;
+                    li.appendChild(a);
+                    navContainer.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Nav Load Error:', error);
+                // Fallback links if JSON is missing
+                navContainer.innerHTML = '<li><a href="story.html">Our Story</a></li><li><a href="team.html">Our Team</a></li><li><a href="contact.html">Contact Us</a></li>';
+            }
+        }
+        window.onload = loadNavigation;
+    </script>
 
 </body>
 </html>
