@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Knights | Vanguard Citizen Services</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --gold-glow: rgba(212, 175, 55, 0.5);
+            --dark-glass: rgba(10, 10, 10, 0.95);
+            --border-gold: rgba(212, 175, 55, 0.4);
+            --nav-height: 90px;
+            --footer-height: 80px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: #000; color: white; overflow: hidden; }
+
+        /* --- STARFIELD --- */
+        .stars-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at center, #111 0%, #000 100%); overflow: hidden; }
+        .star-layer { position: absolute; top: -100%; left: 0; width: 200%; height: 200%; background-repeat: repeat; animation: move-stars linear infinite; }
+        .layer-1 { background-image: radial-gradient(1px 1px at 10% 10%, #fff, transparent); background-size: 300px 300px; animation-duration: 120s; opacity: 0.3; }
+        .layer-3 { background-image: radial-gradient(4px 4px at 40% 40%, #fff, transparent); background-size: 600px 600px; animation-duration: 40s; opacity: 0.7; }
+        @keyframes move-stars { from { transform: translateY(0); } to { transform: translateY(50%); } }
+
+        /* --- HEADER & FOOTER --- */
+        nav { position: fixed; top: 0; width: 100%; height: var(--nav-height); display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.9); border-bottom: 1px solid var(--border-gold); z-index: 2000; backdrop-filter: blur(20px); }
+        nav ul { display: flex; list-style: none; gap: 40px; }
+        nav ul li a { text-decoration: none; color: var(--gold); font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; }
+        
+        footer { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--footer-height); display: flex; justify-content: center; align-items: center; background: linear-gradient(to top, #000 70%, transparent); z-index: 2000; gap: 20px; }
+        .copyright { color: var(--gold); font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.8; }
+
+        /* --- FLASHY HUD GLASS PANEL --- */
+        .page-content { height: 100vh; display: flex; justify-content: center; align-items: center; padding: var(--nav-height) 20px var(--footer-height); }
+        
+        .console-panel {
+            background: var(--dark-glass);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border-gold);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 850px;
+            height: 100%;
+            max-height: 700px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.1);
+        }
+
+        /* Scanning Animation Line */
+        .console-panel::before {
+            content: "";
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(transparent, rgba(212, 175, 55, 0.05), transparent);
+            animation: scan 4s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes scan { from { top: -100%; } to { top: 100%; } }
+
+        .console-header {
+            padding: 30px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            text-align: center;
+        }
+        .console-header h1 { font-family: 'Cinzel', serif; color: var(--gold); letter-spacing: 5px; font-size: 2rem; }
+
+        .console-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
+            scrollbar-width: none;
+        }
+        .console-body::-webkit-scrollbar { display: none; }
+
+        section { margin-bottom: 50px; }
+        h2 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.2rem; border-left: 3px solid var(--gold); padding-left: 15px; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* --- ROSTER CARDS --- */
+        .knight-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.3s;
+        }
+        .knight-card:hover { border-color: var(--gold); background: rgba(212, 175, 55, 0.05); transform: scale(1.02); }
+        .knight-info h3 { font-family: 'Cinzel', serif; color: white; font-size: 1.3rem; }
+        .knight-info span { color: var(--gold); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        .btn-link { color: var(--gold); text-decoration: none; border: 1px solid var(--gold); padding: 5px 15px; font-size: 0.7rem; text-transform: uppercase; transition: 0.3s; }
+        .btn-link:hover { background: var(--gold); color: black; box-shadow: 0 0 15px var(--gold); }
+
+        /* --- LIST STYLES --- */
+        .item-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .item-list li { background: rgba(212, 175, 55, 0.05); padding: 15px; border-right: 2px solid var(--gold); }
+        .item-list li strong { display: block; color: var(--gold); font-family: 'Cinzel', serif; margin-bottom: 5px; }
+        .item-list li p { font-size: 0.85rem; color: #ccc; }
+
+        @media (max-width: 600px) {
+            nav ul li a { font-size: 1.1rem; }
+            .console-header h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars-container">
+        <div class="star-layer layer-1"></div>
+        <div class="star-layer layer-3"></div>
+    </div>
+
+    <nav><ul id="main-nav"></ul></nav>
+
+    <main class="page-content">
+        <div class="console-panel">
+            <div class="console-header">
+                <h1>Vanguard Roster</h1>
+            </div>
+            
+            <div class="console-body">
+                <section>
+                    <h2>The Knights</h2>
+                    <div id="roster-container"></div>
+                </section>
+
+                <section>
+                    <h2>Completed Missions</h2>
+                    <ul id="projects-list" class="item-list"></ul>
+                </section>
+
+                <section>
+                    <h2>Strategic Alliances</h2>
+                    <ul id="partnerships-list" class="item-list"></ul>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="copyright">Vanguard Citizen Services &copy; 2026</div>
+    </footer>
+
+    <script>
+        async function loadKnightsData() {
+            const response = await fetch('json/knights.json');
+            const data = await response.json();
+
+            // Render Roster
+            const rosterCont = document.getElementById('roster-container');
+            data.roster.forEach(k => {
+                rosterCont.innerHTML += `
+                    <div class="knight-card">
+                        <div class="knight-info">
+                            <span>${k.rank}</span>
+                            <h3>${k.name}</h3>
+                        </div>
+                        <a href="${k.link}" target="_blank" class="btn-link">Personal Access</a>
+                    </div>`;
+            });
+
+            // Render Projects
+            const projList = document.getElementById('projects-list');
+            data.projects.forEach(p => {
+                projList.innerHTML += `<li><strong>${p.name}</strong><p>${p.description}</p></li>`;
+            });
+
+            // Render Partnerships
+            const partnerList = document.getElementById('partnerships-list');
+            data.partnerships.forEach(p => {
+                partnerList.innerHTML += `<li><strong>${p.org}</strong><p>${p.status}</p></li>`;
+            });
+        }
+
+        async function loadNavigation() {
+            const navContainer = document.getElementById('main-nav');
+            const response = await fetch('json/nav.json');
+            const navData = await response.json();
+            navData.forEach(item => {
+                navContainer.innerHTML += `<li><a href="${item.link}">${item.name}</a></li>`;
+            });
+        }
+
+        window.onload = () => { loadKnightsData(); loadNavigation(); };
+    </script>
+</body>
+</html>
