@@ -1,192 +1,74 @@
-/* --- Global Logic & Reset --- */
 :root {
-    --vcs-purple: #A855F7;
-    --knight-gold: #D4AF37;
-    --knight-neon: rgba(212, 175, 55, 0.6);
-    --dark-bg: #050505;
+    --purple-glow: #8a2be2;
+    --gold-glow: #ffd700;
+    --glass-bg: rgba(18, 18, 18, 0.8);
 }
 
-* {
+body, html {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
-}
-
-body {
-    background-color: var(--dark-bg);
-    color: #ffffff; /* Global White Text */
-    overflow-x: hidden;
-}
-
-/* --- Split Landing Page (The Choice) --- */
-.split-landing {
-    display: flex;
+    background: #050505;
+    font-family: 'Inter', sans-serif;
+    color: white;
     height: 100vh;
-    width: 100vw;
-}
-
-.screen-half {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    text-decoration: none;
-    transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
     overflow: hidden;
 }
 
-.content {
-    z-index: 10;
+.split-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100vh;
 }
 
-.symbol {
-    font-size: 5rem;
-    margin-bottom: 1rem;
-    display: block;
+/* Glassmorphism Core */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 3rem;
+    border-radius: 15px;
+    text-align: center;
+    width: 60%;
+    transition: transform 0.3s ease;
 }
 
-/* Specific Force: Pure White Text for Landing */
-.landing-text {
-    color: #ffffff !important;
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    margin-bottom: 0.5rem;
+/* Side Specifics */
+.side {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 }
 
-h1.landing-text {
-    font-size: 3.5rem;
-    font-weight: 800;
-}
+.shield { border-right: 1px solid rgba(255,255,255,0.1); }
+.shield .glass-card { border-left: 4px solid var(--purple-glow); box-shadow: -10px 0 30px rgba(138, 43, 226, 0.2); }
 
-p.landing-text {
-    font-size: 1rem;
-    font-weight: 300;
-    opacity: 0.8;
-}
+.sword .glass-card { border-right: 4px solid var(--gold-glow); box-shadow: 10px 0 30px rgba(255, 215, 0, 0.2); }
 
-/* VCS Side (The Shield) */
-.vcs-side {
-    background: linear-gradient(rgba(26, 11, 46, 0.8), rgba(5, 5, 5, 0.9)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80');
-    background-size: cover;
-    background-position: center;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.vcs-side:hover {
-    flex: 1.4;
-}
-
-/* Knights Side (The Sword) */
-.knights-side {
-    background: linear-gradient(rgba(5, 5, 5, 0.8), rgba(26, 20, 0, 0.9)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80');
-    background-size: cover;
-    background-position: center;
-}
-
-.knights-side:hover {
-    flex: 1.4;
-}
-
-/* Landing Buttons */
-.action-btn {
+/* Buttons */
+.btn {
     display: inline-block;
     margin-top: 2rem;
-    padding: 12px 40px;
-    border: 2px solid #ffffff;
-    border-radius: 50px;
-    color: #ffffff !important;
-    font-weight: 700;
-    text-transform: uppercase;
+    padding: 1rem 2.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid white;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
     letter-spacing: 2px;
-    font-size: 0.75rem;
-    transition: 0.3s;
+    transition: all 0.3s;
 }
 
-.screen-half:hover .action-btn {
-    background: #ffffff;
-    color: #000000 !important;
-}
+.shield .btn:hover { background: var(--purple-glow); border-color: var(--purple-glow); }
+.sword .btn:hover { background: var(--gold-glow); color: black; border-color: var(--gold-glow); }
 
-/* --- Future Page Styles (VCS & Knights) --- */
-.glass-vcs {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-}
-
-.neon-knight {
-    background: rgba(0, 0, 0, 0.9);
-    border: 2px solid var(--knight-gold);
-    box-shadow: 0 0 20px var(--knight-neon);
-}
-
-/* Responsive Logic */
-@media (max-width: 768px) {
-    .split-landing { flex-direction: column; }
-    h1.landing-text { font-size: 2.5rem; }
-}
-/* --- Mobile Responsive Command Structure --- */
-@media (max-width: 768px) {
-    
-    /* 1. Stack the Landing Page Vertically */
-    .split-landing {
-        flex-direction: column;
-        height: 100vh;
-    }
-
-    .screen-half {
-        width: 100%;
-        height: 50vh; /* Split height instead of width */
-        flex: 1;
-    }
-
-    .vcs-side {
-        border-right: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    /* 2. Scale Down Typography for Smaller Screens */
-    h1.landing-text {
-        font-size: 2rem;
-        letter-spacing: 2px;
-    }
-
-    .symbol {
-        font-size: 3rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .action-btn {
-        padding: 10px 25px;
-        font-size: 0.7rem;
-    }
-
-    /* 3. Adjust Internal Pages (VCS & Knights) */
-    main {
-        padding-top: 80px; /* Reduced header space */
-    }
-
-    section {
-        padding: 40px 5%;
-        margin-bottom: 20px;
-    }
-
-    /* 4. Roster Logic: Force Single Column */
-    .roster-container {
-        grid-template-columns: 1fr; /* Single column for thumb scrolling */
-        gap: 20px;
-    }
-
-    /* 5. Navigation Adjustments */
-    nav ul {
-        display: none; /* In a real build, we'd add a toggle menu here */
-    }
-    
-    .logo {
-        font-size: 1.1rem;
-    }
+.vcs-wordmark {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--purple-glow);
+    z-index: 10;
 }
