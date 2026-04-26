@@ -1,29 +1,38 @@
-/* Global Reset & Logic */
+/* --- Logic & Infrastructure --- */
+:root {
+    --vcs-purple: #A855F7;
+    --knight-gold: #D4AF37;
+    --knight-neon: rgba(212, 175, 55, 0.6);
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --dark-bg: #050505;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    scroll-behavior: smooth;
 }
 
 body {
-    background-color: #0a0a0a; /* Deep Black Foundation */
+    background-color: var(--dark-bg);
     color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
     line-height: 1.6;
     overflow-x: hidden;
 }
 
-/* Navigation - Glassmorphism */
+/* --- Navigation: VCS Glassmorphism --- */
 header {
     position: fixed;
     top: 0;
     width: 100%;
     z-index: 1000;
-    background: rgba(255, 255, 255, 0.01);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(10, 10, 10, 0.7);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 1rem 5%;
+    padding: 1.2rem 5%;
 }
 
 nav {
@@ -34,9 +43,10 @@ nav {
 
 .logo {
     font-weight: 800;
-    font-size: 1.5rem;
-    color: #A855F7; /* VCS Purple Wordmark */
-    letter-spacing: 1px;
+    font-size: 1.4rem;
+    color: var(--vcs-purple);
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
 }
 
 nav ul {
@@ -45,75 +55,138 @@ nav ul {
 }
 
 nav ul li {
-    margin-left: 2rem;
+    margin-left: 1.5rem;
 }
 
 nav ul li a {
-    color: #ccc;
+    color: #eeeeee;
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 500;
     transition: 0.3s;
 }
 
 nav ul li a:hover {
-    color: #A855F7;
+    color: var(--vcs-purple);
 }
 
-/* Main Content Structure */
+/* --- Layout Structure --- */
 main {
-    padding-top: 100px;
+    padding-top: 120px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 section {
-    padding: 80px 10%;
-    margin-bottom: 20px;
-}
-
-/* VCS Glassmorphism Cards */
-#mission, #services, .roster-vcs {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    margin: 20px 10%;
+    padding: 60px 5%;
+    margin-bottom: 40px;
 }
 
 h1, h2, h3 {
+    font-weight: 700;
     margin-bottom: 1.5rem;
 }
 
-/* The Vanguard Knights - Neon Gold on Dark */
-#knights, .roster-knights {
-    background: rgba(0, 0, 0, 0.8);
-    border: 1px solid #D4AF37; /* Gold Motif */
-    border-radius: 20px;
-    margin: 40px 10%;
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+p {
+    margin-bottom: 1.5rem;
+    color: #cccccc;
 }
 
-#knights h2, .roster-knights h3 {
-    color: #D4AF37;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    text-shadow: 0 0 10px rgba(212, 175, 55, 0.8); /* Neon Glow */
-}
-
-.roster-knights li {
-    color: #f0e68c;
-    border-left: 3px solid #D4AF37;
-    padding-left: 10px;
-    margin-bottom: 10px;
+ul {
     list-style: none;
+    margin-bottom: 1.5rem;
 }
 
-/* Physical Action: Buttons & Links */
 ul li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
+    padding-left: 1.5rem;
+    position: relative;
 }
 
+/* --- VCS Style: Apple Dark Glassmorphism --- */
+.glass-vcs {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 40px;
+}
+
+.glass-vcs h1, .glass-vcs h2 {
+    color: #ffffff;
+}
+
+.glass-vcs ul li::before {
+    content: "•";
+    color: var(--vcs-purple);
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+/* --- Vanguard Knights Style: Neon Gold on Dark --- */
+.neon-knight {
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid var(--knight-gold);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.neon-knight h2, .neon-knight h3 {
+    color: var(--knight-gold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 12px var(--knight-neon);
+}
+
+.neon-knight p {
+    color: #f0e68c;
+}
+
+.neon-knight ul li {
+    border-left: 2px solid var(--knight-gold);
+    padding-left: 15px;
+    color: #ffffff;
+}
+
+.motto {
+    font-style: italic;
+    font-weight: 600;
+    color: var(--knight-gold) !important;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* --- Roster Logic: Dual Column Grid --- */
+.roster-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+@media (max-width: 768px) {
+    .roster-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* --- Physical Action: Contact & Footer --- */
 footer {
     text-align: center;
-    padding: 40px;
-    font-size: 0.8rem;
-    color: #666;
+    padding: 60px 5%;
+    background: #000;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+footer a {
+    color: var(--vcs-purple);
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
 }
