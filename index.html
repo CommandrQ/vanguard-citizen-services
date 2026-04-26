@@ -24,7 +24,7 @@
             font-family: 'Inter', sans-serif;
             background-color: #000;
             color: white;
-            overflow: hidden; /* Prevents scrolling since content is now one screen */
+            overflow: hidden;
         }
 
         /* --- STARFIELD ENGINE --- */
@@ -35,18 +35,15 @@
             background: radial-gradient(circle at center, #111 0%, #000 100%);
             overflow: hidden;
         }
-
         .star-layer {
             position: absolute;
             top: -100%; left: 0; width: 200%; height: 200%;
             background-repeat: repeat;
             animation: move-stars linear infinite;
         }
-
-        .layer-1 { background-image: radial-gradient(1px 1px at 10% 10%, #fff, transparent), radial-gradient(1px 1px at 50% 50%, #fff, transparent); background-size: 300px 300px; animation-duration: 120s; opacity: 0.3; }
-        .layer-2 { background-image: radial-gradient(2px 2px at 20% 80%, #fff, transparent), radial-gradient(2px 2px at 80% 10%, var(--gold), transparent); background-size: 400px 400px; animation-duration: 80s; opacity: 0.5; }
-        .layer-3 { background-image: radial-gradient(4px 4px at 40% 40%, #fff, transparent), radial-gradient(5px 5px at 10% 90%, #fff, transparent); background-size: 600px 600px; animation-duration: 40s; opacity: 0.7; }
-
+        .layer-1 { background-image: radial-gradient(1px 1px at 10% 10%, #fff, transparent); background-size: 300px 300px; animation-duration: 120s; opacity: 0.3; }
+        .layer-2 { background-image: radial-gradient(2px 2px at 20% 80%, #fff, transparent); background-size: 400px 400px; animation-duration: 80s; opacity: 0.5; }
+        .layer-3 { background-image: radial-gradient(4px 4px at 40% 40%, #fff, transparent); background-size: 600px 600px; animation-duration: 40s; opacity: 0.7; }
         @keyframes move-stars { from { transform: translateY(0); } to { transform: translateY(50%); } }
 
         /* --- NAVIGATION --- */
@@ -61,15 +58,13 @@
             z-index: 1000;
             backdrop-filter: blur(15px);
         }
-
-        nav ul { display: flex; list-style: none; gap: 50px; }
+        nav ul { display: flex; list-style: none; gap: 30px; }
         nav ul li a {
             text-decoration: none; color: var(--gold);
             font-family: 'Cinzel', serif; font-weight: bold;
-            font-size: 0.9rem; letter-spacing: 2px;
+            font-size: 0.8rem; letter-spacing: 2px;
             text-transform: uppercase; transition: 0.4s;
         }
-        nav ul li a:hover { color: white; text-shadow: 0 0 15px var(--gold); }
 
         /* --- HERO SECTION --- */
         .hero {
@@ -79,26 +74,23 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            position: relative;
         }
-
         .hero-logo { 
-            width: 320px; /* Made slightly larger for the single-page focus */
+            width: 280px; 
             margin-bottom: 40px; 
             filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.4)); 
         }
-
         .slogan { 
             font-family: 'Cinzel', serif; 
-            font-size: 2.2rem; 
-            letter-spacing: 10px; 
+            font-size: 1.8rem; 
+            letter-spacing: 8px; 
             color: white; 
             animation: pulse-glow 3.5s infinite ease-in-out; 
+            padding: 0 20px;
         }
-
         @keyframes pulse-glow {
             0%, 100% { text-shadow: 0 0 10px var(--gold-glow); opacity: 0.7; }
-            50% { text-shadow: 0 0 30px var(--gold), 0 0 50px var(--gold); opacity: 1; }
+            50% { text-shadow: 0 0 30px var(--gold); opacity: 1; }
         }
 
         /* --- PERSISTENT FOOTER --- */
@@ -107,30 +99,68 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            padding: 30px 0;
+            padding: 20px 0;
             text-align: center;
-            background: linear-gradient(to top, rgba(0,0,0,1), transparent);
+            background: linear-gradient(to top, rgba(0,0,0,1) 80%, transparent);
             z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .legal-links { margin-bottom: 10px; }
+        .legal-links { margin-bottom: 8px; }
         .legal-links a {
             color: white;
             text-decoration: none;
-            font-size: 0.85rem;
-            margin: 0 20px;
-            font-weight: 400;
-            letter-spacing: 1.5px;
-            transition: 0.3s;
+            font-size: 0.8rem;
+            margin: 0 15px;
+            letter-spacing: 1px;
         }
-        .legal-links a:hover { color: var(--gold); }
 
         .copyright {
             color: var(--gold);
             font-family: 'Cinzel', serif;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            opacity: 0.8;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+        }
+
+        /* --- MOBILE AUTO-ADJUST (ONE LINE) --- */
+        @media (max-width: 600px) {
+            nav ul { gap: 15px; }
+            nav ul li a { font-size: 0.65rem; letter-spacing: 1px; }
+            .hero-logo { width: 200px; }
+            .slogan { font-size: 1.2rem; letter-spacing: 4px; }
+
+            footer {
+                flex-direction: row; /* Force content onto one line */
+                justify-content: center;
+                flex-wrap: nowrap;
+                padding: 15px 5px;
+            }
+
+            .legal-links {
+                margin-bottom: 0;
+                display: flex;
+            }
+
+            .legal-links a {
+                margin: 0 5px;
+                font-size: 0.6rem; /* Shrunk for mobile fitting */
+                white-space: nowrap;
+            }
+
+            /* Add a gold separator between links and copyright */
+            .legal-links::after {
+                content: "|";
+                color: var(--gold);
+                margin: 0 5px;
+                font-size: 0.6rem;
+            }
+
+            .copyright {
+                font-size: 0.6rem; /* Shrunk for mobile fitting */
+                white-space: nowrap;
+            }
         }
     </style>
 </head>
@@ -143,8 +173,7 @@
     </div>
 
     <nav>
-        <ul id="main-nav">
-            </ul>
+        <ul id="main-nav"></ul>
     </nav>
 
     <header class="hero">
@@ -154,11 +183,11 @@
 
     <footer>
         <div class="legal-links">
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms of Use</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
         </div>
         <div class="copyright">
-            Vanguard Citizen Services &copy; 2026. All Rights Reserved.
+            Vanguard Citizen Services &copy; 2026
         </div>
     </footer>
 
@@ -178,14 +207,7 @@
                     navContainer.appendChild(li);
                 });
             } catch (error) {
-                console.error('Nav Load Error:', error);
-                // Updated Fallback with About Us first
-                navContainer.innerHTML = `
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="story.html">Our Story</a></li>
-                    <li><a href="team.html">Our Team</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                `;
+                navContainer.innerHTML = `<li><a href="about.html">About Us</a></li><li><a href="story.html">Our Story</a></li><li><a href="team.html">Our Team</a></li><li><a href="contact.html">Contact Us</a></li>`;
             }
         }
         window.onload = loadNavigation;
