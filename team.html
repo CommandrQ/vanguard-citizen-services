@@ -136,9 +136,17 @@
             font-weight: 600;
         }
 
+        /* Button Grouping for multiple links */
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
         .contact-btn {
             display: inline-block;
-            margin-top: 10px;
             padding: 8px 20px;
             border: 1px solid var(--gold);
             color: var(--gold);
@@ -148,6 +156,7 @@
             letter-spacing: 2px;
             transition: 0.3s;
             font-weight: bold;
+            min-width: 160px;
         }
         .contact-btn:hover {
             background: var(--gold);
@@ -196,13 +205,18 @@
             <div class="team-member">
                 <div class="member-name">Quincy Jones</div>
                 <div class="member-title">Chief Vision Officer</div>
-                <a href="mailto:commandrq@gmail.com" class="contact-btn">Secure Comms</a>
+                <div class="button-group">
+                    <a href="mailto:commandrq@gmail.com" class="contact-btn">Secure Comms</a>
+                    <a href="https://www.linkedin.com/in/commanderq/" target="_blank" class="contact-btn">LinkedIn</a>
+                </div>
             </div>
 
             <div class="team-member">
                 <div class="member-name">Kona Agpalza</div>
                 <div class="member-title">Chief Operational Officer</div>
-                <a href="mailto:vglancelot@tutamail.com" class="contact-btn">Secure Comms</a>
+                <div class="button-group">
+                    <a href="mailto:vglancelot@tutamail.com" class="contact-btn">Secure Comms</a>
+                </div>
             </div>
 
         </div>
