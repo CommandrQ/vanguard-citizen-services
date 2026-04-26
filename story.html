@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Story | Vanguard Citizen Services</title>
+    <title>About Us | Vanguard Citizen Services</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
@@ -11,10 +11,10 @@
             --gold: #D4AF37;
             --gold-glow: rgba(212, 175, 55, 0.5);
             --ambient-glow: rgba(212, 175, 55, 0.2);
-            --dark-glass: rgba(15, 15, 15, 0.95); /* Darkened slightly for better "seeability" */
+            --dark-glass: rgba(15, 15, 15, 0.95);
             --border-gold: rgba(212, 175, 55, 0.4);
             --nav-height: 85px;
-            --footer-height: 95px;
+            --footer-height: 100px;
         }
 
         * {
@@ -27,7 +27,7 @@
             font-family: 'Inter', sans-serif;
             background-color: #000;
             color: white;
-            overflow: hidden;
+            overflow: hidden; /* Cinematic fixed view */
         }
 
         /* --- STARFIELD ENGINE --- */
@@ -38,15 +38,18 @@
             background: radial-gradient(circle at center, #111 0%, #000 100%);
             overflow: hidden;
         }
+
         .star-layer {
             position: absolute;
             top: -100%; left: 0; width: 200%; height: 200%;
             background-repeat: repeat;
             animation: move-stars linear infinite;
         }
+
         .layer-1 { background-image: radial-gradient(1px 1px at 10% 10%, #fff, transparent), radial-gradient(1px 1px at 50% 50%, #fff, transparent); background-size: 300px 300px; animation-duration: 120s; opacity: 0.3; }
         .layer-2 { background-image: radial-gradient(2px 2px at 20% 80%, #fff, transparent), radial-gradient(2px 2px at 80% 10%, var(--gold), transparent); background-size: 400px 400px; animation-duration: 80s; opacity: 0.5; }
         .layer-3 { background-image: radial-gradient(4px 4px at 40% 40%, #fff, transparent), radial-gradient(5px 5px at 10% 90%, #fff, transparent); background-size: 600px 600px; animation-duration: 40s; opacity: 0.7; }
+
         @keyframes move-stars { from { transform: translateY(0); } to { transform: translateY(50%); } }
 
         /* --- NAVIGATION --- */
@@ -62,6 +65,7 @@
             z-index: 1000;
             backdrop-filter: blur(15px);
         }
+
         nav ul { display: flex; list-style: none; gap: 40px; }
         nav ul li a {
             text-decoration: none; color: var(--gold);
@@ -77,7 +81,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Ensures content stays between Nav and Footer */
             padding-top: var(--nav-height);
             padding-bottom: var(--footer-height);
         }
@@ -88,45 +91,48 @@
             -webkit-backdrop-filter: blur(30px);
             border: 1px solid var(--border-gold);
             border-radius: 20px;
-            padding: 40px;
+            padding: 50px;
             width: 90%;
-            max-width: 700px; /* Reduced width as requested */
+            max-width: 700px;
             text-align: center;
             box-shadow: 0 0 80px 5px var(--ambient-glow);
             
-            /* THE FIX: Auto-adjust height to never touch header/footer */
+            /* Safe Zone Logic */
             max-height: calc(100vh - (var(--nav-height) + var(--footer-height) + 40px));
-            overflow-y: auto; /* Adds scrollbar inside the window if text is too long */
+            
+            /* Stealth Scroll Logic */
+            overflow-y: auto; 
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
         }
 
-        /* Custom Scrollbar for the Glass Panel */
-        .glass-panel::-webkit-scrollbar { width: 6px; }
-        .glass-panel::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+        /* Hide scrollbar for Chrome/Safari */
+        .glass-panel::-webkit-scrollbar { display: none; }
 
         h1 {
             font-family: 'Cinzel', serif;
             color: var(--gold);
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             margin-bottom: 20px;
             letter-spacing: 4px;
         }
 
         .divider {
             height: 1px;
-            width: 60px;
+            width: 80px;
             background: var(--gold);
             margin: 0 auto 25px;
             box-shadow: 0 0 10px var(--gold);
         }
 
         p {
-            font-size: 1.1rem;
-            line-height: 1.8;
+            font-size: 1.15rem;
+            line-height: 1.9;
             color: #ececec;
             font-weight: 300;
         }
 
-        /* --- FOOTER --- */
+        /* --- PERSISTENT FOOTER --- */
         footer {
             position: fixed;
             bottom: 0; left: 0; width: 100%;
@@ -135,16 +141,28 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(to top, rgba(0,0,0,1) 70%, transparent);
+            background: linear-gradient(to top, rgba(0,0,0,1) 60%, transparent);
             z-index: 1000;
         }
+
         .legal-links { margin-bottom: 8px; }
         .legal-links a {
-            color: white; text-decoration: none;
-            font-size: 0.75rem; margin: 0 15px;
-            letter-spacing: 1px; transition: 0.3s;
+            color: white;
+            text-decoration: none;
+            font-size: 0.75rem;
+            margin: 0 15px;
+            letter-spacing: 1.5px;
+            transition: 0.3s;
         }
-        .copyright { color: var(--gold); font-family: 'Cinzel', serif; font-size: 0.7rem; opacity: 0.8; }
+        .legal-links a:hover { color: var(--gold); }
+
+        .copyright {
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
@@ -156,22 +174,25 @@
     </div>
 
     <nav>
-        <ul id="main-nav"></ul>
+        <ul id="main-nav">
+            </ul>
     </nav>
 
     <main class="page-content">
         <div class="glass-panel">
-            <h1>Our Story</h1>
+            <h1>Civic Impact</h1>
             <div class="divider"></div>
             <p>
-                Vanguard Citizen Services was forged on the frontlines of service and the cutting edge of tech. 
-                Founded by two brothers-in-arms with a shared history in military operations and technical systems, 
-                the organization was born from a singular, tactical objective: to strip away the complexities 
-                of the digital age and return power to the people. 
+                Vanguard Citizen Services operates at the intersection of security and community. 
+                Our civic impact is measured by the fortification of the individual. 
+                By providing elite-level guidance and unwavering advocacy, we empower 
+                citizens to navigate the complexities of modern life with the 
+                confidence of the Knights. 
                 <br><br>
-                Recognizing that the "gremlins" of technical jargon often gatekeep progress, they established 
-                an order dedicated to education and elevation. We stand as the vanguard, translating complex 
-                systems into tools for communal victory.
+                We believe that true leadership is found in the removal of barriers. 
+                Whether through tactical technological education or strategic 
+                community initiatives, we don't just solve immediate problems; 
+                we build the foundations for lasting communal elevation.
             </p>
         </div>
     </main>
@@ -202,10 +223,18 @@
                     navContainer.appendChild(li);
                 });
             } catch (error) {
-                navContainer.innerHTML = `<li><a href="about.html">About Us</a></li><li><a href="story.html">Our Story</a></li><li><a href="team.html">Our Team</a></li><li><a href="contact.html">Contact Us</a></li>`;
+                console.error('Nav Load Error:', error);
+                // Fallback tabs
+                navContainer.innerHTML = `
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="story.html">Our Story</a></li>
+                    <li><a href="team.html">Our Team</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                `;
             }
         }
         window.onload = loadNavigation;
     </script>
+
 </body>
 </html>
