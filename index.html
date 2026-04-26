@@ -10,41 +10,20 @@
         :root {
             --gold: #D4AF37;
             --gold-glow: rgba(212, 175, 55, 0.5);
-            --ambient-glow: rgba(212, 175, 55, 0.2);
-            --dark-glass: rgba(15, 15, 15, 0.95);
             --border-gold: rgba(212, 175, 55, 0.4);
             --nav-height: 90px;
             --footer-height: 85px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #000;
-            color: white;
-            overflow: hidden; /* Maintains cinematic focus */
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: #000; color: white; overflow: hidden; }
 
         /* --- STARFIELD ENGINE --- */
         .stars-container {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            background: radial-gradient(circle at center, #111 0%, #000 100%);
-            overflow: hidden;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle at center, #111 0%, #000 100%); overflow: hidden;
         }
-        .star-layer {
-            position: absolute;
-            top: -100%; left: 0; width: 200%; height: 200%;
-            background-repeat: repeat;
-            animation: move-stars linear infinite;
-        }
+        .star-layer { position: absolute; top: -100%; left: 0; width: 200%; height: 200%; background-repeat: repeat; animation: move-stars linear infinite; }
         .layer-1 { background-image: radial-gradient(1px 1px at 10% 10%, #fff, transparent); background-size: 300px 300px; animation-duration: 120s; opacity: 0.3; }
         .layer-2 { background-image: radial-gradient(2px 2px at 20% 80%, #fff, transparent); background-size: 400px 400px; animation-duration: 80s; opacity: 0.5; }
         .layer-3 { background-image: radial-gradient(4px 4px at 40% 40%, #fff, transparent); background-size: 600px 600px; animation-duration: 40s; opacity: 0.7; }
@@ -52,152 +31,76 @@
 
         /* --- PERSISTENT NAVIGATION --- */
         nav {
-            position: fixed;
-            top: 0; width: 100%;
-            height: var(--nav-height);
-            display: flex;
-            align-items: center;
-            background: rgba(0,0,0,0.9);
-            border-bottom: 1px solid var(--border-gold);
-            z-index: 2000;
-            backdrop-filter: blur(20px);
+            position: fixed; top: 0; width: 100%; height: var(--nav-height);
+            display: flex; align-items: center; background: rgba(0,0,0,0.9);
+            border-bottom: 1px solid var(--border-gold); z-index: 2000; backdrop-filter: blur(20px);
         }
 
         .nav-container {
-            position: relative;
-            width: 100%;
-            display: flex;
-            justify-content: center; /* Desktop centered */
-            align-items: center;
-            overflow: hidden;
+            position: relative; width: 100%; display: flex;
+            justify-content: center; align-items: center; overflow: hidden;
         }
 
         nav ul {
-            display: flex;
-            list-style: none;
-            gap: 45px;
-            padding: 0 40px;
+            display: flex; list-style: none; gap: 45px; padding: 0 40px;
+            scroll-behavior: smooth;
         }
 
         nav ul li a {
-            text-decoration: none; 
-            color: var(--gold);
-            font-family: 'Cinzel', serif; 
-            font-weight: bold;
-            font-size: 0.9rem; 
-            letter-spacing: 2px;
-            text-transform: uppercase; 
-            transition: 0.4s;
-            white-space: nowrap;
+            text-decoration: none; color: var(--gold); font-family: 'Cinzel', serif; 
+            font-weight: bold; font-size: 0.9rem; letter-spacing: 2px;
+            text-transform: uppercase; transition: 0.4s; white-space: nowrap;
         }
         nav ul li a:hover { color: white; text-shadow: 0 0 15px var(--gold); }
 
-        #scroll-indicator {
-            display: none;
-            position: absolute;
-            right: 15px;
-            color: var(--gold);
-            font-size: 1.2rem;
-            pointer-events: none;
-            z-index: 2001;
-            animation: arrow-pulse 2s infinite;
+        /* Indicator Styling */
+        .scroll-hint {
+            position: absolute; color: var(--gold); font-size: 1.2rem;
+            pointer-events: none; z-index: 2001; opacity: 0; transition: 0.3s;
         }
+        #hint-right { right: 15px; animation: pulse-right 2s infinite; }
+        #hint-left { left: 15px; animation: pulse-left 2s infinite; }
 
-        @keyframes arrow-pulse {
-            0%, 100% { opacity: 0; transform: translateX(0); }
-            50% { opacity: 1; transform: translateX(5px); }
-        }
+        @keyframes pulse-right { 0%, 100% { opacity: 0; transform: translateX(0); } 50% { opacity: 1; transform: translateX(5px); } }
+        @keyframes pulse-left { 0%, 100% { opacity: 0; transform: translateX(0); } 50% { opacity: 1; transform: translateX(-5px); } }
 
         /* --- HERO SECTION --- */
         .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 20px;
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
         }
-
-        .hero-logo {
-            width: 320px;
-            margin-bottom: 40px;
-            filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.4));
-        }
-
-        .slogan {
-            font-family: 'Cinzel', serif;
-            font-size: 2.2rem;
-            letter-spacing: 10px;
-            color: white;
-            animation: pulse-glow 3.5s infinite ease-in-out;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { text-shadow: 0 0 10px var(--gold-glow); opacity: 0.7; }
-            50% { text-shadow: 0 0 30px var(--gold), 0 0 50px var(--gold); opacity: 1; }
-        }
+        .hero-logo { width: 320px; margin-bottom: 40px; filter: drop-shadow(0 0 30px var(--gold-glow)); }
+        .slogan { font-family: 'Cinzel', serif; font-size: 2.2rem; letter-spacing: 10px; animation: glow 3.5s infinite; }
+        @keyframes glow { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; text-shadow: 0 0 30px var(--gold); } }
 
         /* --- PERSISTENT FOOTER --- */
         footer {
-            position: fixed;
-            bottom: 0; left: 0; width: 100%;
-            height: var(--footer-height);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(to top, rgba(0,0,0,1) 70%, transparent);
-            z-index: 2000;
+            position: fixed; bottom: 0; left: 0; width: 100%; height: var(--footer-height);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: linear-gradient(to top, #000 70%, transparent); z-index: 2000;
         }
-
         .legal-links { margin-bottom: 8px; }
-        .legal-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 0.8rem;
-            margin: 0 15px;
-            letter-spacing: 1px;
-        }
+        .legal-links a { color: white; text-decoration: none; font-size: 0.8rem; margin: 0 15px; }
+        .copyright { color: var(--gold); font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 2px; }
 
-        .copyright {
-            color: var(--gold);
-            font-family: 'Cinzel', serif;
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            opacity: 0.8;
-        }
-
-        /* --- MOBILE HUD OPTIMIZATION --- */
+        /* --- MOBILE HUD --- */
         @media (max-width: 600px) {
             .nav-container { justify-content: flex-start; }
             
-            nav::after {
-                content: "";
-                position: absolute; right: 0; top: 0;
-                height: 100%; width: 60px;
-                background: linear-gradient(to right, transparent, rgba(0,0,0,0.9));
+            /* Mirrored Fades */
+            nav::before, nav::after {
+                content: ""; position: absolute; top: 0; height: 100%; width: 50px; 
                 pointer-events: none; z-index: 10;
             }
+            nav::before { left: 0; background: linear-gradient(to left, transparent, #000); }
+            nav::after { right: 0; background: linear-gradient(to right, transparent, #000); }
 
-            nav ul {
-                gap: 30px;
-                overflow-x: auto;
-                scrollbar-width: none;
-                width: 100%;
-                padding: 0 20px;
-            }
+            nav ul { gap: 30px; overflow-x: auto; scrollbar-width: none; width: 100%; padding: 0 30px; }
             nav ul::-webkit-scrollbar { display: none; }
-            
             nav ul li a { font-size: 1.1rem; }
-            #scroll-indicator { display: block; }
 
             footer { flex-direction: row; white-space: nowrap; }
-            .legal-links { margin-bottom: 0; display: flex; align-items: center; }
-            .legal-links a { font-size: 0.65rem; margin: 0 8px; }
-            .legal-links::after { content: "|"; color: var(--gold); margin-right: 10px; font-size: 0.7rem; }
-            .copyright { font-size: 0.65rem; }
-
+            .legal-links::after { content: "|"; color: var(--gold); margin-right: 10px; }
             .hero-logo { width: 220px; }
             .slogan { font-size: 1.2rem; letter-spacing: 4px; }
         }
@@ -213,9 +116,9 @@
 
     <nav>
         <div class="nav-container">
-            <ul id="main-nav">
-                </ul>
-            <span id="scroll-indicator">❯</span>
+            <span id="hint-left" class="scroll-hint">❮</span>
+            <ul id="main-nav"></ul>
+            <span id="hint-right" class="scroll-hint">❯</span>
         </div>
     </nav>
 
@@ -229,16 +132,14 @@
             <a href="privacy.html">Privacy</a>
             <a href="terms.html">Terms</a>
         </div>
-        <div class="copyright">
-            VCS &copy; 2026
-        </div>
+        <div class="copyright">VCS &copy; 2026</div>
     </footer>
 
     <script>
         const navList = document.getElementById('main-nav');
-        const indicator = document.getElementById('scroll-indicator');
+        const hLeft = document.getElementById('hint-left');
+        const hRight = document.getElementById('hint-right');
 
-        // Logic to load links
         async function loadNavigation() {
             try {
                 const response = await fetch('json/nav.json');
@@ -246,33 +147,31 @@
                 navList.innerHTML = '';
                 navData.forEach(item => {
                     const li = document.createElement('li');
-                    const a = document.createElement('a');
-                    a.href = item.link;
-                    a.textContent = item.name;
-                    li.appendChild(a);
+                    li.innerHTML = `<a href="${item.link}">${item.name}</a>`;
                     navList.appendChild(li);
                 });
+                updateHints(); // Check initial state
             } catch (error) {
-                navList.innerHTML = `
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="story.html">Story</a></li>
-                    <li><a href="team.html">Team</a></li>
-                    <li><a href="knights.html">Knights</a></li>
-                `;
+                navList.innerHTML = `<li><a href="about.html">About</a></li><li><a href="story.html">Story</a></li><li><a href="team.html">Team</a></li><li><a href="knights.html">Knights</a></li>`;
             }
         }
 
-        // Logic to hide indicator on scroll
-        navList.addEventListener('scroll', () => {
-            if (navList.scrollLeft > 20) {
-                indicator.style.opacity = "0";
-                indicator.style.transition = "0.5s";
-                setTimeout(() => indicator.style.display = "none", 500);
-            }
-        });
+        function updateHints() {
+            if (window.innerWidth > 600) return; // Only for mobile
 
+            const scrollLeft = navList.scrollLeft;
+            const maxScroll = navList.scrollWidth - navList.clientWidth;
+
+            // Show left arrow if we've scrolled right
+            hLeft.style.opacity = (scrollLeft > 15) ? "1" : "0";
+            
+            // Show right arrow if there is more to scroll to the right
+            hRight.style.opacity = (scrollLeft < maxScroll - 15) ? "1" : "0";
+        }
+
+        navList.addEventListener('scroll', updateHints);
+        window.addEventListener('resize', updateHints);
         window.onload = loadNavigation;
     </script>
-
 </body>
 </html>
