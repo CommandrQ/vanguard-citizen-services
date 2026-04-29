@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us | Vanguard Citizen Services</title>
+    <title>About VCS | Vanguard Citizen Services</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
@@ -28,7 +28,7 @@
             font-family: 'Inter', sans-serif;
             background-color: #000;
             color: white;
-            overflow: hidden; /* Cinematic single-screen look */
+            overflow: hidden; /* Keeps background static */
         }
 
         /* --- STARFIELD ENGINE --- */
@@ -50,7 +50,7 @@
         .layer-3 { background-image: radial-gradient(4px 4px at 40% 40%, #fff, transparent); background-size: 600px 600px; animation-duration: 40s; opacity: 0.7; }
         @keyframes move-stars { from { transform: translateY(0); } to { transform: translateY(50%); } }
 
-        /* --- UNIFORM NAVIGATION (HUD STYLE) --- */
+        /* --- NAVIGATION --- */
         nav {
             position: fixed;
             top: 0; width: 100%;
@@ -62,24 +62,20 @@
             z-index: 2000;
             backdrop-filter: blur(20px);
         }
-
         .nav-container {
             position: relative;
             width: 100%;
             display: flex;
-            justify-content: center; /* Desktop centered */
+            justify-content: center;
             align-items: center;
             overflow: hidden;
         }
-
         nav ul {
             display: flex;
             list-style: none;
             gap: 45px;
             padding: 0 40px;
-            scroll-behavior: smooth;
         }
-
         nav ul li a {
             text-decoration: none; 
             color: var(--gold);
@@ -89,27 +85,10 @@
             letter-spacing: 2px;
             text-transform: uppercase; 
             transition: 0.4s;
-            white-space: nowrap;
         }
         nav ul li a:hover { color: white; text-shadow: 0 0 15px var(--gold); }
 
-        /* HUD Scroll Indicators */
-        .scroll-hint {
-            position: absolute;
-            color: var(--gold);
-            font-size: 1.2rem;
-            pointer-events: none;
-            z-index: 2001;
-            opacity: 0;
-            transition: 0.3s;
-        }
-        #hint-right { right: 15px; animation: pulse-right 2s infinite; }
-        #hint-left { left: 15px; animation: pulse-left 2s infinite; }
-
-        @keyframes pulse-right { 0%, 100% { opacity: 0; transform: translateX(0); } 50% { opacity: 1; transform: translateX(5px); } }
-        @keyframes pulse-left { 0%, 100% { opacity: 0; transform: translateX(0); } 50% { opacity: 1; transform: translateX(-5px); } }
-
-        /* --- CONTENT WINDOW --- */
+        /* --- CONTENT PANEL --- */
         .page-content {
             height: 100vh;
             display: flex;
@@ -121,28 +100,46 @@
         .glass-panel {
             background: var(--dark-glass);
             backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
             border: 1px solid var(--border-gold);
             border-radius: 20px;
-            padding: 50px;
+            padding: 60px 50px;
             width: 100%;
-            max-width: 700px;
+            max-width: 800px;
             text-align: center;
             box-shadow: 0 0 100px 5px var(--ambient-glow);
-            max-height: 100%;
+            max-height: 85vh; /* Constraints panel height */
             overflow-y: auto; 
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            scrollbar-width: thin;
+            scrollbar-color: var(--gold) transparent;
         }
-        .glass-panel::-webkit-scrollbar { display: none; }
 
-        h1 {
+        /* Responsive Image Fix */
+        .content-image {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border-radius: 10px;
+            margin: 0 auto 30px;
+            display: block;
+            border: 1px solid var(--border-gold);
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        section {
+            padding-bottom: 60px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+        }
+        section:last-of-type { border-bottom: none; margin-bottom: 0; }
+
+        h1, h2 {
             font-family: 'Cinzel', serif;
             color: var(--gold);
-            font-size: 2.8rem;
-            margin-bottom: 20px;
             letter-spacing: 4px;
+            margin-bottom: 20px;
         }
+        h1 { font-size: 2.8rem; }
+        h2 { font-size: 2rem; }
 
         .divider {
             height: 1px; width: 80px;
@@ -152,13 +149,14 @@
         }
 
         p {
-            font-size: 1.15rem;
-            line-height: 2;
+            font-size: 1.1rem;
+            line-height: 1.8;
             color: #ececec;
             font-weight: 300;
+            text-align: justify;
         }
 
-        /* --- UNIFORM FOOTER --- */
+        /* --- FOOTER --- */
         footer {
             position: fixed;
             bottom: 0; left: 0; width: 100%;
@@ -167,42 +165,18 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(to top, rgba(0,0,0,1) 70%, transparent);
+            background: rgba(0,0,0,0.9);
             z-index: 2000;
         }
-        .legal-links { margin-bottom: 8px; }
         .legal-links a { color: white; text-decoration: none; font-size: 0.8rem; margin: 0 15px; }
-        .copyright { color: var(--gold); font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 2px; }
+        .copyright { color: var(--gold); font-family: 'Cinzel', serif; font-size: 0.75rem; margin-top: 5px; }
 
-        /* --- MOBILE OPTIMIZATION --- */
+        /* --- MOBILE --- */
         @media (max-width: 600px) {
-            .nav-container { justify-content: flex-start; }
-            
-            nav::before, nav::after {
-                content: ""; position: absolute; top: 0; height: 100%; width: 50px; 
-                pointer-events: none; z-index: 10;
-            }
-            nav::before { left: 0; background: linear-gradient(to left, transparent, #000); }
-            nav::after { right: 0; background: linear-gradient(to right, transparent, #000); }
-
-            nav ul {
-                gap: 30px;
-                overflow-x: auto;
-                scrollbar-width: none;
-                width: 100%;
-                padding: 0 30px;
-            }
-            nav ul::-webkit-scrollbar { display: none; }
-            nav ul li a { font-size: 1.1rem; }
-
-            footer { flex-direction: row; white-space: nowrap; }
-            .legal-links { margin-bottom: 0; display: flex; align-items: center; }
-            .legal-links a { font-size: 0.65rem; margin: 0 8px; }
-            .legal-links::after { content: "|"; color: var(--gold); margin-right: 10px; font-size: 0.7rem; }
-            .copyright { font-size: 0.65rem; }
-            
-            h1 { font-size: 2rem; }
-            p { font-size: 1rem; }
+            .glass-panel { padding: 30px 20px; }
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.5rem; }
+            nav ul { gap: 20px; }
         }
     </style>
 </head>
@@ -216,28 +190,51 @@
 
     <nav>
         <div class="nav-container">
-            <span id="hint-left" class="scroll-hint">❮</span>
-            <ul id="main-nav"></ul>
-            <span id="hint-right" class="scroll-hint">❯</span>
+            <ul id="main-nav">
+                <li><a href="#impact">Impact</a></li>
+                <li><a href="#story">Story</a></li>
+                <li><a href="#team">Team</a></li>
+            </ul>
         </div>
     </nav>
 
     <main class="page-content">
-        <div class="glass-panel">
-            <h1>Civic Impact</h1>
-            <div class="divider"></div>
-            <p>
-                Vanguard Citizen Services operates at the intersection of security and community. 
-                Our civic impact is measured by the fortification of the individual. 
-                By providing elite-level guidance and unwavering advocacy, we empower 
-                citizens to navigate the complexities of modern life with the 
-                confidence of the Knights. 
-                <br><br>
-                True leadership is found in the removal of barriers. Whether through 
-                tactical technological education or strategic community initiatives, 
-                we don't just solve immediate problems; we build the foundations 
-                for lasting communal elevation and digital sovereignty.
-            </p>
+        <div class="glass-panel" id="scroll-panel">
+            
+            <section id="impact">
+                <img src="https://via.placeholder.com/800x400" alt="Civic Impact" class="content-image">
+                <h1>Civic Impact</h1>
+                <div class="divider"></div>
+                <p>
+                    Vanguard Citizen Services operates at the intersection of security and community. 
+                    Our impact is measured by the fortification of the individual. 
+                    By providing elite-level guidance, we empower citizens to navigate 
+                    modern complexities with total digital sovereignty.
+                </p>
+            </section>
+
+            <section id="story">
+                <h2>Our Story</h2>
+                <div class="divider"></div>
+                <p>
+                    Forged in the necessity of the digital age, VCS was founded to bridge 
+                    the gap between high-level tactical security and everyday civic life. 
+                    We believe that true protection comes from knowledge and the 
+                    disciplined application of strategy.
+                </p>
+            </section>
+
+            <section id="team">
+                <h2>The Knights</h2>
+                <div class="divider"></div>
+                <p>
+                    Our team is composed of specialists from diverse tactical and 
+                    technological backgrounds. We operate under a strict code of 
+                    excellence, ensuring that every citizen under our wing receives 
+                    the highest tier of advocacy and support.
+                </p>
+            </section>
+
         </div>
     </main>
 
@@ -250,37 +247,20 @@
     </footer>
 
     <script>
-        const navList = document.getElementById('main-nav');
-        const hLeft = document.getElementById('hint-left');
-        const hRight = document.getElementById('hint-right');
-
-        async function loadNavigation() {
-            try {
-                const response = await fetch('json/nav.json');
-                const navData = await response.json();
-                navList.innerHTML = '';
-                navData.forEach(item => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<a href="${item.link}">${item.name}</a>`;
-                    navList.appendChild(li);
+        // Smooth scrolling for the internal glass panel
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                const panel = document.getElementById('scroll-panel');
+                
+                panel.scrollTo({
+                    top: targetElement.offsetTop - panel.offsetTop - 20,
+                    behavior: 'smooth'
                 });
-                updateHints();
-            } catch (error) {
-                navList.innerHTML = `<li><a href="about.html">About</a></li><li><a href="story.html">Story</a></li><li><a href="team.html">Team</a></li><li><a href="knights.html">Knights</a></li>`;
-            }
-        }
-
-        function updateHints() {
-            if (window.innerWidth > 600) return;
-            const scrollLeft = navList.scrollLeft;
-            const maxScroll = navList.scrollWidth - navList.clientWidth;
-            hLeft.style.opacity = (scrollLeft > 15) ? "1" : "0";
-            hRight.style.opacity = (scrollLeft < maxScroll - 15) ? "1" : "0";
-        }
-
-        navList.addEventListener('scroll', updateHints);
-        window.addEventListener('resize', updateHints);
-        window.onload = loadNavigation;
+            });
+        });
     </script>
 </body>
 </html>
