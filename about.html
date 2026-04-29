@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vanguard Citizen Services | About</title>
+    <title>Commander Q | Vanguard Knights</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
@@ -28,10 +28,10 @@
             font-family: 'Inter', sans-serif;
             background-color: #000;
             color: white;
-            overflow: hidden; /* Cinematic look - background doesn't scroll */
+            overflow: hidden; 
         }
 
-        /* --- STARFIELD BACKGROUND --- */
+        /* --- STARFIELD ENGINE --- */
         .stars-container {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -68,23 +68,14 @@
             max-width: 1200px;
             margin: 0 auto;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
         }
-
-        /* LOGO FIX */
-        .nav-logo {
-            height: 45px; /* STRICT CONTROL ON LOGO SIZE */
-            width: auto;
-            filter: drop-shadow(0 0 5px var(--gold-glow));
-            transition: 0.3s;
-        }
-        .nav-logo:hover { transform: scale(1.05); }
 
         nav ul {
             display: flex;
             list-style: none;
-            gap: 35px;
+            gap: 45px;
         }
 
         nav ul li a {
@@ -92,14 +83,14 @@
             color: var(--gold);
             font-family: 'Cinzel', serif; 
             font-weight: bold;
-            font-size: 0.85rem; 
+            font-size: 0.9rem; 
             letter-spacing: 2px;
             text-transform: uppercase; 
             transition: 0.4s;
         }
         nav ul li a:hover { color: white; text-shadow: 0 0 15px var(--gold); }
 
-        /* --- MAIN PANEL --- */
+        /* --- CONTENT PANEL --- */
         .page-content {
             height: 100vh;
             display: flex;
@@ -113,12 +104,12 @@
             backdrop-filter: blur(30px);
             border: 1px solid var(--border-gold);
             border-radius: 20px;
-            padding: 60px 40px;
+            padding: 60px 50px;
             width: 100%;
             max-width: 850px;
             text-align: center;
             box-shadow: 0 0 80px var(--ambient-glow);
-            max-height: 80vh; /* Keeps panel within viewport */
+            max-height: 80vh; 
             overflow-y: auto; 
             scrollbar-width: thin;
             scrollbar-color: var(--gold) transparent;
@@ -126,21 +117,20 @@
         .glass-panel::-webkit-scrollbar { width: 6px; }
         .glass-panel::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
 
-        /* CONTENT IMAGE FIX */
-        .content-image {
-            width: 100%;
-            max-width: 550px;
-            height: auto;
-            border-radius: 10px;
-            margin: 0 auto 40px;
+        .profile-img {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
             display: block;
-            border: 1px solid var(--border-gold);
-            box-shadow: 0 0 25px var(--gold-glow);
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 30px var(--gold-glow);
+            object-fit: cover;
         }
 
         section {
-            padding-bottom: 80px;
-            margin-bottom: 60px;
+            padding-bottom: 60px;
+            margin-bottom: 40px;
             border-bottom: 1px solid rgba(212, 175, 55, 0.1);
         }
         section:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 20px; }
@@ -156,19 +146,41 @@
         h2 { font-size: 1.8rem; }
 
         .divider {
-            height: 1px; width: 60px;
+            height: 1px; width: 80px;
             background: var(--gold);
             margin: 0 auto 30px;
-            box-shadow: 0 0 8px var(--gold);
+            box-shadow: 0 0 10px var(--gold);
         }
 
         p {
-            font-size: 1.05rem;
-            line-height: 1.8;
+            font-size: 1.1rem;
+            line-height: 1.9;
             color: #ececec;
             font-weight: 300;
-            max-width: 700px;
+            max-width: 720px;
             margin: 0 auto;
+            text-align: center;
+        }
+
+        /* Mission List Styling */
+        .mission-list {
+            list-style: none;
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .mission-list li {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            padding: 10px 20px;
+            border: 1px solid var(--border-gold);
+            background: rgba(212, 175, 55, 0.05);
+            border-radius: 5px;
         }
 
         /* --- FOOTER --- */
@@ -189,12 +201,11 @@
 
         /* --- MOBILE --- */
         @media (max-width: 600px) {
-            .nav-container { flex-direction: column; gap: 10px; padding: 10px 0; }
-            .nav-logo { height: 35px; }
-            nav { height: auto; padding: 10px 0; }
-            .page-content { padding-top: 120px; }
+            .glass-panel { padding: 40px 20px; }
+            nav ul { gap: 20px; }
             h1 { font-size: 1.8rem; }
-            p { font-size: 0.95rem; }
+            h2 { font-size: 1.5rem; }
+            .mission-list { flex-direction: column; align-items: center; }
         }
     </style>
 </head>
@@ -208,13 +219,10 @@
 
     <nav>
         <div class="nav-container">
-            <a href="index.html">
-                <img src="logo.png" alt="VCS Logo" class="nav-logo">
-            </a>
             <ul id="main-nav">
-                <li><a href="#impact">Impact</a></li>
-                <li><a href="#story">Story</a></li>
-                <li><a href="#team">Team</a></li>
+                <li><a href="#intro">Impact</a></li>
+                <li><a href="#origins">Story</a></li>
+                <li><a href="#mission">Elevate</a></li>
             </ul>
         </div>
     </nav>
@@ -222,38 +230,42 @@
     <main class="page-content">
         <div class="glass-panel" id="scroll-panel">
             
-            <section id="impact">
-                <img src="impact-visual.jpg" alt="Civic Impact" class="content-image">
-                <h1>Civic Impact</h1>
+            <section id="intro">
+                <img src="commander-q.jpg" alt="Commander Q" class="profile-img">
+                <h1>What's up!</h1>
                 <div class="divider"></div>
                 <p>
-                    Vanguard Citizen Services operates at the intersection of security and community. 
-                    Our impact is measured by the fortification of the individual. 
-                    By providing elite-level guidance, we empower citizens to navigate 
-                    modern complexities with total digital sovereignty.
+                    I'm <strong>Commander Q</strong>, a self-taught dev, all-around tech enthusiast, 
+                    and the one currently leading the Vanguard Knights into our next era.
+                    Today, I write my own code, build my own platforms, and lead our collective 
+                    as we push boundaries and gear up for our next major endeavors.
                 </p>
             </section>
 
-            <section id="story">
-                <h2>Our Story</h2>
+            <section id="origins">
+                <h2>The Path</h2>
                 <div class="divider"></div>
                 <p>
-                    Forged in the necessity of the digital age, VCS was founded to bridge 
-                    the gap between high-level tactical security and everyday civic life. 
-                    We believe that true protection comes from knowledge and the 
-                    disciplined application of strategy.
+                    My path here wasn't exactly a straight line. I started out serving in the Armed Forces, 
+                    which taught me how to stay disciplined and focused. From there, I moved into the 
+                    consumer tech world, putting in the hours at Best Buy and working behind the scenes at Apple. 
+                    <br><br>
+                    All of that gave me a masterclass in how hardware works and how people actually use it. 
+                    I decided I wanted to build the systems, not just operate them.
                 </p>
             </section>
 
-            <section id="team">
-                <h2>The Knights</h2>
+            <section id="mission">
+                <h2>The Mission</h2>
                 <div class="divider"></div>
                 <p>
-                    Our team is composed of specialists from diverse tactical and 
-                    technological backgrounds. We operate under a strict code of 
-                    excellence, ensuring that every citizen under our wing receives 
-                    the highest tier of advocacy and support.
+                    Glad you found the hideout. Take a look around. The objective remains absolute:
                 </p>
+                <ul class="mission-list">
+                    <li>EMPOWER</li>
+                    <li>EDUCATE</li>
+                    <li>ELEVATE</li>
+                </ul>
             </section>
 
         </div>
@@ -264,7 +276,7 @@
             <a href="privacy.html">Privacy</a>
             <a href="terms.html">Terms</a>
         </div>
-        <div class="copyright">VCS &copy; 2026</div>
+        <div class="copyright">VCS &copy; 2026 | COMMANDER Q</div>
     </footer>
 
     <script>
