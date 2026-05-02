@@ -14,6 +14,10 @@
         <h1>VANGUARD COMMAND // WEATHER MX</h1>
         <div class="search-container">
             <input type="text" id="location-search" placeholder="Enter City/Zip" autocomplete="off">
+            <div class="checkbox-container">
+                <input type="checkbox" id="is-current-loc">
+                <label for="is-current-loc">PHYSICAL SECTOR</label>
+            </div>
             <ul id="autocomplete-results" class="hidden"></ul>
         </div>
         <div class="controls">
@@ -54,6 +58,16 @@
             <span class="close-btn" id="close-modal">&times;</span>
             <h2 id="modal-title">TELEMETRY DATA</h2>
             <div id="modal-body" class="scroll-box"></div>
+        </div>
+    </div>
+
+    <div id="disclaimer-modal" class="modal hidden">
+        <div class="modal-content disclaimer-content">
+            <h2 id="disclaimer-title">MANUAL OVERRIDE WARNING</h2>
+            <div class="disclaimer-body">
+                <p>By declaring this manual entry as your physical sector, you acknowledge that the system lacks precise GPS triangulation. Advanced 15-minute intercept telemetry cannot be fully guaranteed. Maintain vigilance.</p>
+            </div>
+            <button id="accept-disclaimer-btn">ACKNOWLEDGE & SCAN</button>
         </div>
     </div>
 
