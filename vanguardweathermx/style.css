@@ -1,4 +1,4 @@
-/* Vanguard Tactical Aesthetic VERSION 1.2 - Master Build */
+/* Vanguard Tactical Aesthetic V10 - Stable Build */
 :root {
     --gold: #D4AF37;
     --black-rich: #121212;
@@ -19,10 +19,8 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-/* CORE UTILITY CLASSES */
 .hidden { display: none !important; }
 
-/* Fluid Viewport Enforcement */
 html, body {
     height: 100%;
     height: 100dvh;
@@ -53,32 +51,6 @@ h1 {
     letter-spacing: 2px;
 }
 
-.version-badge {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.55rem;
-    color: var(--black-pure);
-    background: var(--gold);
-    padding: 2px 6px;
-    border-radius: 3px;
-    vertical-align: top;
-    margin-left: 6px;
-    letter-spacing: 1px;
-    font-weight: bold;
-}
-
-.instruction-link {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.7rem;
-    color: #aaa;
-    cursor: pointer;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-top: -6px;
-    transition: color 0.2s;
-}
-
-.instruction-link:hover { color: var(--gold); }
-
 .search-container { width: 100%; max-width: 400px; position: relative; }
 
 #location-search {
@@ -91,7 +63,6 @@ h1 {
     text-align: center;
 }
 
-/* Tactical Checkbox */
 .checkbox-container {
     display: flex;
     align-items: center;
@@ -122,7 +93,6 @@ h1 {
 }
 #autocomplete-results li { padding: 10px; cursor: pointer; border-bottom: 1px solid #222; }
 
-/* Grid Controls */
 .controls {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
@@ -145,7 +115,6 @@ button {
 
 button:active { background: var(--gold); color: #000; }
 
-/* Dashboard HUD */
 #dashboard { flex: 1; display: flex; flex-direction: column; padding: 1rem; gap: 1rem; overflow: hidden; }
 
 #status-banner {
@@ -166,7 +135,6 @@ button:active { background: var(--gold); color: #000; }
 #last-scan-container { color: var(--white); font-size: 1rem; font-weight: bold; }
 #last-scan-time { color: var(--white); font-size: 1.2rem; }
 
-/* Info Panels */
 .info-grid { 
     flex: 1; display: flex; flex-direction: column; gap: 1rem; overflow: hidden; min-height: 0; 
 }
@@ -184,26 +152,22 @@ h3 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 0.8rem; margin
 #beginner-action p { font-size: clamp(1rem, 4vw, 1.2rem); font-weight: bold; line-height: 1.3; }
 
 .scroll-box { flex: 1; background: rgba(0,0,0,0.4); border: 1px solid #222; padding: 0.8rem; overflow-y: auto; font-size: 0.9rem; min-height: 0; }
-#instruction-body { font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; }
 
 .alert-item { border-left: 3px solid var(--gold); background: rgba(255,255,255,0.05); margin-bottom: 0.5rem; padding: 1rem; }
 
 .nws-popup-link { display: inline-block; margin-top: 8px; color: var(--white); font-family: 'Cinzel', serif; font-weight: bold; text-decoration: underline; cursor: pointer; }
 .nws-popup-link:hover { color: var(--gold); }
 
-/* Modals */
 .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 10px; }
 .modal-content { background: var(--black-rich); border: 1px solid var(--gold); padding: 1.5rem; width: 100%; max-width: 600px; max-height: 85vh; display: flex; flex-direction: column; }
 .close-btn { color: var(--emergency-red); float: right; font-size: 2rem; cursor: pointer; }
 
-/* Disclaimer Specifics */
 .disclaimer-content { border-color: var(--emergency-orange); text-align: center; }
 #disclaimer-title { color: var(--emergency-orange); font-family: 'Cinzel', serif; margin-bottom: 1rem; border-bottom: 1px solid var(--emergency-orange); padding-bottom: 10px; }
 .disclaimer-body { margin-bottom: 1.5rem; font-size: 0.95rem; line-height: 1.5; color: #ccc; }
 #accept-disclaimer-btn { border-color: var(--emergency-orange); color: var(--emergency-orange); width: 100%; padding: 0.8rem; font-size: 0.9rem; }
 #accept-disclaimer-btn:active { background: var(--emergency-orange); color: #000; }
 
-/* Status Colors */
 .status-green #status-banner { border-color: var(--emergency-green); color: var(--emergency-green); }
 .status-orange #status-banner { background-color: var(--emergency-orange); color: #000; }
 .status-red #status-banner { border-color: var(--emergency-red); animation: pulse-alert 1.5s infinite; }
@@ -211,5 +175,4 @@ h3 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 0.8rem; margin
 
 @keyframes pulse-alert { 0% { border-color: #500; } 50% { border-color: var(--emergency-red); color: var(--emergency-red); } 100% { border-color: #500; } }
 
-/* Desktop Parity */
 @media (min-width: 768px) { header { flex-direction: row; justify-content: space-between; } .info-grid { flex-direction: row; } .action-panel { flex: 1; } }
