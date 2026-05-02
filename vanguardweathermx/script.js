@@ -1,6 +1,6 @@
 /**
  * VANGUARD WEATHER MX: COMMAND SCRIPT
- * V9: OVERRIDE PROTOCOL & TACTICAL DELAYS
+ * V9.1: OVERRIDE PROTOCOL + STABILIZED SEARCH ENGINE
  */
 
 const CONFIG = {
@@ -10,6 +10,7 @@ const CONFIG = {
 };
 
 let SESSION = { sector: null, alerts: [], pendingScan: null };
+let searchThrottleTimeout; // Required to prevent API rate-limiting
 const UI = {};
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -24,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         UI.notifyBtn.style.color = "#00ff00";
     }
 
-    // --- NEW: ENTER KEY LISTENER ---
+    // --- SEARCH OVERRIDES ---
     UI.locationSearch.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -32,17 +33,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- NEW: UPDATE BUTTON OVERRIDE ---
     UI.updateBtn.onclick = () => {
         const val = UI.locationSearch.value.trim();
-        // If there's new text, process it. Otherwise, refresh current sector.
-        if (val.length >= 3 && !UI.autocompleteResults.classList.contains('hidden')) {
+        // Logic: If they typed a raw location without a comma, force a new search. Otherwise, refresh current.
+        if (val.length >= 3 && !val.includes(",")) {
             processManualInput();
         } else if (SESSION.sector) {
-            setTimeout(() => executeSweep(), 500); // 500ms delay for button effect
+            setTimeout(() => executeSweep(), 500); 
         }
     };
 
+    // Input Throttling (Debounce)
+    UI.locationSearch.oninput = (e) => {
+        clearTimeout(searchThrottleTimeout);
+        const val = e.target.value.trim();
+        if (val.length < 3) return UI.autocompleteResults.classList.add('hidden');
+        
+        // Wait 500ms after the Citizen stops typing before hitting the API
+        searchThrottleTimeout = setTimeout(() => {
+            /^\d{5}$/.test(val) ? fetchZip(val) : fetchCity(val);
+        }, 500); 
+    };
+
+    // Close autocomplete when clicking outside the box
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-container')) {
+            UI.autocompleteResults.classList.add('hidden');
+        }
+    });
+
+    // --- CORE BUTTONS ---
     UI.geoBtn.onclick = requestGeolocation;
     UI.notifyBtn.onclick = toggleAlerts;
     UI.closeModal.onclick = () => UI.alertModal.classList.add('hidden');
@@ -60,12 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500);
     };
 
-    UI.locationSearch.oninput = (e) => {
-        const val = e.target.value.trim();
-        if (val.length < 3) return UI.autocompleteResults.classList.add('hidden');
-        /^\d{5}$/.test(val) ? fetchZip(val) : fetchCity(val);
-    };
-
     setInterval(() => SESSION.sector && executeSweep(true), CONFIG.POLL_RATE);
 });
 
@@ -74,18 +88,32 @@ document.addEventListener('DOMContentLoaded', () => {
 async function processManualInput() {
     const val = UI.locationSearch.value.trim();
     UI.autocompleteResults.classList.add('hidden'); 
-    
+    if (val.length < 3) return;
+
+    // Direct API verification for Enter Key / Update Button
     if (/^\d{5}$/.test(val)) {
         try {
             const res = await fetch(`https://api.zippopotam.us/us/${val}`);
+            if (!res.ok) throw new Error();
             const data = await res.json();
             const stateCode = data.places[0]["state abbreviation"];
-            const text = `${data.places[0]["place name"]}, ${stateCode}`;
-            handleLocationSelection(stateCode, text);
-        } catch(e) {}
+            handleLocationSelection(stateCode, `${data.places[0]["place name"]}, ${stateCode}`);
+        } catch(e) { alert("VANGUARD COMMAND: Invalid Zip Code."); }
     } else {
-        const firstLi = UI.autocompleteResults.querySelector('li');
-        if (firstLi) firstLi.click(); 
+        try {
+            const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${val}&count=1&format=json`);
+            const data = await res.json();
+            if (data.results && data.results.length > 0) {
+                const p = data.results.find(x => x.country_code === "US");
+                if (p && CONFIG.STATE_MAP[p.admin1]) {
+                    handleLocationSelection(CONFIG.STATE_MAP[p.admin1], `${p.name}, ${CONFIG.STATE_MAP[p.admin1]}`);
+                } else {
+                    alert("VANGUARD COMMAND: Sector must be within US jurisdiction.");
+                }
+            } else {
+                alert("VANGUARD COMMAND: Sector not found. Verify spelling.");
+            }
+        } catch(e) { alert("VANGUARD COMMAND: Location database offline."); }
     }
 }
 
@@ -199,6 +227,7 @@ function toggleAlerts() {
 async function fetchZip(zip) {
     try {
         const res = await fetch(`https://api.zippopotam.us/us/${zip}`);
+        if (!res.ok) return;
         const data = await res.json();
         const stateCode = data.places[0]["state abbreviation"];
         const text = `${data.places[0]["place name"]}, ${stateCode}`;
@@ -219,8 +248,13 @@ async function fetchCity(city) {
     try {
         const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=5&format=json`);
         const data = await res.json();
+        
+        // Logical Null Check: Prevent crashes if the API returns undefined results
+        if (!data.results) return; 
+
         const results = data.results.filter(x => x.country_code === "US");
         UI.autocompleteResults.innerHTML = '';
+        
         results.forEach(p => {
             const state = CONFIG.STATE_MAP[p.admin1];
             if(!state) return;
