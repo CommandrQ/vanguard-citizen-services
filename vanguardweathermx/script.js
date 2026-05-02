@@ -1,12 +1,28 @@
-/**
- * VANGUARD WEATHER MX: COMMAND SCRIPT
- * V10: STABLE BASELINE
- */
-
 const CONFIG = {
     USER_AGENT: '(Vanguard Weather Mx, commandrq@gmail.com)',
     POLL_RATE: 180000, 
     STATE_MAP: { "Kentucky": "KY", "Tennessee": "TN", "Ohio": "OH", "Indiana": "IN", "Illinois": "IL" } 
+};
+
+const UI_LABELS = {
+    err_zip: "VANGUARD COMMAND: Invalid Zip Code.",
+    err_jurisdiction: "VANGUARD COMMAND: Sector must be within US jurisdiction.",
+    err_not_found: "VANGUARD COMMAND: Sector not found. Verify spelling.",
+    err_db: "VANGUARD COMMAND: Location database offline.",
+    err_gps_fail: "GPS Bridge Failure.",
+    err_gps_denied: "Location access required for tactical monitoring.",
+    err_notify: "System notifications are not supported on this device.",
+    offline_banner: "SYSTEM INACTIVE",
+    offline_action: "Monitor radio or local weather for additional threats.",
+    offline_bulletin: "<p>[!] DATA LINK INTERRUPTED.</p>",
+    clear_banner: "ALL CLEAR IN ",
+    clear_action: "No forecasted threats. Monitoring nominal.",
+    clear_bulletin: " is clear.</p>",
+    warn_orange_action: "Stay indoors. Secure property.",
+    warn_red_banner: "TORNADO WARNING: ",
+    warn_red_action: "Seek interior shelter immediately.",
+    threat_label: "[NATURE OF THREAT]:",
+    open_alert: ">>> OPEN FULL NWS ALERT <<<"
 };
 
 let SESSION = { sector: null, alerts: [], pendingScan: null };
@@ -17,7 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const ids = ['update-btn', 'reset-loc-btn', 'geo-btn', 'location-search', 'autocomplete-results', 
                  'notify-btn', 'close-modal', 'alert-modal', 'dashboard', 'primary-alert', 
                  'beginner-action', 'chaser-bulletin', 'modal-title', 'modal-body', 'last-scan-time',
-                 'is-current-loc', 'disclaimer-modal', 'accept-disclaimer-btn', 'close-disclaimer'];
+                 'is-current-loc', 'disclaimer-modal', 'accept-disclaimer-btn', 'close-disclaimer',
+                 'instruction-link', 'instruction-modal', 'close-instruction'];
+                 
     ids.forEach(id => UI[id.replace(/-([a-z])/g, g => g[1].toUpperCase())] = document.getElementById(id));
 
     const notificationsSupported = 'Notification' in window;
@@ -25,9 +43,15 @@ document.addEventListener('DOMContentLoaded', () => {
         UI.notifyBtn.style.color = "#00ff00";
     }
 
+    if (UI.instructionLink && UI.instructionModal && UI.closeInstruction) {
+        UI.instructionLink.onclick = () => UI.instructionModal.classList.remove('hidden');
+        UI.closeInstruction.onclick = () => UI.instructionModal.classList.add('hidden');
+    }
+
     window.addEventListener('click', (e) => {
         if (e.target === UI.alertModal) UI.alertModal.classList.add('hidden');
         if (e.target === UI.disclaimerModal) abortScan();
+        if (UI.instructionModal && e.target === UI.instructionModal) UI.instructionModal.classList.add('hidden');
         if (!e.target.closest('.search-container')) UI.autocompleteResults.classList.add('hidden');
     });
 
@@ -67,7 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
     UI.acceptDisclaimerBtn.onclick = () => {
         UI.disclaimerModal.classList.add('hidden');
         UI.isCurrentLoc.checked = false;
-        
         setTimeout(() => {
             if (SESSION.pendingScan) {
                 commitSearch(SESSION.pendingScan.state, SESSION.pendingScan.text);
@@ -96,7 +119,7 @@ async function processManualInput() {
             const data = await res.json();
             const stateCode = data.places[0]["state abbreviation"];
             handleLocationSelection(stateCode, `${data.places[0]["place name"]}, ${stateCode}`);
-        } catch(e) { alert("VANGUARD COMMAND: Invalid Zip Code."); }
+        } catch(e) { alert(UI_LABELS.err_zip); }
     } else {
         try {
             const encodedVal = encodeURIComponent(val);
@@ -107,12 +130,12 @@ async function processManualInput() {
                 if (p && CONFIG.STATE_MAP[p.admin1]) {
                     handleLocationSelection(CONFIG.STATE_MAP[p.admin1], `${p.name}, ${CONFIG.STATE_MAP[p.admin1]}`);
                 } else {
-                    alert("VANGUARD COMMAND: Sector must be within US jurisdiction.");
+                    alert(UI_LABELS.err_jurisdiction);
                 }
             } else {
-                alert("VANGUARD COMMAND: Sector not found. Verify spelling.");
+                alert(UI_LABELS.err_not_found);
             }
-        } catch(e) { alert("VANGUARD COMMAND: Location database offline."); }
+        } catch(e) { alert(UI_LABELS.err_db); }
     }
 }
 
@@ -143,7 +166,7 @@ async function executeSweep() {
         processAlerts(data.features);
     } catch (e) {
         updateTimestamp();
-        renderUI('status-offline', 'SYSTEM INACTIVE', 'Monitor radio or local weather for additional threats.', '<p>[!] DATA LINK INTERRUPTED.</p>');
+        renderUI('status-offline', UI_LABELS.offline_banner, UI_LABELS.offline_action, UI_LABELS.offline_bulletin);
     }
 }
 
@@ -157,22 +180,22 @@ function processAlerts(features) {
     let tornado = null, severe = null, list = '';
 
     if (SESSION.alerts.length === 0) {
-        list = `<p>Sector ${SESSION.sector.state} is clear.</p>`;
+        list = `<p>Sector ${SESSION.sector.state}${UI_LABELS.clear_bulletin}`;
     } else {
         SESSION.alerts.forEach((a, i) => {
             if (a.event === 'Tornado Warning') tornado = a;
             else if (a.event.includes('Thunderstorm') || a.event.includes('Flood')) severe = a;
             
             list += `<div class="alert-item ${a.event === 'Tornado Warning' ? 'tornado-alert' : ''}">
-                        <strong>[NATURE OF THREAT]:</strong> ${a.event}<br>
-                        <span class="nws-popup-link" onclick="openModal(${i})">>>> OPEN FULL NWS ALERT <<<</span>
+                        <strong>${UI_LABELS.threat_label}</strong> ${a.event}<br>
+                        <span class="nws-popup-link" onclick="openModal(${i})">${UI_LABELS.open_alert}</span>
                      </div>`;
         });
     }
 
-    if (tornado) renderUI('status-red', `TORNADO WARNING: ${tornado.areaDesc}`, 'Seek interior shelter immediately.', list);
-    else if (severe) renderUI('status-orange', `${severe.event.toUpperCase()} ACTIVE`, 'Stay indoors. Secure property.', list);
-    else renderUI('status-green', `ALL CLEAR IN ${SESSION.sector.state}`, 'No forecasted threats. Monitoring nominal.', list);
+    if (tornado) renderUI('status-red', `${UI_LABELS.warn_red_banner}${tornado.areaDesc}`, UI_LABELS.warn_red_action, list);
+    else if (severe) renderUI('status-orange', `${severe.event.toUpperCase()} ACTIVE`, UI_LABELS.warn_orange_action, list);
+    else renderUI('status-green', `${UI_LABELS.clear_banner}${SESSION.sector.state}`, UI_LABELS.clear_action, list);
 }
 
 function renderUI(cls, banner, action, bulletin) {
@@ -193,8 +216,8 @@ function requestGeolocation() {
             
             UI.isCurrentLoc.checked = false; 
             setTimeout(() => executeSweep(), 500);
-        } catch(e) { alert("GPS Bridge Failure."); }
-    }, () => alert("Location access required for tactical monitoring."));
+        } catch(e) { alert(UI_LABELS.err_gps_fail); }
+    }, () => alert(UI_LABELS.err_gps_denied));
 }
 
 function openModal(i) {
@@ -208,7 +231,7 @@ function resetSystem() { location.reload(); }
 
 function toggleAlerts() {
     if (!('Notification' in window)) {
-        alert("System notifications are not supported on this device.");
+        alert(UI_LABELS.err_notify);
         return;
     }
     Notification.requestPermission().then(p => {
