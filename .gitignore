@@ -1,0 +1,23 @@
+# The "Heavy Tools" - Never upload these
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# The "Vault" - NEVER upload your secrets
+.env
+.env.local
+.env.*.local
+
+# Operating System Garbage
+.DS_Store
+Thumbs.db
+
+# IDE Settings
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
