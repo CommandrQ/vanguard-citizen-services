@@ -13,13 +13,18 @@ const STATE_MAP = {
 
 const USER_AGENT = '(Vanguard Weather Mx, commandrq@gmail.com)';
 
+// Global array to store alert data for modal population
+let currentAlertsData = [];
+
 document.addEventListener('DOMContentLoaded', () => {
     const updateBtn = document.getElementById('update-btn');
     const resetBtn = document.getElementById('reset-loc-btn');
+    const geoBtn = document.getElementById('geo-btn');
     const searchInput = document.getElementById('location-search');
     const resultsList = document.getElementById('autocomplete-results');
     const notifyBtn = document.getElementById('notify-btn');
-    const aiShareBtn = document.getElementById('ai-share-btn');
+    const closeModalBtn = document.getElementById('close-modal');
+    const modal = document.getElementById('alert-modal');
 
     // System Boot
     initializeLocation();
@@ -30,15 +35,30 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savedState) executeWeatherSweep(savedState);
     });
 
+    geoBtn.addEventListener('click', () => {
+        searchInput.placeholder = "Acquiring coordinates...";
+        requestGeolocation();
+    });
+
     resetBtn.addEventListener('click', () => {
         localStorage.removeItem('vanguard_mx_state');
         searchInput.value = '';
         searchInput.placeholder = 'Enter City or Zip';
-        updateUI('status-green', 'AWAITING LOCATION DATA.', 'Enter your sector to begin monitoring.', 'SYSTEM RESET.');
+        updateUI('status-green', 'AWAITING LOCATION DATA.', 'Enter your sector to begin monitoring.', '<p>System standing by...</p>');
     });
 
     notifyBtn.addEventListener('click', requestNotificationPermission);
-    aiShareBtn.addEventListener('click', shareForAISummary);
+    
+    closeModalBtn.addEventListener('click', () => {
+        modal.classList.add('hidden');
+    });
+
+    // Close modal when clicking outside the box
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.add('hidden');
+        }
+    });
 
     // Background Polling (3 Minutes)
     setInterval(() => {
@@ -189,21 +209,25 @@ async function executeWeatherSweep(stateCode, isBackground = false) {
         const data = await response.json();
         processTelemetry(data.features, state);
     } catch (error) {
-        updateUI('status-red', 'DATA FEED OFFLINE.', 'Check connection. Data bridge compromised.', 'SYSTEM ERROR.');
+        updateUI('status-red', 'DATA FEED OFFLINE.', 'Check connection. Data bridge compromised.', '<p>SYSTEM ERROR.</p>');
     }
 }
 
 function processTelemetry(alerts, stateCode) {
-    const events = alerts.map(alert => alert.properties);
-    const tornadoWarning = events.find(e => e.event === 'Tornado Warning');
-    const severeWarning = events.find(e => e.event === 'Severe Thunderstorm Warning' || e.event === 'Flash Flood Warning');
+    currentAlertsData = alerts.map(alert => alert.properties);
+    const tornadoWarning = currentAlertsData.find(e => e.event === 'Tornado Warning');
+    const severeWarning = currentAlertsData.find(e => e.event === 'Severe Thunderstorm Warning' || e.event === 'Flash Flood Warning');
 
-    let rawLog = '';
-    if (events.length === 0) {
-        rawLog = `NO ACTIVE ALERTS IN SECTOR [${stateCode}].\n\nMONITORING NOMINAL.`;
+    let bulletinHTML = '';
+
+    if (currentAlertsData.length === 0) {
+        bulletinHTML = `<p>There are currently no active alerts in ${stateCode}.</p>`;
     } else {
-        events.forEach(e => {
-            rawLog += `[EVENT]: ${e.event}\n[AREA]: ${e.areaDesc}\n[DESC]: ${e.description || 'N/A'}\n[INST]: ${e.instruction || 'N/A'}\n\n`;
+        currentAlertsData.forEach((e, index) => {
+            const isTornado = e.event === 'Tornado Warning' ? 'tornado-alert' : '';
+            bulletinHTML += `<div class="alert-item ${isTornado}" onclick="openAlertModal(${index})">
+                [CLICK TO READ]: ${e.event}
+            </div>`;
         });
     }
 
@@ -217,17 +241,32 @@ function processTelemetry(alerts, stateCode) {
         else if (severeWarning) triggerSystemAlert(`${severeWarning.event.toUpperCase()}`, `Active threat in ${stateCode}. Secure your location.`);
     }
 
-    // Execute UI Updates
+    // Execute UI Updates with Calming/Simple Instructions
     if (tornadoWarning) {
-        updateUI('status-red', `TORNADO WARNING: ${tornadoWarning.areaDesc} - TAKE SHELTER NOW.`, 'IMMEDIATELY MOVE TO A BASEMENT OR INTERIOR ROOM ON THE LOWEST FLOOR. AVOID WINDOWS.', rawLog);
+        updateUI(
+            'status-red', 
+            `TORNADO WARNING: ${tornadoWarning.areaDesc}`, 
+            'Please move calmly to a basement or an interior room on the lowest floor. Stay away from windows. You have time to get safe if you act now.', 
+            bulletinHTML
+        );
     } else if (severeWarning) {
-        updateUI('status-orange', `${severeWarning.event.toUpperCase()} ACTIVE.`, 'STAY INDOORS. SECURE LOOSE OUTDOOR ITEMS. MONITOR UPDATES.', rawLog);
+        updateUI(
+            'status-orange', 
+            `${severeWarning.event.toUpperCase()} ACTIVE.`, 
+            'Please stay indoors and away from windows until the storm passes. Take a moment to secure any loose items outside.', 
+            bulletinHTML
+        );
     } else {
-        updateUI('status-green', `ALL CLEAR IN ${stateCode}. MONITORING THE SKIES.`, 'No active threats. Maintain standard readiness.', rawLog);
+        updateUI(
+            'status-green', 
+            `ALL CLEAR IN ${stateCode}.`, 
+            'There are no forecasted threats at this time. Maintain standard readiness and enjoy your day.', 
+            bulletinHTML
+        );
     }
 }
 
-function updateUI(statusClass, bannerText, actionText, rawData) {
+function updateUI(statusClass, bannerText, actionText, bulletinHTML) {
     const dashboard = document.getElementById('dashboard');
     const primaryAlert = document.getElementById('primary-alert');
     const beginnerAction = document.getElementById('beginner-action');
@@ -237,10 +276,31 @@ function updateUI(statusClass, bannerText, actionText, rawData) {
     dashboard.classList.add(statusClass);
     primaryAlert.textContent = bannerText;
     beginnerAction.innerHTML = `<p>${actionText}</p>`;
-    chaserBulletin.textContent = rawData;
+    chaserBulletin.innerHTML = bulletinHTML;
 }
 
-// --- NOTIFICATION & AI BRIDGE ---
+// --- MODAL & NOTIFICATION BRIDGE ---
+
+function openAlertModal(index) {
+    const alertData = currentAlertsData[index];
+    if (!alertData) return;
+
+    const modal = document.getElementById('alert-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalBody = document.getElementById('modal-body');
+
+    modalTitle.textContent = alertData.event;
+    
+    // Formatting the raw NWS text
+    let bodyContent = `<strong>Area:</strong> ${alertData.areaDesc}<br><br>`;
+    bodyContent += `<strong>Description:</strong><br>${alertData.description || 'No description provided by NWS.'}<br><br>`;
+    if (alertData.instruction) {
+        bodyContent += `<strong>Instructions:</strong><br>${alertData.instruction}<br><br>`;
+    }
+    
+    modalBody.innerHTML = bodyContent;
+    modal.classList.remove('hidden');
+}
 
 function requestNotificationPermission() {
     if (!("Notification" in window)) {
@@ -261,28 +321,4 @@ function triggerSystemAlert(title, body) {
     if ("Notification" in window && Notification.permission === "granted") {
         new Notification(title, { body: body, requireInteraction: true });
     }
-}
-
-async function shareForAISummary() {
-    const rawData = document.getElementById('chaser-bulletin').textContent;
-    if (rawData.includes("NO ACTIVE ALERTS") || rawData.includes("AWAITING")) {
-        alert("No active threats to summarize.");
-        return;
-    }
-
-    const aiPrompt = `As an emergency weather analyst, summarize the following National Weather Service alert data into 3 simple, actionable bullet points for immediate civilian safety. Focus only on the exact threat, the time frame, and what physical action to take.\n\nRAW DATA:\n${rawData}`;
-
-    if (navigator.share) {
-        try {
-            await navigator.share({ title: 'Vanguard Weather Data', text: aiPrompt });
-        } catch (error) { fallbackCopy(aiPrompt); }
-    } else {
-        fallbackCopy(aiPrompt);
-    }
-}
-
-function fallbackCopy(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        alert("Data copied to clipboard! Paste this into your AI companion for a summary.");
-    }).catch(err => { console.error('Failed to copy data'); });
 }
