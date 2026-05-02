@@ -15,6 +15,7 @@
                 <input type="text" id="location-search" placeholder="Locating..." autocomplete="off">
                 <ul id="autocomplete-results" class="hidden"></ul>
             </div>
+            <button id="geo-btn">CURRENT LOCATION</button>
             <button id="update-btn">UPDATE FEED</button>
             <button id="reset-loc-btn" title="Clear saved location">RESET LOC</button>
             <button id="notify-btn">ENABLE ALERTS</button>
@@ -36,13 +37,20 @@
 
             <section class="expert-panel">
                 <h3>CHASER BULLETIN</h3>
-                <button id="ai-share-btn">SEND TO AI FOR SUMMARY</button>
                 <div id="chaser-bulletin" class="scroll-box">
                     <p>System standing by...</p>
                 </div>
             </section>
         </div>
     </main>
+
+    <div id="alert-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal">&times;</span>
+            <h2 id="modal-title">ALERT DETAILS</h2>
+            <div id="modal-body" class="scroll-box"></div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
