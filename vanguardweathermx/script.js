@@ -1,3 +1,8 @@
+/**
+ * VANGUARD WEATHER MX: COMMAND SCRIPT
+ * VERSION 1.2: OFFICIAL DEPLOYMENT BUILD
+ */
+
 const CONFIG = {
     USER_AGENT: '(Vanguard Weather Mx, commandrq@gmail.com)',
     POLL_RATE: 180000, 
@@ -23,7 +28,16 @@ const UI_LABELS = {
     warn_red_banner: "TORNADO WARNING: ",
     warn_red_action: "Seek interior shelter immediately.",
     threat_label: "[NATURE OF THREAT]:",
-    open_alert: ">>> OPEN FULL NWS ALERT <<<"
+    open_alert: ">>> OPEN FULL NWS ALERT <<<",
+    
+    // Instruction Labels
+    instruction_title: "OPERATIONAL PROTOCOL",
+    instruction_body: `
+        <strong>1. LOCATION LOCK:</strong> Enter your City/Zip in the search bar, or click [LOCATION] to lock your coordinates via GPS.<br><br>
+        <strong>2. PHYSICAL SECTOR:</strong> If entering your current location manually, check the [PHYSICAL SECTOR] box to enable local intercept warnings.<br><br>
+        <strong>3. NOTIFICATIONS:</strong> Click [ALERTS] to allow background OS alerts for severe threats.<br><br>
+        <strong>4. CHASER BULLETIN:</strong> Active threats will populate in the bulletin. Click any threat to view raw National Weather Service telemetry.
+    `
 };
 
 let SESSION = { sector: null, alerts: [], pendingScan: null };
@@ -34,8 +48,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const ids = ['update-btn', 'reset-loc-btn', 'geo-btn', 'location-search', 'autocomplete-results', 
                  'notify-btn', 'close-modal', 'alert-modal', 'dashboard', 'primary-alert', 
                  'beginner-action', 'chaser-bulletin', 'modal-title', 'modal-body', 'last-scan-time',
-                 'is-current-loc', 'disclaimer-modal', 'accept-disclaimer-btn', 'close-disclaimer'];
+                 'is-current-loc', 'disclaimer-modal', 'accept-disclaimer-btn', 'close-disclaimer',
+                 'instruction-link', 'instruction-modal', 'close-instruction', 'instruction-title', 'instruction-body'];
     ids.forEach(id => UI[id.replace(/-([a-z])/g, g => g[1].toUpperCase())] = document.getElementById(id));
+
+    // Populate Instructions Modal
+    UI.instructionTitle.textContent = UI_LABELS.instruction_title;
+    UI.instructionBody.innerHTML = UI_LABELS.instruction_body;
 
     const notificationsSupported = 'Notification' in window;
     if (localStorage.getItem('vanguard_mx_alerts') === 'true' && notificationsSupported && Notification.permission === 'granted') {
@@ -45,11 +64,14 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('click', (e) => {
         if (e.target === UI.alertModal) UI.alertModal.classList.add('hidden');
         if (e.target === UI.disclaimerModal) abortScan();
+        if (e.target === UI.instructionModal) UI.instructionModal.classList.add('hidden');
         if (!e.target.closest('.search-container')) UI.autocompleteResults.classList.add('hidden');
     });
 
     UI.closeModal.onclick = () => UI.alertModal.classList.add('hidden');
     UI.closeDisclaimer.onclick = abortScan;
+    UI.closeInstruction.onclick = () => UI.instructionModal.classList.add('hidden');
+    UI.instructionLink.onclick = () => UI.instructionModal.classList.remove('hidden');
 
     UI.locationSearch.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
