@@ -1,6 +1,6 @@
 /**
  * VANGUARD WEATHER MX: COMMAND SCRIPT
- * V8: UNIFIED PARITY BUILD
+ * V9: OVERRIDE PROTOCOL & TACTICAL DELAYS
  */
 
 const CONFIG = {
@@ -9,24 +9,56 @@ const CONFIG = {
     STATE_MAP: { "Kentucky": "KY", "Tennessee": "TN", "Ohio": "OH", "Indiana": "IN", "Illinois": "IL" } 
 };
 
-let SESSION = { sector: null, alerts: [] };
+let SESSION = { sector: null, alerts: [], pendingScan: null };
 const UI = {};
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. CACHE DOM ELEMENTS
     const ids = ['update-btn', 'reset-loc-btn', 'geo-btn', 'location-search', 'autocomplete-results', 
                  'notify-btn', 'close-modal', 'alert-modal', 'dashboard', 'primary-alert', 
-                 'beginner-action', 'chaser-bulletin', 'modal-title', 'modal-body', 'last-scan-time'];
+                 'beginner-action', 'chaser-bulletin', 'modal-title', 'modal-body', 'last-scan-time',
+                 'is-current-loc', 'disclaimer-modal', 'accept-disclaimer-btn'];
     ids.forEach(id => UI[id.replace(/-([a-z])/g, g => g[1].toUpperCase())] = document.getElementById(id));
 
     if (localStorage.getItem('vanguard_mx_alerts') === 'true' && Notification.permission === 'granted') {
         UI.notifyBtn.style.color = "#00ff00";
     }
 
-    UI.updateBtn.onclick = () => SESSION.sector && executeSweep();
+    // --- NEW: ENTER KEY LISTENER ---
+    UI.locationSearch.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            processManualInput();
+        }
+    });
+
+    // --- NEW: UPDATE BUTTON OVERRIDE ---
+    UI.updateBtn.onclick = () => {
+        const val = UI.locationSearch.value.trim();
+        // If there's new text, process it. Otherwise, refresh current sector.
+        if (val.length >= 3 && !UI.autocompleteResults.classList.contains('hidden')) {
+            processManualInput();
+        } else if (SESSION.sector) {
+            setTimeout(() => executeSweep(), 500); // 500ms delay for button effect
+        }
+    };
+
     UI.geoBtn.onclick = requestGeolocation;
     UI.notifyBtn.onclick = toggleAlerts;
     UI.closeModal.onclick = () => UI.alertModal.classList.add('hidden');
     UI.resetLocBtn.onclick = resetSystem;
+
+    // Acknowledge Disclaimer Button
+    UI.acceptDisclaimerBtn.onclick = () => {
+        UI.disclaimerModal.classList.add('hidden');
+        // 500ms tactical delay after closing modal
+        setTimeout(() => {
+            if (SESSION.pendingScan) {
+                commitSearch(SESSION.pendingScan.state, SESSION.pendingScan.text);
+                SESSION.pendingScan = null;
+            }
+        }, 500);
+    };
 
     UI.locationSearch.oninput = (e) => {
         const val = e.target.value.trim();
@@ -37,7 +69,46 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(() => SESSION.sector && executeSweep(true), CONFIG.POLL_RATE);
 });
 
-// --- DATA LOGIC ---
+// --- SCAN PIPELINE WITH DELAYS ---
+
+async function processManualInput() {
+    const val = UI.locationSearch.value.trim();
+    UI.autocompleteResults.classList.add('hidden'); 
+    
+    if (/^\d{5}$/.test(val)) {
+        try {
+            const res = await fetch(`https://api.zippopotam.us/us/${val}`);
+            const data = await res.json();
+            const stateCode = data.places[0]["state abbreviation"];
+            const text = `${data.places[0]["place name"]}, ${stateCode}`;
+            handleLocationSelection(stateCode, text);
+        } catch(e) {}
+    } else {
+        const firstLi = UI.autocompleteResults.querySelector('li');
+        if (firstLi) firstLi.click(); 
+    }
+}
+
+function handleLocationSelection(stateCode, text) {
+    // 500ms delay to process the physical action
+    setTimeout(() => {
+        if (UI.isCurrentLoc.checked) {
+            SESSION.pendingScan = { state: stateCode, text: text };
+            UI.disclaimerModal.classList.remove('hidden');
+        } else {
+            commitSearch(stateCode, text);
+        }
+    }, 500);
+}
+
+function commitSearch(state, text) {
+    SESSION.sector = { state };
+    UI.locationSearch.value = text;
+    UI.autocompleteResults.classList.add('hidden');
+    executeSweep();
+}
+
+// --- DATA FETCH & RENDER LOGIC ---
 
 async function executeSweep() {
     const url = `https://api.weather.gov/alerts/active?area=${SESSION.sector.state}&cb=${Date.now()}`;
@@ -95,7 +166,12 @@ function requestGeolocation() {
             const data = await res.json();
             SESSION.sector = { state: data.properties.relativeLocation.properties.state };
             UI.locationSearch.value = SESSION.sector.state;
-            executeSweep();
+            
+            // Uncheck the override box since they used real GPS
+            UI.isCurrentLoc.checked = false; 
+            
+            // 500ms delay before executing the GPS sweep
+            setTimeout(() => executeSweep(), 500);
         } catch(e) { alert("GPS Bridge Failure."); }
     }, () => alert("Location access required for tactical monitoring."));
 }
@@ -118,12 +194,24 @@ function toggleAlerts() {
     });
 }
 
-// Search Helpers
+// --- SEARCH FALLBACKS ---
+
 async function fetchZip(zip) {
     try {
         const res = await fetch(`https://api.zippopotam.us/us/${zip}`);
         const data = await res.json();
-        commitSearch(data.places[0]["state abbreviation"], `${data.places[0]["place name"]}, ${data.places[0]["state abbreviation"]}`);
+        const stateCode = data.places[0]["state abbreviation"];
+        const text = `${data.places[0]["place name"]}, ${stateCode}`;
+        
+        UI.autocompleteResults.innerHTML = '';
+        const li = document.createElement('li');
+        li.textContent = text;
+        li.onclick = () => {
+            UI.autocompleteResults.classList.add('hidden');
+            handleLocationSelection(stateCode, text);
+        };
+        UI.autocompleteResults.appendChild(li);
+        UI.autocompleteResults.classList.remove('hidden');
     } catch(e) {}
 }
 
@@ -131,14 +219,19 @@ async function fetchCity(city) {
     try {
         const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=5&format=json`);
         const data = await res.json();
-        const p = data.results.find(x => x.country_code === "US");
-        if(p) commitSearch(CONFIG.STATE_MAP[p.admin1], `${p.name}, ${CONFIG.STATE_MAP[p.admin1]}`);
+        const results = data.results.filter(x => x.country_code === "US");
+        UI.autocompleteResults.innerHTML = '';
+        results.forEach(p => {
+            const state = CONFIG.STATE_MAP[p.admin1];
+            if(!state) return;
+            const li = document.createElement('li');
+            li.textContent = `${p.name}, ${state}`;
+            li.onclick = () => {
+                UI.autocompleteResults.classList.add('hidden');
+                handleLocationSelection(state, li.textContent);
+            };
+            UI.autocompleteResults.appendChild(li);
+        });
+        UI.autocompleteResults.classList.remove('hidden');
     } catch(e) {}
-}
-
-function commitSearch(state, text) {
-    SESSION.sector = { state };
-    UI.locationSearch.value = text;
-    UI.autocompleteResults.classList.add('hidden');
-    executeSweep();
 }
