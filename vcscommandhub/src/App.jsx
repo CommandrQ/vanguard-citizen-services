@@ -1,19 +1,18 @@
 import { useState, useEffect } from 'react'
-import { supabase } from './lib/supabase'
-import Login from './components/Login'
-import Dashboard from './components/Dashboard'
+import { supabase } from './supabase'
 
 function App() {
   const [session, setSession] = useState(null)
-  const [profile, setProfile] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // 1. Check if a user is already logged in
+    // Check for existing login session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
+      setLoading(false)
     })
 
-    // 2. Listen for login/logout changes
+    // Listen for sign-in/out events
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
     })
@@ -21,29 +20,47 @@ function App() {
     return () => subscription.unsubscribe()
   }, [])
 
-  useEffect(() => {
-    // 3. If logged in, fetch their Role from the profiles table
-    if (session?.user) {
-      fetchProfile()
-    }
-  }, [session])
+  if (loading) return <div className="loading">Initializing Vanguard Systems...</div>
 
-  async function fetchProfile() {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', session.user.id)
-      .single()
+  return (
+    <div className="hub-container">
+      {!session ? (
+        <AuthGate />
+      ) : (
+        <AppLibrary user={session.user} />
+      )}
+    </div>
+  )
+}
 
-    if (data) setProfile(data)
+// Internal component for the Login UI
+function AuthGate() {
+  const handleLogin = async () => {
+    // This triggers the Supabase Auth UI or a simple Email/Pass login
+    // For now, we use a simple alert to show it's wired up
+    alert("System Ready: Connect your Supabase Auth here.")
   }
 
-  // Logic Gate: If no session, show Login. If session but no profile yet, show loading.
-  if (!session) return <Login />
-  if (!profile) return <div className="bg-slate-900 min-h-screen text-white p-10">Loading Profile...</div>
+  return (
+    <div className="login-screen">
+      <h1>Vanguard Command Hub</h1>
+      <button onClick={handleLogin}>Enter Hub</button>
+    </div>
+  )
+}
 
-  // If everything is clear, show the Library Dashboard
-  return <Dashboard userProfile={profile} />
+// Internal component for the App Grid
+function AppLibrary({ user }) {
+  return (
+    <div className="dashboard">
+      <h2>Welcome, Citizen</h2>
+      <div className="app-grid">
+        <div className="app-card">⚖️ Constitution</div>
+        <div className="app-card">📝 Mission Logs</div>
+      </div>
+      <button onClick={() => supabase.auth.signOut()}>Logout</button>
+    </div>
+  )
 }
 
 export default App
