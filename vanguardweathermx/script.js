@@ -1,12 +1,12 @@
 /**
  * VANGUARD WEATHER MX: CORE COMMAND SCRIPT
- * STABLE BUILD: SESSION MEMORY + WRAP SUPPORT
+ * STABLE BUILD: GRID ADAPTIVE + SESSION MEMORY
  */
 
 const CONFIG = {
     USER_AGENT: '(Vanguard Weather Mx, commandrq@gmail.com)',
-    POLL_RATE: 180000, // 3 Mins
-    STATE_MAP: { "Kentucky": "KY", "Tennessee": "TN", "Ohio": "OH", "Indiana": "IN" } 
+    POLL_RATE: 180000, 
+    STATE_MAP: { "Kentucky": "KY", "Tennessee": "TN", "Ohio": "OH", "Indiana": "IN", "Illinois": "IL" } 
 };
 
 let SESSION = {
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  'beginner-action', 'chaser-bulletin', 'modal-title', 'modal-body', 'last-scan-time'];
     ids.forEach(id => UI[id.replace(/-([a-z])/g, g => g[1].toUpperCase())] = document.getElementById(id));
 
-    // 2. LOAD PREFS
+    // 2. LOAD NOTIFICATION PREFS
     if (localStorage.getItem('vanguard_mx_alerts') === 'true' && Notification.permission === 'granted') {
         UI.notifyBtn.style.color = "#00ff00";
     }
@@ -56,13 +56,14 @@ async function executeSweep() {
         processAlerts(data.features);
     } catch (e) {
         updateTimestamp(); 
+        // Requirements: Calming "monitor radio" instruction for offline state
         renderUI('status-offline', 'SYSTEM INACTIVE', 'Please monitor radio or local weather for additional threats.', '<p>[!] CONNECTION INTERRUPTED. MONITORING SUSPENDED.</p>');
     }
 }
 
 function updateTimestamp() {
     const now = new Date();
-    // Requirements: Large enough to see, white text (styled in CSS)
+    // Large white text is styled in CSS via #last-scan-time
     UI.lastScanTime.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
 
@@ -105,8 +106,8 @@ function requestGeolocation() {
             SESSION.sector = { state: data.properties.relativeLocation.properties.state, lat: latitude, lon: longitude };
             UI.locationSearch.value = SESSION.sector.state;
             executeSweep();
-        } catch(e) { alert("Tactical Link Failure."); }
-    }, () => alert("GPS access required for tactical monitoring."));
+        } catch(e) { alert("GPS tactical link failure."); }
+    }, () => alert("Location access required for tactical monitoring."));
 }
 
 function openModal(i) {
@@ -129,4 +130,37 @@ function toggleAlerts() {
             UI.notifyBtn.style.color = "#00ff00";
         }
     });
+}
+
+// Helper functions for manual search (Zippopotam / Open-Meteo as previously established)
+async function fetchZip(zip) {
+    try {
+        const res = await fetch(`https://api.zippopotam.us/us/${zip}`);
+        const data = await res.json();
+        const state = data.places[0]["state abbreviation"];
+        commitSearch(state, `${data.places[0]["place name"]}, ${state}`);
+    } catch(e){}
+}
+async function fetchCity(city) {
+    try {
+        const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=5&format=json`);
+        const data = await res.json();
+        const results = data.results.filter(p => p.country_code === "US");
+        UI.autocompleteResults.innerHTML = '';
+        results.forEach(p => {
+            const state = CONFIG.STATE_MAP[p.admin1];
+            if(!state) return;
+            const li = document.createElement('li');
+            li.textContent = `${p.name}, ${state}`;
+            li.onclick = () => commitSearch(state, li.textContent);
+            UI.autocompleteResults.appendChild(li);
+        });
+        UI.autocompleteResults.classList.remove('hidden');
+    } catch(e){}
+}
+function commitSearch(state, text) {
+    SESSION.sector = { state, lat: null, lon: null };
+    UI.locationSearch.value = text;
+    UI.autocompleteResults.classList.add('hidden');
+    executeSweep();
 }
