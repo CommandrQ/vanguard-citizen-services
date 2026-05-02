@@ -11,7 +11,8 @@
 </head>
 <body>
     <header>
-        <h1>VANGUARD COMMAND // WEATHER MX</h1>
+        <h1>VANGUARD COMMAND // WEATHER MX <span class="version-badge">V1.2</span></h1>
+        <span id="instruction-link" class="instruction-link">[ HOW TO USE THIS SITE ]</span>
         <div class="search-container">
             <input type="text" id="location-search" placeholder="Enter City/Zip" autocomplete="off">
             <div class="checkbox-container">
@@ -69,6 +70,22 @@
                 <p>By declaring this manual entry as your physical sector, you acknowledge that the system lacks precise GPS triangulation. Advanced 15-minute intercept telemetry cannot be fully guaranteed. Maintain vigilance.</p>
             </div>
             <button id="accept-disclaimer-btn">ACKNOWLEDGE & SCAN</button>
+        </div>
+    </div>
+
+    <div id="instruction-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" id="close-instruction">&times;</span>
+            <h2 id="instruction-title">OPERATIONAL PROTOCOL</h2>
+            <div id="instruction-body" class="scroll-box">
+                <p><strong>1. LOCATION LOCK:</strong> Enter your City/Zip in the search bar, or click [LOCATION] to lock your coordinates via GPS.</p>
+                <br>
+                <p><strong>2. PHYSICAL SECTOR:</strong> If entering your current location manually, check the [PHYSICAL SECTOR] box to enable local warnings.</p>
+                <br>
+                <p><strong>3. NOTIFICATIONS:</strong> Click [ALERTS] to allow background OS alerts for severe threats.</p>
+                <br>
+                <p><strong>4. CHASER BULLETIN:</strong> Active threats will populate in the bulletin. Click any threat to view raw telemetry.</p>
+            </div>
         </div>
     </div>
 
