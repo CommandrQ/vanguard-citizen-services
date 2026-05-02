@@ -1,8 +1,3 @@
-/**
- * VANGUARD WEATHER MX: CORE COMMAND SCRIPT
- * STABLE BUILD: GRID ADAPTIVE + SESSION MEMORY
- */
-
 const CONFIG = {
     USER_AGENT: '(Vanguard Weather Mx, commandrq@gmail.com)',
     POLL_RATE: 180000, 
