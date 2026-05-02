@@ -44,7 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (UI.instructionLink && UI.instructionModal && UI.closeInstruction) {
-        UI.instructionLink.onclick = () => UI.instructionModal.classList.remove('hidden');
+        // Logically override the anchor tag's default jump behavior and open the window
+        UI.instructionLink.addEventListener('click', (e) => {
+            e.preventDefault(); 
+            UI.instructionModal.classList.remove('hidden');
+        });
         UI.closeInstruction.onclick = () => UI.instructionModal.classList.add('hidden');
     }
 
