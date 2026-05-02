@@ -1,3 +1,4 @@
+// --- SYSTEM CONFIGURATION ---
 const STATE_MAP = {
     "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR", "California": "CA",
     "Colorado": "CO", "Connecticut": "CT", "Delaware": "DE", "Florida": "FL", "Georgia": "GA",
@@ -13,9 +14,12 @@ const STATE_MAP = {
 
 const USER_AGENT = '(Vanguard Weather Mx, commandrq@gmail.com)';
 
-// Global array to store alert data for modal population
+// --- TEMPORARY SESSION MEMORY ---
+let activeMonitoringSector = null; 
 let currentAlertsData = [];
+let lastSeenAlertId = null;
 
+// --- SYSTEM BOOT & EVENT LISTENERS ---
 document.addEventListener('DOMContentLoaded', () => {
     const updateBtn = document.getElementById('update-btn');
     const resetBtn = document.getElementById('reset-loc-btn');
@@ -26,13 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModalBtn = document.getElementById('close-modal');
     const modal = document.getElementById('alert-modal');
 
-    // System Boot
-    initializeLocation();
-
     // Event Listeners
     updateBtn.addEventListener('click', () => {
-        const savedState = localStorage.getItem('vanguard_mx_state');
-        if (savedState) executeWeatherSweep(savedState);
+        if (activeMonitoringSector) executeWeatherSweep(activeMonitoringSector);
     });
 
     geoBtn.addEventListener('click', () => {
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     resetBtn.addEventListener('click', () => {
-        localStorage.removeItem('vanguard_mx_state');
+        activeMonitoringSector = null; // Purge temporary memory
         searchInput.value = '';
         searchInput.placeholder = 'Enter City or Zip';
         updateUI('status-green', 'AWAITING LOCATION DATA.', 'Enter your sector to begin monitoring.', '<p>System standing by...</p>');
@@ -62,8 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Background Polling (3 Minutes)
     setInterval(() => {
-        const savedState = localStorage.getItem('vanguard_mx_state');
-        if (savedState) executeWeatherSweep(savedState, true);
+        if (activeMonitoringSector) executeWeatherSweep(activeMonitoringSector, true);
     }, 180000);
 
     // Autocomplete Input Logic
@@ -86,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500);
     });
 
+    // Hide autocomplete menu if clicking outside
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.search-container')) {
             resultsList.classList.add('hidden');
@@ -95,19 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- LOCATION LOGIC ---
 
-function initializeLocation() {
-    const searchInput = document.getElementById('location-search');
-    const savedState = localStorage.getItem('vanguard_mx_state');
-
-    if (savedState) {
-        searchInput.value = savedState;
-        executeWeatherSweep(savedState);
-    } else {
-        requestGeolocation();
-    }
-}
-
 function requestGeolocation() {
+    const searchInput = document.getElementById('location-search');
+    
     if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
             async (position) => {
@@ -122,12 +112,18 @@ function requestGeolocation() {
                     const stateCode = data.properties.relativeLocation.properties.state;
                     commitLocation(stateCode, stateCode);
                 } catch (error) {
+                    alert("VANGUARD COMMAND: Unable to verify state from coordinates. Please enter manually.");
                     enableManualSearch();
                 }
             },
-            () => enableManualSearch()
+            (error) => {
+                console.warn("Geolocation Error:", error.message);
+                alert("VANGUARD COMMAND: Location access blocked by your browser. You must allow location access or type your sector manually.");
+                enableManualSearch();
+            }
         );
     } else {
+        alert("VANGUARD COMMAND: Geolocation is not supported by this device.");
         enableManualSearch();
     }
 }
@@ -141,7 +137,9 @@ function enableManualSearch() {
 function commitLocation(stateCode, displayText) {
     const searchInput = document.getElementById('location-search');
     const resultsList = document.getElementById('autocomplete-results');
-    localStorage.setItem('vanguard_mx_state', stateCode);
+    
+    activeMonitoringSector = stateCode; // Lock into session memory
+    
     searchInput.value = displayText;
     resultsList.classList.add('hidden');
     executeWeatherSweep(stateCode);
@@ -209,7 +207,8 @@ async function executeWeatherSweep(stateCode, isBackground = false) {
         const data = await response.json();
         processTelemetry(data.features, state);
     } catch (error) {
-        updateUI('status-red', 'DATA FEED OFFLINE.', 'Check connection. Data bridge compromised.', '<p>SYSTEM ERROR.</p>');
+        console.error("Telemetry Error:", error);
+        updateUI('status-offline', 'DATA FEED OFFLINE.', 'Check your internet connection. NWS feed unreachable.', '<p>SYSTEM ERROR.</p>');
     }
 }
 
@@ -231,12 +230,11 @@ function processTelemetry(alerts, stateCode) {
         });
     }
 
-    // Trigger OS Notification if a new alert appears
+    // Trigger OS Notification if a new alert appears (using session memory)
     const latestAlertId = alerts.length > 0 ? alerts[0].properties.id : null;
-    const lastSeenAlert = localStorage.getItem('vanguard_mx_last_alert');
 
-    if (latestAlertId && latestAlertId !== lastSeenAlert) {
-        localStorage.setItem('vanguard_mx_last_alert', latestAlertId);
+    if (latestAlertId && latestAlertId !== lastSeenAlertId) {
+        lastSeenAlertId = latestAlertId;
         if (tornadoWarning) triggerSystemAlert("TORNADO WARNING", `Active threat in ${stateCode}. Take immediate shelter.`);
         else if (severeWarning) triggerSystemAlert(`${severeWarning.event.toUpperCase()}`, `Active threat in ${stateCode}. Secure your location.`);
     }
@@ -291,7 +289,7 @@ function openAlertModal(index) {
 
     modalTitle.textContent = alertData.event;
     
-    // Formatting the raw NWS text
+    // Formatting the raw NWS text logically
     let bodyContent = `<strong>Area:</strong> ${alertData.areaDesc}<br><br>`;
     bodyContent += `<strong>Description:</strong><br>${alertData.description || 'No description provided by NWS.'}<br><br>`;
     if (alertData.instruction) {
