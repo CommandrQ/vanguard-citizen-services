@@ -134,9 +134,15 @@ button:hover {
     font-weight: 900;
 }
 
+/* Core Visual Logic States */
 .status-green { color: var(--green-safe); }
 .status-orange { background-color: var(--orange-warn); color: #000; }
 .status-red { color: #000; animation: pulse-red 1.5s infinite; }
+.status-offline { 
+    background-color: #222; 
+    color: var(--red-alert); 
+    border-bottom: 2px solid var(--red-alert);
+}
 
 @keyframes pulse-red {
     0% { background-color: #8b0000; }
