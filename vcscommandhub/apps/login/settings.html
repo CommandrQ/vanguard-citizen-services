@@ -5,68 +5,154 @@
     <title>VCS | Personnel Settings</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; --text: #f8fafc; }
-        body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 40px; }
+        :root { --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; --text: #f8fafc; --success: #10b981; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding: 40px; margin: 0; }
         .container { max-width: 600px; margin: 0 auto; }
-        .card { background: var(--card); padding: 30px; border-radius: 12px; border: 1px solid #334155; }
-        .field-group { margin-bottom: 15px; }
-        label { display: block; font-size: 0.8rem; color: #94a3b8; margin-bottom: 5px; text-transform: uppercase; }
-        input { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; box-sizing: border-box; }
-        .btn-save { width: 100%; padding: 15px; background: #10b981; border: none; color: white; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; }
+        .card { background: var(--card); padding: 30px; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        
+        h2 { margin-top: 0; letter-spacing: 1px; color: var(--accent); }
+        .field-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 8px; text-transform: uppercase; font-weight: bold; }
+        
+        input, select, textarea { 
+            width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; 
+            color: white; border-radius: 6px; box-sizing: border-box; font-size: 1rem;
+        }
+        input:focus { border-color: var(--accent); outline: none; }
+
+        .btn-save { 
+            width: 100%; padding: 15px; background: var(--success); border: none; 
+            color: white; font-weight: bold; border-radius: 6px; cursor: pointer; 
+            margin-top: 20px; font-size: 1rem; transition: opacity 0.2s;
+        }
+        .btn-save:hover { opacity: 0.9; }
+        
         .back-link { display: inline-block; margin-bottom: 20px; color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+        #status { margin-top: 20px; text-align: center; font-weight: bold; padding: 10px; border-radius: 6px; display: none; }
     </style>
 </head>
 <body>
+
     <div class="container">
         <a href="dashboard.html" class="back-link">← Return to Dashboard</a>
+        
         <div class="card">
-            <h2>Personnel Settings</h2>
-            <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 25px;">Update your registry information. First and Last name are encrypted and not visible to other Citizens.</p>
+            <h2>Personnel File</h2>
+            <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 30px;">
+                Update your internal registry data. Sensitive fields are encrypted and restricted from public view.
+            </p>
+
             <form id="settings-form">
-                <div id="form-fields"></div>
-                <button type="submit" class="btn-save">UPDATE PERSONNEL FILE</button>
+                <div id="form-fields">
+                    <p style="color: var(--accent);">Loading fields from blueprint...</p>
+                </div>
+                <button type="submit" class="btn-save">SYNC WITH VAULT</button>
             </form>
-            <div id="status" style="margin-top: 15px; text-align: center;"></div>
+
+            <div id="status"></div>
         </div>
     </div>
 
     <script>
+        // 1. DATA COORDINATES (Ensure these match your index/dashboard exactly)
         const SB_URL = 'https://ushgtakupwrlbzzsbivv.supabase.co';
-        const SB_KEY = 'YOUR_KEY_HERE';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzaGd0YWt1cHdybGJ6enNiaXZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3Mzg3MzAsImV4cCI6MjA5MzMxNDczMH0._A79P3VYFuwvtDeDj6ZX6ortqidkelDQGAAwCcsgNDQ';
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
 
+        let activeFields = [];
+
         async function initSettings() {
+            console.log("Initializing Personnel Settings...");
+
+            // 2. Auth Check
             const { data: { session } } = await _supabase.auth.getSession();
-            if (!session) { window.location.href = 'index.html'; return; }
+            if (!session) {
+                console.error("No active session found.");
+                window.location.href = 'index.html';
+                return;
+            }
 
-            const response = await fetch('./src/datafields.json');
-            const fields = await response.json();
-            
-            const { data: profile } = await _supabase.from('profiles').select('*').eq('id', session.user.id).single();
+            try {
+                // 3. Load the Blueprint
+                console.log("Fetching blueprint from ./src/datafields.json...");
+                const response = await fetch('./src/datafields.json');
+                if (!response.ok) throw new Error("Could not find datafields.json");
+                activeFields = await response.json();
 
-            const container = document.getElementById('form-fields');
-            fields.forEach(field => {
-                container.innerHTML += `
-                    <div class="field-group">
-                        <label>${field.label}</label>
-                        <input type="${field.type}" id="${field.id}" value="${profile[field.id] || ''}" ${field.required ? 'required' : ''}>
-                    </div>`;
+                // 4. Load the Current User Data
+                console.log("Fetching current data from Supabase...");
+                const { data: profile, error } = await _supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .single();
+
+                if (error) console.warn("Profile fetch error (this is normal for new users):", error.message);
+
+                // 5. Build the UI
+                const container = document.getElementById('form-fields');
+                container.innerHTML = ''; // Clear the "Loading" text
+
+                activeFields.forEach(field => {
+                    const value = profile ? profile[field.id] : '';
+                    let inputHTML = '';
+
+                    if (field.type === 'select') {
+                        inputHTML = `
+                            <select id="input-${field.id}">
+                                ${field.options.map(opt => `<option value="${opt}" ${value === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+                            </select>`;
+                    } else {
+                        inputHTML = `<input type="${field.type}" id="input-${field.id}" value="${value || ''}" placeholder="Enter ${field.label}" ${field.required ? 'required' : ''}>`;
+                    }
+
+                    container.innerHTML += `
+                        <div class="field-group">
+                            <label for="input-${field.id}">${field.label}</label>
+                            ${inputHTML}
+                        </div>`;
+                });
+
+                console.log("Form generation complete.");
+
+            } catch (err) {
+                console.error("Critical Failure:", err);
+                document.getElementById('form-fields').innerHTML = `<p style="color: #ef4444;">System Error: ${err.message}. Ensure src/datafields.json exists.</p>`;
+            }
+        }
+
+        // 6. Handle the Update
+        document.getElementById('settings-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const status = document.getElementById('status');
+            status.innerText = "Encrypting and Syncing...";
+            status.style.display = "block";
+            status.style.background = "#1e293b";
+            status.style.color = "white";
+
+            const { data: { session } } = await _supabase.auth.getSession();
+            const updates = {};
+
+            activeFields.forEach(field => {
+                updates[field.id] = document.getElementById(`input-${field.id}`).value;
             });
 
-            document.getElementById('settings-form').onsubmit = async (e) => {
-                e.preventDefault();
-                const updates = {};
-                fields.forEach(f => { updates[f.id] = document.getElementById(f.id).value; });
+            const { error } = await _supabase
+                .from('profiles')
+                .update(updates)
+                .eq('id', session.user.id);
 
-                const { error } = await _supabase.from('profiles').update(updates).eq('id', session.user.id);
-                const status = document.getElementById('status');
-                if (error) {
-                    status.innerText = error.message; status.style.color = "#ef4444";
-                } else {
-                    status.innerText = "Vault Updated!"; status.style.color = "#10b981";
-                }
-            };
-        }
+            if (error) {
+                status.innerText = "System Error: " + error.message;
+                status.style.background = "#450a0a";
+                status.style.color = "#fca5a5";
+            } else {
+                status.innerText = "Personnel File Updated Successfully!";
+                status.style.background = "#064e3b";
+                status.style.color = "#6ee7b7";
+            }
+        });
+
         initSettings();
     </script>
 </body>
