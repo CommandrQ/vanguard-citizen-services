@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VCS | Personnel Settings</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; --text: #f8fafc; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 40px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .card { background: var(--card); padding: 30px; border-radius: 12px; border: 1px solid #334155; }
+        .field-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.8rem; color: #94a3b8; margin-bottom: 5px; text-transform: uppercase; }
+        input { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; box-sizing: border-box; }
+        .btn-save { width: 100%; padding: 15px; background: #10b981; border: none; color: white; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="dashboard.html" class="back-link">← Return to Dashboard</a>
+        <div class="card">
+            <h2>Personnel Settings</h2>
+            <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 25px;">Update your registry information. First and Last name are encrypted and not visible to other Citizens.</p>
+            <form id="settings-form">
+                <div id="form-fields"></div>
+                <button type="submit" class="btn-save">UPDATE PERSONNEL FILE</button>
+            </form>
+            <div id="status" style="margin-top: 15px; text-align: center;"></div>
+        </div>
+    </div>
+
+    <script>
+        const SB_URL = 'https://ushgtakupwrlbzzsbivv.supabase.co';
+        const SB_KEY = 'YOUR_KEY_HERE';
+        const _supabase = supabase.createClient(SB_URL, SB_KEY);
+
+        async function initSettings() {
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (!session) { window.location.href = 'index.html'; return; }
+
+            const response = await fetch('./src/datafields.json');
+            const fields = await response.json();
+            
+            const { data: profile } = await _supabase.from('profiles').select('*').eq('id', session.user.id).single();
+
+            const container = document.getElementById('form-fields');
+            fields.forEach(field => {
+                container.innerHTML += `
+                    <div class="field-group">
+                        <label>${field.label}</label>
+                        <input type="${field.type}" id="${field.id}" value="${profile[field.id] || ''}" ${field.required ? 'required' : ''}>
+                    </div>`;
+            });
+
+            document.getElementById('settings-form').onsubmit = async (e) => {
+                e.preventDefault();
+                const updates = {};
+                fields.forEach(f => { updates[f.id] = document.getElementById(f.id).value; });
+
+                const { error } = await _supabase.from('profiles').update(updates).eq('id', session.user.id);
+                const status = document.getElementById('status');
+                if (error) {
+                    status.innerText = error.message; status.style.color = "#ef4444";
+                } else {
+                    status.innerText = "Vault Updated!"; status.style.color = "#10b981";
+                }
+            };
+        }
+        initSettings();
+    </script>
+</body>
+</html>
