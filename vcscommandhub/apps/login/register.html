@@ -1,72 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>VCS | Citizen Induction</title>
+    <title>VCS | Register</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; --text: #f8fafc; }
-        body { background: var(--bg); color: var(--text); font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: var(--card); padding: 2rem; border-radius: 8px; width: 350px; border: 1px solid #334155; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 8px 0; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: var(--accent); border: none; color: white; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 10px; }
-        #status { margin-top: 15px; font-size: 0.85rem; padding: 10px; border-radius: 4px; display: none; }
-        .err { background: #450a0a; color: #fca5a5; display: block; }
-        .success { background: #064e3b; color: #6ee7b7; display: block; }
+        body { background: #0f172a; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #1e293b; padding: 2rem; border-radius: 8px; border: 1px solid #334155; text-align: center; width: 320px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #10b981; border: none; color: white; font-weight: bold; cursor: pointer; border-radius: 4px; }
+        #msg { margin-top: 15px; font-size: 0.85rem; }
     </style>
 </head>
 <body>
+    <div class="card">
+        <h2>Citizen Induction</h2>
+        <input type="text" id="username" placeholder="Callsign">
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="pass" placeholder="Create Password">
+        <button onclick="register()">REGISTER</button>
+        <div id="msg"></div>
+        <p style="font-size: 0.8rem; margin-top: 20px;">
+            <a href="index.html" style="color: #94a3b8; text-decoration: none;">Back to Login</a>
+        </p>
+    </div>
 
-<div class="card">
-    <h2>Citizen Induction</h2>
-    <form id="reg-form">
-        <input type="text" id="username" placeholder="Callsign (Username)" required>
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <button type="submit">REGISTER IDENTITY</button>
-    </form>
-    <div id="status"></div>
-    <p style="font-size: 0.8rem; margin-top: 15px;"><a href="index.html" style="color: var(--accent);">Already Registered? Login</a></p>
-</div>
+    <script>
+        const SB_URL = 'https://ushgtakupwrlbzzsbivv.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzaGd0YWt1cHdybGJ6enNiaXZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3Mzg3MzAsImV4cCI6MjA5MzMxNDczMH0._A79P3VYFuwvtDeDj6ZX6ortqidkelDQGAAwCcsgNDQ';
+        const _supabase = supabase.createClient(SB_URL, SB_KEY);
 
-<script>
-    // 1. Direct Hardcoding for GitHub Pages (No .env or Vite logic)
-    const SB_URL = 'https://ushgtakupwrlbzzsbivv.supabase.co; 
-    const SB_KEY = 'sb_publishable_d9MEVgwoyhbB7uuzZ8Th_g_QYHVdNsg';
-    
-    // Initialize the client
-    const _supabase = supabase.createClient(SB_URL, SB_KEY);
+        async function register() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('pass').value;
+            const username = document.getElementById('username').value;
+            const msg = document.getElementById('msg');
 
-    document.getElementById('reg-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const status = document.getElementById('status');
-        status.style.display = 'none';
+            const { data, error } = await _supabase.auth.signUp({
+                email,
+                password,
+                options: { data: { display_name: username } }
+            });
 
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const username = document.getElementById('username').value;
-
-        // 2. The Sign-Up Logic
-        const { data, error } = await _supabase.auth.signUp({
-            email: email,
-            password: password,
-            options: {
-                // This metadata maps to your 'profiles' table via the SQL trigger we made
-                data: { display_name: username } 
+            if (error) {
+                msg.innerText = error.message;
+                msg.style.color = "#fca5a5";
+            } else {
+                msg.innerText = "Registration successful! You can now login.";
+                msg.style.color = "#6ee7b7";
             }
-        });
-
-        if (error) {
-            status.innerText = "Error: " + error.message;
-            status.className = 'err';
-            status.style.display = 'block';
-        } else {
-            status.innerText = "Success! Check your email or try logging in.";
-            status.className = 'success';
-            status.style.display = 'block';
         }
-    });
-</script>
-
+    </script>
 </body>
 </html>
