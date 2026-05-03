@@ -3,151 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VCS | Command Dashboard</title>
+    <title>Dashboard | Vanguard Citizen Services</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
         :root {
-            --bg: #0f172a; --card: #1e293b; --accent: #3b82f6;
-            --text: #f8fafc; --text-dim: #94a3b8; --danger: #ef4444;
+            --gold: #D4AF37;
+            --gold-glow: rgba(212, 175, 55, 0.5);
+            --ambient-glow: rgba(212, 175, 55, 0.2);
+            --dark-glass: rgba(10, 10, 10, 0.9);
+            --border-gold: rgba(212, 175, 55, 0.4);
+            --nav-height: 90px;
+            --footer-height: 85px;
         }
 
-        body { 
-            background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; 
-            margin: 0; padding: 20px; opacity: 0; transition: opacity 0.5s ease; 
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #000; color: white; overflow: hidden; opacity: 0; transition: opacity 1s ease; }
         body.authorized { opacity: 1; }
 
-        .container { max-width: 1000px; margin: 0 auto; }
-
-        /* Tactical Header */
-        header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 1px solid #334155; padding-bottom: 20px; margin-bottom: 30px;
+        /* --- STARFIELD ENGINE --- */
+        .stars-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle at center, #111 0%, #000 100%); overflow: hidden;
         }
-        .header-left { display: flex; align-items: center; gap: 20px; }
+        .star-layer { position: absolute; top: -100%; left: 0; width: 200%; height: 200%; background-repeat: repeat; animation: move-stars linear infinite; }
+        .layer-1 { background-image: radial-gradient(1px 1px at 10% 10%, #fff, transparent); background-size: 300px 300px; animation-duration: 120s; opacity: 0.3; }
+        .layer-2 { background-image: radial-gradient(2px 2px at 20% 80%, #fff, transparent); background-size: 400px 400px; animation-duration: 80s; opacity: 0.5; }
+        @keyframes move-stars { from { transform: translateY(0); } to { transform: translateY(50%); } }
+
+        /* --- HUD NAVIGATION --- */
+        nav {
+            position: fixed; top: 0; width: 100%; height: var(--nav-height);
+            display: flex; align-items: center; background: rgba(0,0,0,0.9);
+            border-bottom: 1px solid var(--border-gold); z-index: 2000; backdrop-filter: blur(20px);
+        }
+        .nav-container { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 40px; }
+        .nav-logo { font-family: 'Cinzel', serif; color: var(--gold); letter-spacing: 3px; font-size: 1.2rem; text-decoration: none; }
         
+        .nav-controls { display: flex; align-items: center; gap: 25px; }
         .settings-cog {
-            text-decoration: none; font-size: 1.5rem; cursor: pointer;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: inline-block; filter: grayscale(1) brightness(1.5);
+            text-decoration: none; font-size: 1.5rem; cursor: pointer; transition: 0.4s;
+            filter: drop-shadow(0 0 5px var(--gold-glow));
         }
-        .settings-cog:hover { transform: rotate(90deg); filter: grayscale(0) brightness(1); }
+        .settings-cog:hover { transform: rotate(90deg); filter: brightness(1.5); }
 
-        /* Profile Summary Card */
-        .profile-card { 
-            background: var(--card); border: 1px solid #334155; 
-            padding: 20px; border-radius: 12px; margin-bottom: 30px;
+        .btn-logout {
+            background: transparent; border: 1px solid #ff4d4d; color: #ff4d4d;
+            font-family: 'Cinzel', serif; padding: 6px 15px; font-size: 0.7rem;
+            cursor: pointer; transition: 0.3s; letter-spacing: 1px;
         }
-        .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
-        .data-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
-        .data-value { font-size: 1.1rem; font-weight: bold; color: var(--accent); display: block; }
+        .btn-logout:hover { background: #ff4d4d; color: white; box-shadow: 0 0 10px #ff4d4d; }
 
-        /* App Grid */
-        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .app-link { 
-            background: var(--card); border: 1px solid #334155; padding: 30px; 
-            border-radius: 12px; text-decoration: none; color: white; text-align: center;
-            transition: all 0.2s ease;
+        /* --- DASHBOARD LAYOUT --- */
+        .page-content {
+            height: 100vh; display: flex; justify-content: center; align-items: center;
+            gap: 30px; padding: var(--nav-height) 40px var(--footer-height);
         }
-        .app-link:hover { transform: translateY(-5px); border-color: var(--accent); background: #26334d; }
-        .app-icon { font-size: 2.5rem; display: block; margin-bottom: 10px; }
 
-        .btn-logout { 
-            background: transparent; border: 1px solid var(--danger); 
-            color: var(--danger); padding: 8px 16px; border-radius: 6px; cursor: pointer; 
+        .console-panel {
+            background: var(--dark-glass); backdrop-filter: blur(30px);
+            border: 1px solid var(--border-gold); border-radius: 20px;
+            width: 100%; max-width: 550px; height: 100%; max-height: 650px;
+            position: relative; overflow: hidden; display: flex; flex-direction: column;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.1);
         }
-        .btn-logout:hover { background: var(--danger); color: white; }
+
+        .console-header {
+            padding: 25px; border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            text-align: center; background: rgba(212, 175, 55, 0.03);
+        }
+        .console-header h2 { font-family: 'Cinzel', serif; color: var(--gold); letter-spacing: 4px; font-size: 1.2rem; text-transform: uppercase; }
+
+        .console-body { flex: 1; overflow-y: auto; padding: 30px; scrollbar-width: none; }
+        .console-body::-webkit-scrollbar { display: none; }
+
+        /* --- DATA STYLING --- */
+        section { margin-bottom: 35px; }
+        h3 { 
+            font-family: 'Cinzel', serif; color: var(--gold); font-size: 0.85rem; 
+            border-left: 2px solid var(--gold); padding-left: 12px; 
+            margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; 
+        }
+
+        .data-card {
+            background: rgba(212, 175, 55, 0.05); border: 1px solid rgba(212, 175, 55, 0.1);
+            padding: 15px; margin-bottom: 10px; border-radius: 4px;
+        }
+        .data-card label { display: block; font-size: 0.65rem; color: var(--gold); text-transform: uppercase; margin-bottom: 5px; opacity: 0.8; }
+        .data-card span { font-family: 'Cinzel', serif; font-size: 1.1rem; color: white; letter-spacing: 1px; }
+
+        /* --- FOOTER --- */
+        footer {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: var(--footer-height);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: linear-gradient(to top, #000 70%, transparent); z-index: 2000;
+        }
+        .copyright { color: var(--gold); font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 2px; }
+
+        @media (max-width: 900px) {
+            .page-content { flex-direction: column; overflow-y: auto; padding: 110px 20px 100px; height: auto; }
+            .console-panel { max-height: none; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <div class="header-left">
-            <h1 style="margin:0; letter-spacing: 2px;">VANGUARD HUB</h1>
-            <a href="settings.html" class="settings-cog" title="Personnel Settings">⚙️</a>
-        </div>
-        <button class="btn-logout" onclick="logout()">LOGOUT</button>
-    </header>
-
-    <div class="profile-card">
-        <h2 style="margin-top:0; font-size: 0.9rem; color: var(--text-dim);">PUBLIC SERVICE RECORD</h2>
-        <div id="public-profile" class="profile-grid">
-            <span>Loading profile...</span>
-        </div>
+    <div class="stars-container">
+        <div class="star-layer layer-1"></div>
+        <div class="star-layer layer-2"></div>
     </div>
 
-    <div class="app-grid">
-        <a href="apps/constitution.html" class="app-link">
-            <span class="app-icon">⚖️</span>
-            <strong>CONSTITUTION</strong>
-        </a>
-        <a href="apps/mission-logs.html" class="app-link">
-            <span class="app-icon">📝</span>
-            <strong>MISSION LOGS</strong>
-        </a>
-        <a href="apps/armory.html" class="app-link">
-            <span class="app-icon">⚔️</span>
-            <strong>ARMORY</strong>
-        </a>
-    </div>
-</div>
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="nav-logo">VCS COMMAND HUB</a>
+            <div class="nav-controls">
+                <a href="settings.html" class="settings-cog" title="Update Personnel File">⚙️</a>
+                <button class="btn-logout" onclick="logout()">Terminate Session</button>
+            </div>
+        </div>
+    </nav>
 
-<script>
-    const SB_URL = 'https://ushgtakupwrlbzzsbivv.supabase.co';
-    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzaGd0YWt1cHdybGJ6enNiaXZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3Mzg3MzAsImV4cCI6MjA5MzMxNDczMH0._A79P3VYFuwvtDeDj6ZX6ortqidkelDQGAAwCcsgNDQ';
-    const _supabase = supabase.createClient(SB_URL, SB_KEY);
+    <main class="page-content">
+        <div class="console-panel">
+            <div class="console-header">
+                <h2>Personnel Record</h2>
+            </div>
+            <div class="console-body">
+                <section>
+                    <h3>Official Identity</h3>
+                    <div class="data-card">
+                        <label>First Name</label>
+                        <span id="display-firstname">---</span>
+                    </div>
+                    <div class="data-card">
+                        <label>Last Name</label>
+                        <span id="display-lastname">---</span>
+                    </div>
+                    <div class="data-card">
+                        <label>Email Address</label>
+                        <span id="display-email" style="font-family: 'Inter'; font-size: 0.9rem;">---</span>
+                    </div>
+                </section>
+            </div>
+        </div>
 
-    async function loadDashboard() {
-        // 1. Session Check
-        const { data: { session } } = await _supabase.auth.getSession();
-        if (!session) {
-            window.location.href = 'index.html';
-            return;
-        }
-        document.body.classList.add('authorized');
+        <div class="console-panel">
+            <div class="console-header">
+                <h2>Progress & Status</h2>
+            </div>
+            <div class="console-body" id="blob-container">
+                <section>
+                    <h3>Citizen Progress</h3>
+                    <div id="flavor-display">
+                        <p style="font-size: 0.8rem; color: #888;">Accessing encrypted data blob...</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
 
-        // 2. Load Blueprint and Data
-        try {
-            const blueprintReq = await fetch('./src/datafields.json');
-            const fields = await blueprintReq.json();
+    <footer>
+        <div class="copyright">VANGUARD CITIZEN SERVICES &copy; 2026</div>
+    </footer>
 
-            // Only request columns defined in the JSON
-            const columns = fields.map(f => f.id).join(',');
-            const { data: profile } = await _supabase
+    <script>
+        const SB_URL = 'https://ushgtakupwrlbzzsbivv.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzaGd0YWt1cHdybGJ6enNiaXZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3Mzg3MzAsImV4cCI6MjA5MzMxNDczMH0._A79P3VYFuwvtDeDj6ZX6ortqidkelDQGAAwCcsgNDQ';
+        const _supabase = supabase.createClient(SB_URL, SB_KEY);
+
+        async function initDashboard() {
+            // 1. Session check
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'index.html';
+                return;
+            }
+            document.body.classList.add('authorized');
+
+            // 2. Fetch User Data (Names + Progress Blob)
+            const { data: profile, error } = await _supabase
                 .from('profiles')
-                .select(columns)
+                .select('first_name, last_name, progress_blob')
                 .eq('id', session.user.id)
                 .single();
 
-            // 3. Render Public Fields Only
-            const display = document.getElementById('public-profile');
-            display.innerHTML = '';
+            if (error) {
+                console.error("Vault Access Error:", error);
+                return;
+            }
 
-            fields.forEach(field => {
-                if (field.public === true) {
-                    const val = profile ? profile[field.id] : '---';
-                    display.innerHTML += `
-                        <div>
-                            <span class="data-label">${field.label}</span>
-                            <span class="data-value">${val || 'Not Set'}</span>
+            // 3. Update Identity UI
+            document.getElementById('display-firstname').innerText = profile.first_name || "Unknown";
+            document.getElementById('display-lastname').innerText = profile.last_name || "Citizen";
+            document.getElementById('display-email').innerText = session.user.email;
+
+            // 4. Unpack the Progress Blob
+            const flavorContainer = document.getElementById('flavor-display');
+            const blob = profile.progress_blob || {};
+
+            if (Object.keys(blob).length === 0) {
+                flavorContainer.innerHTML = `<p style="color: var(--gold); font-size: 0.8rem; border: 1px dashed var(--gold); padding: 10px; text-align: center;">NO FLAVOR DATA FOUND.<br>Visit Settings to update your file.</p>`;
+            } else {
+                flavorContainer.innerHTML = ''; // Clear loading text
+                // Loop through the blob and create cards for every piece of data
+                for (const [key, value] of Object.entries(blob)) {
+                    // Prettify the key (e.g., "ship_name" to "SHIP NAME")
+                    const label = key.replace('_', ' ').toUpperCase();
+                    flavorContainer.innerHTML += `
+                        <div class="data-card">
+                            <label>${label}</label>
+                            <span>${value}</span>
                         </div>
                     `;
                 }
-            });
-
-        } catch (err) {
-            console.error("Dashboard Load Error:", err);
+            }
         }
-    }
 
-    async function logout() {
-        await _supabase.auth.signOut();
-        window.location.href = 'index.html';
-    }
+        async function logout() {
+            await _supabase.auth.signOut();
+            window.location.href = 'index.html';
+        }
 
-    loadDashboard();
-</script>
-
+        window.onload = initDashboard;
+    </script>
 </body>
 </html>
