@@ -1,44 +1,236 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>VCS | Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Terminal | Vanguard Citizen Services</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
-        body { background: #0f172a; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: #1e293b; padding: 2rem; border-radius: 8px; border: 1px solid #334155; text-align: center; width: 320px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #3b82f6; border: none; color: white; font-weight: bold; cursor: pointer; border-radius: 4px; }
-        #msg { color: #fca5a5; font-size: 0.8rem; margin-top: 10px; min-height: 1em; }
+        :root {
+            --gold: #D4AF37;
+            --gold-glow: rgba(212, 175, 55, 0.5);
+            --dark-glass: rgba(10, 10, 10, 0.98);
+            --border-gold: rgba(212, 175, 55, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body, html {
+            height: 100%;
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: white;
+            overflow: hidden; /* Keeps the HUD locked to screen */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- STARFIELD ENGINE --- */
+        .stars-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle at center, #111 0%, #000 100%); overflow: hidden;
+        }
+        .star-layer { position: absolute; top: -100%; left: 0; width: 200%; height: 200%; background-repeat: repeat; animation: move-stars linear infinite; }
+        .layer-1 { background-image: radial-gradient(1px 1px at 10% 10%, #fff, transparent); background-size: 300px 300px; animation-duration: 120s; opacity: 0.3; }
+        .layer-2 { background-image: radial-gradient(2px 2px at 20% 80%, #fff, transparent); background-size: 400px 400px; animation-duration: 80s; opacity: 0.5; }
+        @keyframes move-stars { from { transform: translateY(0); } to { transform: translateY(50%); } }
+
+        /* --- COMMAND CENTER UI --- */
+        header {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-gold);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+        .hub-title { font-family: 'Cinzel', serif; color: var(--gold); letter-spacing: 5px; font-size: 1.1rem; text-transform: uppercase; }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .login-console {
+            width: 100%;
+            max-width: 420px;
+            background: var(--dark-glass);
+            border: 1px solid var(--border-gold);
+            border-radius: 15px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 1), 0 0 20px rgba(212, 175, 55, 0.1);
+            animation: emerge 1s ease-out;
+        }
+
+        @keyframes emerge { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        /* Scanning Line Effect */
+        .login-console::after {
+            content: ""; position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(transparent, rgba(212, 175, 55, 0.03), transparent);
+            animation: scan 5s linear infinite; pointer-events: none;
+        }
+        @keyframes scan { from { top: -100%; } to { top: 100%; } }
+
+        .system-status {
+            font-size: 0.6rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            opacity: 0.7;
+        }
+
+        h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 30px;
+            letter-spacing: 3px;
+            font-size: 1.4rem;
+        }
+
+        .input-group { margin-bottom: 25px; position: relative; }
+        .input-group label {
+            display: block; font-size: 0.65rem; color: var(--gold); 
+            text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px;
+        }
+        
+        input {
+            width: 100%; padding: 14px; background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(212, 175, 55, 0.2); color: white; border-radius: 4px;
+            font-family: 'Inter', sans-serif; transition: 0.3s;
+        }
+        input:focus { outline: none; border-color: var(--gold); background: rgba(212, 175, 55, 0.05); }
+
+        .btn-access {
+            width: 100%; padding: 16px; background: transparent; border: 1px solid var(--gold);
+            color: var(--gold); font-family: 'Cinzel', serif; font-weight: bold; letter-spacing: 3px;
+            cursor: pointer; transition: 0.4s; text-transform: uppercase; margin-top: 10px;
+        }
+        .btn-access:hover { background: var(--gold); color: black; box-shadow: 0 0 25px var(--gold-glow); }
+
+        .console-footer {
+            margin-top: 30px; text-align: center; font-size: 0.8rem;
+        }
+        .console-footer a { color: #888; text-decoration: none; transition: 0.3s; }
+        .console-footer a:hover { color: var(--gold); text-shadow: 0 0 5px var(--gold); }
+
+        #error-display {
+            color: #ff4d4d; font-size: 0.75rem; text-align: center; margin-top: 15px; min-height: 1em;
+        }
+
+        /* Tactical HUD Decorations */
+        .hud-corner { position: absolute; width: 20px; height: 20px; border: 1px solid var(--gold); opacity: 0.4; }
+        .top-left { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+        .top-right { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+        .bottom-left { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+        .bottom-right { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+        @media (max-width: 500px) {
+            .login-console { border-radius: 0; border: none; height: 100%; max-width: none; padding: 60px 30px; }
+            header { background: black; }
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>Vanguard Login</h2>
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="pass" placeholder="Password">
-        <button onclick="login()">AUTHORIZE ENTRY</button>
-        <div id="msg"></div>
-        <p style="font-size: 0.8rem; margin-top: 20px;">
-            <a href="register.html" style="color: #94a3b8; text-decoration: none;">New Citizen? Register Here</a>
-        </p>
+
+    <div class="stars-container">
+        <div class="star-layer layer-1"></div>
+        <div class="star-layer layer-2"></div>
     </div>
+
+    <header>
+        <div class="hub-title">Vanguard Command Center</div>
+    </header>
+
+    <main>
+        <div class="login-console">
+            <div class="hud-corner top-left"></div>
+            <div class="hud-corner top-right"></div>
+            <div class="hud-corner bottom-left"></div>
+            <div class="hud-corner bottom-right"></div>
+
+            <div class="system-status">
+                <span>Status: Online</span>
+                <span id="timestamp">Sector 01</span>
+            </div>
+
+            <h2>Access Terminal</h2>
+            
+            <form id="login-form">
+                <div class="input-group">
+                    <label>Personnel Email</label>
+                    <input type="email" id="email" placeholder="ENTER ID" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Security Key</label>
+                    <input type="password" id="pass" placeholder="PASSWORD" required>
+                </div>
+
+                <button type="submit" class="btn-access">Initiate Link</button>
+            </form>
+
+            <div id="error-display"></div>
+
+            <div class="console-footer">
+                <a href="register.html">New Recruit? Begin Induction</a>
+            </div>
+        </div>
+    </main>
 
     <script>
         const SB_URL = 'https://ushgtakupwrlbzzsbivv.supabase.co';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzaGd0YWt1cHdybGJ6enNiaXZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3Mzg3MzAsImV4cCI6MjA5MzMxNDczMH0._A79P3VYFuwvtDeDj6ZX6ortqidkelDQGAAwCcsgNDQ';
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
 
-        async function login() {
+        const form = document.getElementById('login-form');
+        const errorDisplay = document.getElementById('error-display');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorDisplay.innerText = "Authenticating with Central Command...";
+
             const email = document.getElementById('email').value;
-            const password = document.getElementById('pass').value;
-            const { error } = await _supabase.auth.signInWithPassword({ email, password });
+            const pass = document.getElementById('pass').value;
+
+            const { data, error } = await _supabase.auth.signInWithPassword({
+                email: email,
+                password: pass
+            });
 
             if (error) {
-                document.getElementById('msg').innerText = "Denied: " + error.message;
+                errorDisplay.innerText = "LINK FAILED: " + error.message.toUpperCase();
             } else {
-                window.location.href = 'dashboard.html';
+                errorDisplay.style.color = "var(--gold)";
+                errorDisplay.innerText = "ACCESS GRANTED. REDIRECTING...";
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
             }
+        });
+
+        // Set Sector Clock
+        function updateSector() {
+            const now = new Date();
+            document.getElementById('timestamp').innerText = "SEC " + now.getHours() + ":" + now.getMinutes().toString().padStart(2, '0');
         }
+        setInterval(updateSector, 60000);
+        updateSector();
     </script>
 </body>
 </html>
