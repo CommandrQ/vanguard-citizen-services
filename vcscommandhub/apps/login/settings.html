@@ -2,51 +2,129 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VCS | Personnel Settings</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; --text: #f8fafc; --success: #10b981; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding: 40px; margin: 0; }
-        .container { max-width: 600px; margin: 0 auto; }
-        .card { background: var(--card); padding: 30px; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-        
-        h2 { margin-top: 0; letter-spacing: 1px; color: var(--accent); }
-        .field-group { margin-bottom: 20px; }
-        label { display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 8px; text-transform: uppercase; font-weight: bold; }
-        
-        input, select, textarea { 
-            width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; 
-            color: white; border-radius: 6px; box-sizing: border-box; font-size: 1rem;
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
         }
-        input:focus { border-color: var(--accent); outline: none; }
+
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            padding: 40px 20px; 
+            margin: 0;
+        }
+
+        .container { max-width: 600px; margin: 0 auto; }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+            transition: transform 0.2s;
+        }
+        .back-link:hover { transform: translateX(-5px); }
+
+        .card { 
+            background: var(--card); 
+            padding: 30px; 
+            border-radius: 12px; 
+            border: 1px solid #334155; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 { margin: 0 0 10px 0; letter-spacing: 1px; color: var(--text); }
+        .description { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 30px; line-height: 1.5; }
+
+        .field-group { margin-bottom: 20px; }
+        label { 
+            display: block; 
+            font-size: 0.75rem; 
+            color: var(--text-dim); 
+            margin-bottom: 8px; 
+            text-transform: uppercase; 
+            font-weight: bold; 
+            letter-spacing: 0.5px;
+        }
+
+        input, select, textarea { 
+            width: 100%; 
+            padding: 12px; 
+            background: #0f172a; 
+            border: 1px solid #334155; 
+            color: white; 
+            border-radius: 6px; 
+            box-sizing: border-box; 
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus { border-color: var(--accent); outline: none; }
 
         .btn-save { 
-            width: 100%; padding: 15px; background: var(--success); border: none; 
-            color: white; font-weight: bold; border-radius: 6px; cursor: pointer; 
-            margin-top: 20px; font-size: 1rem; transition: opacity 0.2s;
+            width: 100%; 
+            padding: 15px; 
+            background: var(--success); 
+            border: none; 
+            color: white; 
+            font-weight: bold; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            margin-top: 10px; 
+            font-size: 1rem;
+            transition: filter 0.2s;
         }
-        .btn-save:hover { opacity: 0.9; }
-        
-        .back-link { display: inline-block; margin-bottom: 20px; color: var(--accent); text-decoration: none; font-size: 0.9rem; }
-        #status { margin-top: 20px; text-align: center; font-weight: bold; padding: 10px; border-radius: 6px; display: none; }
+        .btn-save:hover { filter: brightness(1.1); }
+
+        #status { 
+            margin-top: 20px; 
+            text-align: center; 
+            font-size: 0.9rem; 
+            padding: 12px; 
+            border-radius: 6px; 
+            display: none; 
+        }
+
+        /* Error box if JSON fails */
+        .error-box {
+            background: #450a0a;
+            border: 1px solid var(--danger);
+            color: #fca5a5;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <a href="dashboard.html" class="back-link">← Return to Dashboard</a>
+        <a href="dashboard.html" class="back-link">← Return to Command Hub</a>
         
         <div class="card">
-            <h2>Personnel File</h2>
-            <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 30px;">
-                Update your internal registry data. Sensitive fields are encrypted and restricted from public view.
+            <h2>Personnel Record</h2>
+            <p class="description">
+                Update your internal registry data. Sensitive personnel information (Full Name, Phone) is encrypted and restricted from public dashboard views.
             </p>
 
             <form id="settings-form">
                 <div id="form-fields">
-                    <p style="color: var(--accent);">Loading fields from blueprint...</p>
+                    <p style="color: var(--accent); text-align: center;">Establishing link to data blueprint...</p>
                 </div>
-                <button type="submit" class="btn-save">SYNC WITH VAULT</button>
+                <button type="submit" class="btn-save" id="save-btn">SYNC WITH VAULT</button>
             </form>
 
             <div id="status"></div>
@@ -54,7 +132,7 @@
     </div>
 
     <script>
-        // 1. DATA COORDINATES (Ensure these match your index/dashboard exactly)
+        // 1. PROJECT CONFIGURATION
         const SB_URL = 'https://ushgtakupwrlbzzsbivv.supabase.co';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzaGd0YWt1cHdybGJ6enNiaXZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3Mzg3MzAsImV4cCI6MjA5MzMxNDczMH0._A79P3VYFuwvtDeDj6ZX6ortqidkelDQGAAwCcsgNDQ';
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
@@ -62,36 +140,45 @@
         let activeFields = [];
 
         async function initSettings() {
-            console.log("Initializing Personnel Settings...");
+            console.log("System Check: Personnel Settings Initializing...");
 
-            // 2. Auth Check
+            // 2. CHECK AUTHORIZATION
             const { data: { session } } = await _supabase.auth.getSession();
             if (!session) {
-                console.error("No active session found.");
+                console.warn("No valid session. Redirecting to login...");
                 window.location.href = 'index.html';
                 return;
             }
 
             try {
-                // 3. Load the Blueprint
-                console.log("Fetching blueprint from ./src/datafields.json...");
-                const response = await fetch('./src/datafields.json');
-                if (!response.ok) throw new Error("Could not find datafields.json");
-                activeFields = await response.json();
+                // 3. SMART PATH LOGIC
+                // This determines the correct path to the /src/ folder regardless of GitHub subfolders
+                const currentPath = window.location.pathname;
+                const directory = currentPath.substring(0, currentPath.lastIndexOf('/'));
+                const jsonUrl = `${directory}/src/datafields.json`;
+                
+                console.log("Fetching blueprint from:", jsonUrl);
 
-                // 4. Load the Current User Data
-                console.log("Fetching current data from Supabase...");
+                const response = await fetch(jsonUrl);
+                if (!response.ok) {
+                    throw new Error(`Blueprint not found at ${jsonUrl} (Status: ${response.status})`);
+                }
+                
+                activeFields = await response.json();
+                console.log("Blueprint successfully loaded.");
+
+                // 4. FETCH CURRENT PROFILE DATA
                 const { data: profile, error } = await _supabase
                     .from('profiles')
                     .select('*')
                     .eq('id', session.user.id)
                     .single();
 
-                if (error) console.warn("Profile fetch error (this is normal for new users):", error.message);
+                if (error) console.warn("Notice: No existing profile found in vault. Starting new entry.");
 
-                // 5. Build the UI
+                // 5. GENERATE FORM UI
                 const container = document.getElementById('form-fields');
-                container.innerHTML = ''; // Clear the "Loading" text
+                container.innerHTML = ''; // Clear loading text
 
                 activeFields.forEach(field => {
                     const value = profile ? profile[field.id] : '';
@@ -103,7 +190,12 @@
                                 ${field.options.map(opt => `<option value="${opt}" ${value === opt ? 'selected' : ''}>${opt}</option>`).join('')}
                             </select>`;
                     } else {
-                        inputHTML = `<input type="${field.type}" id="input-${field.id}" value="${value || ''}" placeholder="Enter ${field.label}" ${field.required ? 'required' : ''}>`;
+                        inputHTML = `
+                            <input type="${field.type}" 
+                                   id="input-${field.id}" 
+                                   value="${value || ''}" 
+                                   placeholder="Enter ${field.label}" 
+                                   ${field.required ? 'required' : ''}>`;
                     }
 
                     container.innerHTML += `
@@ -113,46 +205,57 @@
                         </div>`;
                 });
 
-                console.log("Form generation complete.");
-
             } catch (err) {
-                console.error("Critical Failure:", err);
-                document.getElementById('form-fields').innerHTML = `<p style="color: #ef4444;">System Error: ${err.message}. Ensure src/datafields.json exists.</p>`;
+                console.error("Critical System Failure:", err);
+                document.getElementById('form-fields').innerHTML = `
+                    <div class="error-box">
+                        <strong>DATA LINK SEVERED</strong><br>
+                        Could not locate <code>src/datafields.json</code>.<br><br>
+                        <small>Attempted Path: ${window.location.origin}${window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'))}/src/datafields.json</small>
+                    </div>`;
+                document.getElementById('save-btn').disabled = true;
+                document.getElementById('save-btn').style.opacity = "0.5";
             }
         }
 
-        // 6. Handle the Update
+        // 6. UPDATE VAULT LOGIC
         document.getElementById('settings-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const status = document.getElementById('status');
-            status.innerText = "Encrypting and Syncing...";
             status.style.display = "block";
             status.style.background = "#1e293b";
             status.style.color = "white";
+            status.innerText = "Encrypting and uploading to Vault...";
 
             const { data: { session } } = await _supabase.auth.getSession();
             const updates = {};
 
+            // Map inputs to data fields
             activeFields.forEach(field => {
                 updates[field.id] = document.getElementById(`input-${field.id}`).value;
             });
 
+            // Push to Supabase
             const { error } = await _supabase
                 .from('profiles')
                 .update(updates)
                 .eq('id', session.user.id);
 
             if (error) {
-                status.innerText = "System Error: " + error.message;
+                status.innerText = "Upload Failed: " + error.message;
                 status.style.background = "#450a0a";
                 status.style.color = "#fca5a5";
             } else {
-                status.innerText = "Personnel File Updated Successfully!";
+                status.innerText = "Personnel File Successfully Updated.";
                 status.style.background = "#064e3b";
                 status.style.color = "#6ee7b7";
+                
+                // Hide message after 3 seconds
+                setTimeout(() => { status.style.display = "none"; }, 3000);
             }
         });
 
+        // Initialize on load
         initSettings();
     </script>
 </body>
