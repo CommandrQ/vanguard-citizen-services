@@ -2,208 +2,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vanguard Command Hub | Access</title>
-    
+    <title>VCS | Login</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <style>
-        :root {
-            --bg: #0f172a;
-            --card: #1e293b;
-            --citizen-accent: #3b82f6;
-            --knight-accent: #ef4444;
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
-        }
+        :root { --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; --text: #f8fafc; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: var(--card); padding: 2rem; border-radius: 8px; width: 350px; border: 1px solid #334155; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 8px 0; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 4px; box-sizing: border-box; }
+        
+        .btn-login { width: 100%; padding: 12px; background: var(--accent); border: none; color: white; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 10px; }
+        .btn-register { width: 100%; padding: 10px; background: transparent; border: 1px solid #475569; color: #94a3b8; cursor: pointer; border-radius: 4px; margin-top: 15px; font-size: 0.8rem; }
+        .btn-register:hover { border-color: var(--accent); color: white; }
 
-        body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            transition: background 0.5s ease;
-        }
-
-        /* The Tactical Container */
-        .login-card {
-            background: var(--card);
-            padding: 2.5rem;
-            border-radius: 12px;
-            border: 1px solid #334155;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-            text-align: center;
-        }
-
-        h2 { margin-bottom: 0.5rem; font-size: 1.5rem; letter-spacing: 0.05em; }
-        p.subtitle { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 2rem; }
-
-        /* The Toggle Switch */
-        .toggle-box {
-            background: #0f172a;
-            padding: 4px;
-            border-radius: 8px;
-            display: flex;
-            margin-bottom: 2rem;
-            border: 1px solid #334155;
-        }
-
-        .toggle-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            background: transparent;
-            color: var(--text-dim);
-            cursor: pointer;
-            font-weight: 600;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-
-        .toggle-btn.active {
-            background: var(--citizen-accent);
-            color: white;
-        }
-
-        /* Knight Mode Overrides */
-        .knight-theme .toggle-btn.active { background: var(--knight-accent); }
-        .knight-theme h2 { color: var(--knight-accent); }
-
-        /* Form Styling */
-        input {
-            width: 100%;
-            padding: 12px 16px;
-            margin-bottom: 1rem;
-            background: #0f172a;
-            border: 1px solid #334155;
-            color: white;
-            border-radius: 6px;
-            box-sizing: border-box;
-            outline: none;
-        }
-
-        input:focus { border-color: var(--citizen-accent); }
-        .knight-theme input:focus { border-color: var(--knight-accent); }
-
-        #submit-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--citizen-accent);
-            border: none;
-            color: white;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: opacity 0.2s;
-        }
-
-        .knight-theme #submit-btn { background: var(--knight-accent); }
-        #submit-btn:hover { opacity: 0.9; }
-
-        /* Error Message Box */
-        #error-box {
-            display: none;
-            margin-top: 1.5rem;
-            padding: 12px;
-            background: #450a0a;
-            border: 1px solid #7f1d1d;
-            border-radius: 6px;
-            color: #fca5a5;
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
-
-        .link-text {
-            color: #60a5fa;
-            text-decoration: underline;
-            cursor: pointer;
-        }
+        #error-msg { color: #fca5a5; font-size: 0.8rem; margin-top: 1rem; display: none; }
     </style>
 </head>
-<body id="main-body">
+<body>
 
-    <div class="login-card">
-        <h2 id="header-title">CITIZEN LOGIN</h2>
-        <p class="subtitle" id="header-desc">Enter your credentials to access the hub.</p>
+<div class="card">
+    <h2>Vanguard Hub</h2>
+    <p style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 20px;">Identity Verification Required</p>
+    
+    <form id="login-form">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit" class="btn-login">AUTHORIZE ENTRY</button>
+    </form>
 
-        <div class="toggle-box">
-            <button class="toggle-btn active" id="btn-citizen" onclick="switchMode('citizen')">Citizen</button>
-            <button class="toggle-btn" id="btn-knight" onclick="switchMode('knight')">Knight</button>
-        </div>
+    <div id="error-msg"></div>
 
-        <form id="login-form">
-            <input type="email" id="email" placeholder="Registry Email" required>
-            <input type="password" id="password" placeholder="Request Access" required>
-            <button type="submit" id="submit-btn">AUTHORIZE ENTRY</button>
-        </form>
+    <hr style="border: 0; border-top: 1px solid #334155; margin: 20px 0;">
+    
+    <p style="font-size: 0.75rem; color: #94a3b8;">New to the Vanguard?</p>
+    <button class="btn-register" onclick="window.location.href='register.html'">REQUEST INDUCTION (REGISTER)</button>
+</div>
 
-        <div id="error-box">
-            </div>
-    </div>
+<script>
+    // USE YOUR ACTUAL KEYS HERE (Since it's on GitHub Pages)
+    const _supabase = supabase.createClient('YOUR_URL', 'YOUR_KEY');
 
-    <script type="module">
-        // 1. Initialization (Vite automatically swaps these for your .env values)
-        const URL = import.meta.env.VITE_SUPABASE_URL;
-        const KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
-        const _supabase = supabase.createClient(URL, KEY);
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const errorDiv = document.getElementById('error-msg');
+        errorDiv.style.display = 'none';
 
-        const form = document.getElementById('login-form');
-        const errorBox = document.getElementById('error-box');
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
-        // 2. The Toggle Logic
-        window.switchMode = (mode) => {
-            const body = document.getElementById('main-body');
-            const title = document.getElementById('header-title');
-            const btnC = document.getElementById('btn-citizen');
-            const btnK = document.getElementById('btn-knight');
+        const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
 
-            if (mode === 'knight') {
-                body.classList.add('knight-theme');
-                btnK.classList.add('active');
-                btnC.classList.remove('active');
-                title.innerText = "KNIGHT COMMAND";
-            } else {
-                body.classList.remove('knight-theme');
-                btnC.classList.add('active');
-                btnK.classList.remove('active');
-                title.innerText = "CITIZEN LOGIN";
-            }
-        };
+        if (error) {
+            // If the user isn't recognized or password is wrong
+            errorDiv.innerText = "Access Denied: " + error.message;
+            errorDiv.style.display = 'block';
+        } else {
+            // Success! Direct to the dashboard
+            window.location.href = 'dashboard.html';
+        }
+    });
+</script>
 
-        // 3. The Login Handshake
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault(); // STOP THE PAGE REFRESH
-            errorBox.style.display = 'none';
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            const { data, error } = await _supabase.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
-
-            if (error) {
-                // FAILURE: Show specific instructions
-                errorBox.innerHTML = `
-                    <strong>ACCESS DENIED:</strong> ${error.message}<br><br>
-                    Credentials not found in the Registry. Please 
-                    <a href="register.html" class="link-text">Register a New Identity</a> or 
-                    <span class="link-text">Contact Support</span> for induction.
-                `;
-                errorBox.style.display = 'block';
-            } else {
-                // SUCCESS: Send to dashboard
-                window.location.href = 'dashboard.html';
-            }
-        });
-    </script>
 </body>
 </html>
