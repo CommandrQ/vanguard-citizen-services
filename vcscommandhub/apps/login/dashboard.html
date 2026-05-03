@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VCS | Command Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        /* SECURITY SHIELD: Hide everything until authorized */
+        body { opacity: 0; transition: opacity 0.5s; background: #0f172a; color: white; }
+        .authorized { opacity: 1 !important; }
+    </style>
+</head>
+<body>
+
+    <div id="app-library">
+        <h1>Vanguard Command Hub</h1>
+        <p>Welcome, <span id="user-name">Citizen</span></p>
+        
+        <div class="grid">
+            <a href="apps/constitution.html">⚖️ Constitution</a>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // 1. Initialize Supabase
+        const URL = import.meta.env.VITE_SUPABASE_URL;
+        const KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+        const _supabase = supabase.createClient(URL, KEY);
+
+        async function checkAccess() {
+            // 2. Ask the Guard for a Badge
+            const { data: { session } } = await _supabase.auth.getSession();
+
+            if (!session) {
+                // NO BADGE: Kick them out to the login page
+                window.location.href = 'index.html'; 
+            } else {
+                // AUTHORIZED: Show the page and set name
+                document.getElementById('user-name').innerText = session.user.email;
+                document.body.classList.add('authorized');
+            }
+        }
+
+        // Run the check immediately
+        checkAccess();
+
+        // Logout Function
+        window.logout = async () => {
+            await _supabase.auth.signOut();
+            window.location.href = 'index.html';
+        };
+    </script>
+</body>
+</html>
