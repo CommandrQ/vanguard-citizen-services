@@ -1,28 +1,183 @@
-/* Ensure nav links don't disappear on wide screens */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: nowrap; /* Prevents wrapping on desktop */
+/* VSR TERMINAL STYLESHEET */
+
+:root {
+    --bg-dark: #0d1117;
+    --bg-window: #161b22;
+    --vcs-amber: #ffcc00;
+    --border-dim: #30363d;
+    --text-main: #ffffff;
 }
 
-nav {
+* { box-sizing: border-box; }
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* HEADER & NAVIGATION */
+.ops-header {
+    text-align: center;
+    padding: 2rem 5% 1.5rem;
+    border-bottom: 1px solid var(--border-dim);
+}
+
+.ops-title {
+    color: var(--vcs-amber);
+    font-size: 2.5rem;
+    margin: 0 0 1.5rem 0;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+}
+
+.ops-nav {
     display: flex;
+    justify-content: center;
     gap: 20px;
-    flex-shrink: 0; /* Prevents the menu from getting squashed */
+    flex-wrap: wrap;
 }
 
-/* Highlight style specifically for the Contact button in the nav */
-nav a[href*="http"] {
-    border: 1px solid var(--vsr-amber);
-    padding: 5px 12px;
-    border-radius: 2px;
-    background: rgba(255, 204, 0, 0.1);
-}
-
-/* Specific button style for Contact in Signal Center */
-.guild-highlight {
-    border: 1px solid var(--vsr-orange) !important;
-    color: var(--vsr-orange) !important;
+.nav-btn {
+    border: 1px solid var(--vcs-amber);
+    padding: 8px 25px;
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 0.9rem;
     font-weight: bold;
+    background: rgba(255, 204, 0, 0.05);
+    transition: all 0.3s ease;
 }
+
+.nav-btn:hover { background: var(--vcs-amber); color: var(--bg-dark); }
+
+/* WELCOME SECTOR */
+.welcome-sector {
+    text-align: center;
+    padding: 3rem 5% 1rem;
+}
+.welcome-sector h2 { letter-spacing: 2px; }
+.welcome-sector p { color: var(--vcs-amber); }
+
+/* TIER GRID */
+.tier-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    padding: 2rem 5% 4rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.tier-card {
+    border: 1px solid var(--border-dim);
+    background: var(--bg-window);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease;
+}
+.tier-card:hover { transform: translateY(-5px); }
+
+.tier-header {
+    background: var(--border-dim);
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.tier-name { text-align: center; color: var(--vcs-amber); margin: 20px 0 5px; }
+.tier-price { text-align: center; font-size: 2.2rem; margin: 0 0 20px; font-weight: bold; }
+
+.tier-specs {
+    list-style: none;
+    padding: 0 25px;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+.tier-specs li { padding: 5px 0; font-size: 0.9rem; border-bottom: 1px solid #222; }
+
+.tier-action-btn {
+    display: block;
+    text-align: center;
+    background: var(--bg-dark);
+    border: 1px solid var(--vcs-amber);
+    color: var(--vcs-amber);
+    padding: 12px;
+    margin: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.tier-action-btn:hover { background: var(--vcs-amber); color: var(--bg-dark); }
+
+.highlight-card { border: 2px solid var(--vcs-amber); }
+.vip-card { border: 1px dashed var(--text-main); }
+.vip-card .tier-header { background: #333; color: var(--text-main); }
+
+/* SIGNAL CENTER */
+.signal-center {
+    text-align: center;
+    padding: 2rem 5% 4rem;
+    background: var(--bg-window);
+    border-top: 1px solid var(--border-dim);
+}
+.signal-center h3 { color: var(--vcs-amber); margin-bottom: 30px; letter-spacing: 2px; }
+
+.signal-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.signal-btn {
+    border: 1px solid var(--text-main);
+    color: var(--text-main);
+    padding: 10px 25px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+.signal-btn:hover { background: var(--text-main); color: var(--bg-dark); }
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border-dim);
+}
+
+/* MODALS */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(13, 17, 23, 0.9);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: var(--bg-window);
+    border: 1px solid var(--vcs-amber);
+    padding: 30px;
+    max-width: 650px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+}
+
+.modal-title { color: var(--vcs-amber); margin-top: 0; margin-bottom: 20px; }
+
+.markdown-box { background: var(--bg-dark); padding: 20px; border: 1px solid var(--border-dim); }
+.markdown-box p, .markdown-box li { color: var(--text-main); font-size: 0.95rem; }
+
+.close-btn { position: absolute; top: 15px; right: 15px; color: var(--vcs-amber); text-decoration: none; font-weight: bold; }
+.close-btn:hover { color: var(--text-main); }
