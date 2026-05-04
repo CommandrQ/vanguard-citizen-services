@@ -1,324 +1,91 @@
-/* VCS MASTER STYLESHEET - v07.G */
-/* UI/UX PHILOSOPHY: TACTICAL CLARITY, MULTIVERSAL COMMAND */
+/* --- NEW UI COMPONENTS: BUTTONS & MODALS --- */
 
-:root {
-    --bg-dark: #0d1117;
-    --bg-card: #161b22;
-    --vcs-amber: #ffcc00;
-    --vcs-orange: #ff5f1f;
-    --vcs-green: #00ff00;
-    --text-main: #e6edf3;
-    --text-muted: #8b949e;
-    --border-dim: #30363d;
+/* Small 'Return to HQ' button */
+.nav-return-btn {
+    border: 1px solid var(--border-dim);
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
 }
 
-* {
-    box-sizing: border-box;
-    scroll-behavior: smooth;
+.nav-return-btn:hover {
+    color: var(--bg-dark);
+    background: var(--text-muted);
 }
 
-body {
-    background-color: var(--bg-dark);
+/* Nav Link Buttons (Invisible styling to look like links) */
+.nav-link-btn {
+    background: none;
+    border: none;
     color: var(--text-main);
     font-family: 'Courier New', Courier, monospace;
-    margin: 0;
-    padding: 0;
-    line-height: 1.6;
-}
-
-/* HEADER & NAVIGATION */
-header {
-    border-bottom: 2px solid var(--vcs-amber);
-    padding: 1rem 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--bg-dark);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    flex-wrap: nowrap;
-}
-
-.logo {
-    color: var(--vcs-amber);
-    font-weight: bold;
-    letter-spacing: 2px;
-    font-size: 1.2rem;
-}
-
-nav {
-    display: flex;
-    gap: 20px;
-    flex-shrink: 0;
-}
-
-nav a {
-    color: var(--text-main);
-    text-decoration: none;
     font-size: 0.8rem;
+    cursor: pointer;
+    padding: 0;
     transition: color 0.3s ease;
 }
 
-nav a:hover {
+.nav-link-btn:hover {
     color: var(--vcs-amber);
 }
 
-/* SMART LINK HIGHLIGHT (For the Contact button in Nav) */
-nav a[href*="http"] {
-    border: 1px solid var(--vcs-amber);
-    padding: 3px 10px;
-    border-radius: 2px;
-    background: rgba(255, 204, 0, 0.1);
-}
-
-/* MAIN TWO-COLUMN HUB LAYOUT */
-.hub-container {
-    display: flex;
-    flex-wrap: wrap;
-    min-height: 80vh;
-}
-
-.sector-title {
-    font-size: 1.2rem;
-    color: var(--vcs-amber);
-    border-bottom: 1px solid var(--vcs-amber);
-    padding-bottom: 10px;
-    margin-top: 0;
-    margin-bottom: 30px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-}
-
-/* LEFT COLUMN: RESOURCES */
-.resources-sector {
-    flex: 1;
-    min-width: 320px;
-    padding: 3rem 5%;
-    border-right: 1px solid var(--border-dim);
-}
-
-.resource-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.resource-item {
-    display: flex;
-    justify-content: space-between;
+/* Modal Overlay (Dark background) */
+.modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(13, 17, 23, 0.9);
+    z-index: 2000;
+    justify-content: center;
     align-items: center;
+    backdrop-filter: blur(3px); /* Tactical blur effect */
+}
+
+/* Modal Content Box */
+.modal-content {
     background: var(--bg-card);
-    padding: 15px 20px;
-    border: 1px solid var(--border-dim);
-    transition: transform 0.2s ease, border-color 0.3s ease;
-}
-
-.resource-item:hover {
-    border-color: var(--vcs-amber);
-    transform: translateX(5px);
-}
-
-.resource-item.highlight {
-    border-left: 3px solid var(--vcs-amber);
-}
-
-.item-info h3 {
-    margin: 0;
-    font-size: 1rem;
-    color: #ffffff;
-    text-transform: uppercase;
-}
-
-.item-info p {
-    margin: 5px 0 0;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-
-.tier-btn {
-    background: var(--border-dim);
-    color: var(--text-main);
-    padding: 10px 20px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 0.8rem;
-    min-width: 90px;
-    text-align: center;
-    transition: background 0.3s ease, color 0.3s ease;
-}
-
-.resource-item:hover .tier-btn {
-    background: var(--vcs-amber);
-    color: var(--bg-dark);
-}
-
-/* OPERATIONAL SIGNALS (Left Column Bottom) */
-.support-links {
-    display: flex;
-    gap: 15px;
-    margin-top: 30px;
-    flex-wrap: wrap;
-}
-
-.comms-btn {
-    padding: 10px 20px;
     border: 1px solid var(--vcs-amber);
+    padding: 30px;
+    max-width: 600px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+.modal-title {
     color: var(--vcs-amber);
-    text-decoration: none;
-    font-size: 0.8rem;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    flex-grow: 1;
-    text-align: center;
-}
-
-.comms-btn:hover {
-    background: var(--vcs-amber);
-    color: var(--bg-dark);
-}
-
-/* RIGHT COLUMN: GUILD NETWORK */
-.guilds-sector {
-    flex: 1;
-    min-width: 320px;
-    padding: 3rem 5%;
-    background: rgba(22, 27, 34, 0.4); /* Slightly different dark tone */
-}
-
-.guild-card {
-    background: var(--bg-dark);
-    border: 1px solid var(--border-dim);
-    padding: 20px;
+    margin-top: 0;
     margin-bottom: 20px;
-    transition: border-color 0.3s ease;
+    border-bottom: 1px dashed var(--border-dim);
+    padding-bottom: 10px;
 }
 
-.guild-card:hover {
-    border-color: var(--vcs-orange);
-}
-
-.guild-header {
-    color: var(--vcs-orange);
-    font-weight: bold;
-    margin-bottom: 10px;
-    font-size: 1rem;
-    text-transform: uppercase;
-}
-
-.guild-card p {
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    color: var(--text-muted);
-}
-
-.contact-btn {
-    display: inline-block;
-    border: 1px solid var(--vcs-orange);
-    color: var(--vcs-orange);
-    padding: 8px 20px;
-    text-decoration: none;
-    font-size: 0.8rem;
-    font-weight: bold;
-    transition: background 0.3s, color 0.3s;
-}
-
-.contact-btn:hover {
-    background: var(--vcs-orange);
-    color: #ffffff;
-}
-
-.guild-card.locked {
-    opacity: 0.6;
-    border: 1px dashed var(--border-dim);
-}
-
-.guild-card.locked:hover {
-    border-color: var(--border-dim);
-}
-
-.guild-card.locked .guild-header {
-    color: var(--text-muted);
-}
-
-/* INFO BLOCKS (Instructions/Privacy) */
-.info-block {
-    padding: 3rem 5%;
-    border-top: 1px solid var(--border-dim);
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.info-block h3 {
-    color: var(--vcs-amber);
-    border-left: 3px solid var(--vcs-amber);
-    padding-left: 15px;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-}
-
-.info-block p {
+.modal-content p {
     font-size: 0.9rem;
     color: var(--text-muted);
-    margin-bottom: 1.5rem;
+    line-height: 1.6;
 }
 
-/* FOOTER */
-footer {
-    text-align: center;
-    padding: 2rem;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    border-top: 1px solid var(--border-dim);
-    letter-spacing: 1px;
+/* Close [X] Button */
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: var(--vcs-orange);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: color 0.2s ease;
 }
 
-/* RESPONSIVE DESIGN (Mobile / Tablet) */
-@media (max-width: 850px) {
-    header {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    nav {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    .resources-sector {
-        border-right: none;
-        border-bottom: 2px solid var(--vcs-amber);
-    }
-    
-    .resource-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-    
-    .tier-btn {
-        width: 100%;
-    }
-}
-/* Scroll Box Functionality for VCS Hub */
-.split-layout {
-    align-items: flex-start; /* Keeps columns at the top */
-}
-
-.scroll-box {
-    max-height: 60vh; /* Limits the height to 60% of the screen */
-    overflow-y: auto; /* Adds a scrollbar only when needed */
-    padding-right: 15px; /* Keeps scrollbar from overlapping text */
-}
-
-/* Custom Tactical Scrollbar */
-.scroll-box::-webkit-scrollbar {
-    width: 6px;
-}
-.scroll-box::-webkit-scrollbar-track {
-    background: #0d1117; 
-}
-.scroll-box::-webkit-scrollbar-thumb {
-    background: #ffcc00; 
-    border-radius: 3px;
+.close-btn:hover {
+    color: #ffffff;
 }
