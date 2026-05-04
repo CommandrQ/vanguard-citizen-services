@@ -3,73 +3,502 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VSR | Tactical Warp Interface</title>
-    <link rel="stylesheet" href="style.css"> 
+    <title>VSR | Vanguard Systems & Remediation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --gold-glow: rgba(212, 175, 55, 0.5);
+            --ambient-glow: rgba(212, 175, 55, 0.2);
+            --dark-glass: rgba(15, 15, 15, 0.95);
+            --border-gold: rgba(212, 175, 55, 0.4);
+            --nav-height: 90px;
+            --footer-height: 85px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: white;
+            overflow: hidden; 
+        }
+
+        /* --- SLOWER STARFIELD ENGINE --- */
+        .stars-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
+            overflow: hidden;
+        }
+        .star-layer {
+            position: absolute;
+            top: -100%; left: 0; width: 200%; height: 200%;
+            background-repeat: repeat;
+            animation: move-stars linear infinite;
+        }
+        .layer-1 { background-image: radial-gradient(1px 1px at 10% 10%, #fff, transparent); background-size: 300px 300px; animation-duration: 180s; opacity: 0.3; }
+        .layer-2 { background-image: radial-gradient(2px 2px at 20% 80%, #fff, transparent); background-size: 400px 400px; animation-duration: 140s; opacity: 0.5; }
+        .layer-3 { background-image: radial-gradient(4px 4px at 40% 40%, #fff, transparent); background-size: 600px 600px; animation-duration: 100s; opacity: 0.7; }
+        @keyframes move-stars { from { transform: translateY(0); } to { transform: translateY(50%); } }
+
+        /* --- UNIFORM NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            height: var(--nav-height);
+            display: flex;
+            align-items: center;
+            background: rgba(0,0,0,0.9);
+            border-bottom: 1px solid var(--border-gold);
+            z-index: 2000;
+            backdrop-filter: blur(20px);
+        }
+
+        .nav-container {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center; 
+            align-items: center;
+            overflow: hidden;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 45px;
+            padding: 0 40px;
+        }
+
+        nav ul li a {
+            text-decoration: none; 
+            color: var(--gold);
+            font-family: 'Cinzel', serif; 
+            font-weight: bold;
+            font-size: 0.9rem; 
+            letter-spacing: 2px;
+            text-transform: uppercase; 
+            transition: 0.4s;
+            white-space: nowrap;
+        }
+        nav ul li a:hover { color: white; text-shadow: 0 0 15px var(--gold); }
+
+        /* --- CONTENT WINDOW --- */
+        .page-content {
+            height: 100vh;
+            height: 100dvh; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: var(--nav-height) 20px var(--footer-height);
+        }
+
+        .glass-panel {
+            background: var(--dark-glass);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--border-gold);
+            border-radius: 20px;
+            padding: 45px 45px 80px 45px; 
+            width: 100%;
+            max-width: 850px;
+            text-align: center;
+            box-shadow: 0 0 100px 5px var(--ambient-glow);
+            max-height: 100%;
+            overflow-y: auto; 
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .glass-panel::-webkit-scrollbar { display: none; }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            letter-spacing: 4px;
+        }
+
+        .divider {
+            height: 1px; width: 80px;
+            background: var(--gold);
+            margin: 0 auto 25px;
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        .intro-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #ececec;
+            font-weight: 300;
+            margin-bottom: 15px;
+        }
+
+        /* TOOLTIP BUTTON */
+        .tooltip-btn {
+            display: inline-block;
+            background: transparent;
+            color: var(--gold);
+            border: 1px dashed var(--gold);
+            padding: 6px 15px;
+            font-size: 0.8rem;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 3px;
+            margin-bottom: 35px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .tooltip-btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+            color: #fff;
+            border-style: solid;
+            box-shadow: 0 0 10px var(--ambient-glow);
+        }
+
+        /* --- VSR TIERS GRID --- */
+        .tier-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .tier-card {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid var(--border-gold);
+            border-left: 4px solid var(--gold);
+            padding: 25px 20px;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            transition: 0.3s ease;
+        }
+        .tier-card:hover { 
+            background: rgba(212, 175, 55, 0.1); 
+            transform: translateY(-3px); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .tier-card h3 { 
+            font-family: 'Cinzel', serif; 
+            color: var(--gold); 
+            font-size: 1.2rem; 
+            margin-bottom: 5px; 
+            letter-spacing: 1px; 
+        }
+
+        .tier-price { font-size: 1.4rem; font-weight: bold; color: #fff; margin-bottom: 15px; font-family: 'Cinzel', serif; }
+
+        .tier-specs { list-style: none; margin-bottom: 20px; flex-grow: 1; }
+        .tier-specs li {
+            font-size: 0.85rem; color: #ccc; margin-bottom: 8px; line-height: 1.4; padding-left: 15px; position: relative;
+        }
+        .tier-specs li::before { content: "✦"; color: var(--gold); position: absolute; left: 0; font-size: 0.8rem; }
+
+        .warranty-tag {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--gold);
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 3px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-gold);
+        }
+
+        /* --- BUTTONS --- */
+        .action-btn {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--gold);
+            color: #ffffff !important;
+            padding: 10px 0;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 3px;
+            transition: 0.3s;
+        }
+        .action-btn:hover { background: var(--gold); color: #000000 !important; box-shadow: 0 0 15px var(--gold-glow); }
+
+        /* --- SIGNAL CENTER --- */
+        .signal-center { border-top: 1px solid var(--border-gold); padding-top: 30px; }
+        .signal-center h3 { font-family: 'Cinzel', serif; color: var(--gold); margin-bottom: 20px; letter-spacing: 2px; }
+        .signal-grid { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .signal-btn {
+            flex: 1; min-width: 250px; padding: 12px 20px; border: 1px dashed var(--gold);
+            background: transparent; color: #ffffff !important; text-decoration: none;
+            font-weight: 600; font-size: 0.9rem; transition: 0.3s;
+        }
+        .signal-btn:hover { background: rgba(212, 175, 55, 0.2); border-style: solid; }
+
+        /* --- MODAL (POP-UP) STYLING --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content-box {
+            background: var(--dark-glass);
+            border: 1px solid var(--gold);
+            padding: 40px;
+            max-width: 650px;
+            width: 90%;
+            position: relative;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.15);
+            text-align: left;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .modal-content-box::-webkit-scrollbar { width: 5px; }
+        .modal-content-box::-webkit-scrollbar-track { background: transparent; }
+        .modal-content-box::-webkit-scrollbar-thumb { background: var(--gold); }
+
+        .modal-title { color: var(--gold); font-family: 'Cinzel', serif; font-size: 1.5rem; margin-bottom: 20px; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; }
+        .close-btn { position: absolute; top: 15px; right: 20px; color: var(--gold); text-decoration: none; font-weight: bold; font-family: 'Inter', sans-serif; transition: 0.3s;}
+        .close-btn:hover { color: #fff; }
+
+        .modal-body-text h4 { color: var(--gold); margin-top: 25px; margin-bottom: 8px; font-family: 'Cinzel', serif; font-size: 1.1rem;}
+        .modal-body-text p { font-size: 0.95rem; color: #ececec; line-height: 1.6; margin-bottom: 15px; }
+        .modal-body-text ul { padding-left: 20px; margin-bottom: 15px;}
+        .modal-body-text li { font-size: 0.9rem; color: #ccc; line-height: 1.5; margin-bottom: 8px; }
+
+        /* --- FOOTER --- */
+        footer {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            height: var(--footer-height);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to top, rgba(0,0,0,1) 70%, transparent);
+            z-index: 2000;
+        }
+        .legal-links { margin-bottom: 8px; }
+        .legal-links a { color: white; text-decoration: none; font-size: 0.8rem; margin: 0 15px; }
+        .copyright { color: var(--gold); font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 2px; }
+
+        /* --- MOBILE OPTIMIZATION --- */
+        @media (max-width: 600px) {
+            .nav-container { justify-content: flex-start; }
+            nav::before, nav::after { content: ""; position: absolute; top: 0; height: 100%; width: 50px; pointer-events: none; z-index: 10; }
+            nav::before { left: 0; background: linear-gradient(to left, transparent, #000); }
+            nav::after { right: 0; background: linear-gradient(to right, transparent, #000); }
+            nav ul { gap: 30px; overflow-x: auto; scrollbar-width: none; width: 100%; padding: 0 30px; }
+            nav ul::-webkit-scrollbar { display: none; }
+            nav ul li a { font-size: 1.1rem; }
+            .glass-panel { padding: 30px 20px 60px 20px; } 
+            h1 { font-size: 2rem; }
+            .intro-text { font-size: 0.9rem; }
+            .tier-grid { grid-template-columns: 1fr; }
+            .modal-content-box { padding: 25px 20px; }
+        }
+    </style>
 </head>
 <body>
-    <canvas id="starfield"></canvas>
 
-    <div class="main-terminal-frame">
-        <header class="vsr-header">
-            <a href="../index.html" class="hq-return-btn">VCS_HQ_RETURN</a>
-        </header>
-
-        <main class="remediation-terminal glass-panel">
-            <section class="terminal-branding">
-                <h1>VSR COMMAND</h1>
-                <h2>SYSTEMS REMEDIATION TERMINAL</h2>
-                <div class="status-indicator">
-                    <span class="status-dot"></span> SECTOR_STATUS: ACTIVE [LOUISVILLE // LJ CORRIDOR]
-                </div>
-            </section>
-
-            <section class="ops-directory">
-                
-                <div class="tier-op-card">
-                    <div class="op-id">MODULE: T1</div>
-                    <h3>DIAGNOSTIC AUDIT</h3>
-                    <p>30–45 Minute Audit. Immediate Quick Fix. Digital Hygiene Check.</p>
-                    <div class="op-price">$25</div>
-                    <a href="mailto:commandrq@gmail.com?subject=[VSR T1 REQUEST] Diagnostic Audit Initialization" class="op-dispatch-btn">SEND DISPATCH</a>
-                </div>
-
-                <div class="tier-op-card">
-                    <div class="op-id">MODULE: T2</div>
-                    <h3>STANDARD SETUP</h3>
-                    <p>1 Hr Deployment. Router/Smart TV Config. Foundation Hardening.</p>
-                    <div class="op-price">$40</div>
-                    <a href="mailto:commandrq@gmail.com?subject=[VSR T2 REQUEST] Standard Setup Initialization" class="op-dispatch-btn">SEND DISPATCH</a>
-                </div>
-
-                <div class="tier-op-card highlight-module">
-                    <div class="op-id">MODULE: T3</div>
-                    <h3>DEEP REMEDIATION</h3>
-                    <p>1.5+ Hr Overhaul. Full Network Hardening. Multi-Device Sync.</p>
-                    <div class="op-price">$55+</div>
-                    <a href="mailto:commandrq@gmail.com?subject=[VSR T3 REQUEST] Deep Remediation Initialization" class="op-dispatch-btn">SEND DISPATCH</a>
-                </div>
-
-                <div class="tier-op-card vip-module">
-                    <div class="op-id">MODULE: VIP</div>
-                    <h3>PROCUREMENT</h3>
-                    <p>In-Store VIP Support. Hardware Procurement. Home Delivery & Install.</p>
-                    <div class="op-price">INQUIRE</div>
-                    <a href="mailto:commandrq@gmail.com?subject=[VSR VIP INQUIRY] Procurement & Delivery" class="op-dispatch-btn">REQUEST INQUIRY</a>
-                </div>
-
-            </section>
-
-            <section class="ops-signals">
-                <a href="mailto:commandrq@gmail.com?subject=[VSR SCHEDULE] Deployment Appointment Request" class="signal-link-btn">SCHEDULE DEPLOYMENT</a>
-                <a href="mailto:commandrq@gmail.com?subject=[VSR SUPPORT] Existing Order HQ Dispatch" class="signal-link-btn">SUPPORT (EXISTING ORDER)</a>
-            </section>
-        </main>
-
-        <footer class="vsr-terminal-footer">
-            VSR | VANGUARD SYSTEMS & REMEDIATION (c) 2026 // COMM_UPLINK: commandrq@gmail.com
-        </footer>
+    <div class="stars-container">
+        <div class="star-layer layer-1"></div>
+        <div class="star-layer layer-2"></div>
+        <div class="star-layer layer-3"></div>
     </div>
 
-    <script src="script.js"></script>
+    <nav>
+        <div class="nav-container">
+            <ul id="main-nav"></ul>
+        </div>
+    </nav>
+
+    <main class="page-content">
+        <div class="glass-panel">
+            <h1>VSR COMMAND</h1>
+            <div class="divider"></div>
+            
+            <p class="intro-text">
+                Welcome to Vanguard Systems & Remediation. Select a support tier below to dispatch a secure mail request to Command HQ. 
+            </p>
+            
+            <a href="javascript:void(0);" class="tooltip-btn" onclick="openModal('modal-scope')">View Scope & Jurisdictions [ ? ]</a>
+
+            <div class="tier-grid">
+                <div class="tier-card">
+                    <h3>Tier 1: Rapid Support</h3>
+                    <div class="tier-price">FREE</div>
+                    <ul class="tier-specs">
+                        <li>Email or Video Call dispatch.</li>
+                        <li>Up to 30 minutes of assistance.</li>
+                        <li>Rapid issue troubleshooting.</li>
+                    </ul>
+                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Tier 1 Rapid Support Request" class="action-btn">Select Tier 1</a>
+                </div>
+
+                <div class="tier-card">
+                    <h3>Tier 2: Diagnostic</h3>
+                    <div class="tier-price">$25</div>
+                    <div class="warranty-tag">14-Day Warranty</div>
+                    <ul class="tier-specs">
+                        <li>30-45 minute deployment.</li>
+                        <li>Standard setup and diagnostic procedures.</li>
+                        <li>Covers workmanship & setup errors.</li>
+                    </ul>
+                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Tier 2 Diagnostic Request" class="action-btn">Select Tier 2</a>
+                </div>
+
+                <div class="tier-card">
+                    <h3>Tier 3: Extended</h3>
+                    <div class="tier-price">$55</div>
+                    <div class="warranty-tag">14-Day Warranty</div>
+                    <ul class="tier-specs">
+                        <li>1 Hour extended deployment.</li>
+                        <li>Advanced setup and deep diagnostic.</li>
+                        <li>Covers workmanship & setup errors.</li>
+                    </ul>
+                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Tier 3 Extended Request" class="action-btn">Select Tier 3</a>
+                </div>
+
+                <div class="tier-card">
+                    <h3>Tier 4: Complex Repair</h3>
+                    <div class="tier-price">$85+</div>
+                    <div class="warranty-tag">14-Day Warranty</div>
+                    <ul class="tier-specs">
+                        <li>2+ Hours extended deployment.</li>
+                        <li>Multi-device synchronization.</li>
+                        <li>Extended light hardware repair.</li>
+                    </ul>
+                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Tier 4 Complex Repair Request" class="action-btn">Select Tier 4</a>
+                </div>
+
+                <div class="tier-card" style="border-color: #fff;">
+                    <h3 style="color: #fff;">VIP TIER</h3>
+                    <div class="tier-price" style="color: var(--gold);">INQUIRE</div>
+                    <div class="warranty-tag">30-Day Warranty</div>
+                    <ul class="tier-specs">
+                        <li>Hardware shopping recommendations.</li>
+                        <li>Home delivery (product dependent).</li>
+                        <li>Basic setup and priority support.</li>
+                    </ul>
+                    <a href="mailto:commandrq@gmail.com?subject=[VSR] VIP Tier Inquiry" class="action-btn" style="border-color: #fff;">Request VIP</a>
+                </div>
+            </div>
+
+            <div class="signal-center">
+                <h3>SIGNAL CENTER</h3>
+                <div class="signal-grid">
+                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Request Installation" class="signal-btn">REQUEST INSTALLATION</a>
+                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Work Order Support" class="signal-btn">WORK ORDER SUPPORT</a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <div class="legal-links">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+        </div>
+        <div class="copyright">VSR &copy; 2026</div>
+    </footer>
+
+    <div id="modal-scope" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-scope')">
+        <div class="modal-content-box">
+            <a href="javascript:void(0);" class="close-btn" onclick="closeModal('modal-scope')">[ X ]</a>
+            <h3 class="modal-title">Operational Scope & Bounds</h3>
+            
+            <div class="modal-body-text">
+                <h4>Physical Jurisdiction</h4>
+                <p>Physical VSR deployments are currently restricted to the counties immediately surrounding <strong>Hardin County</strong> and the <strong>Louisville Metro Area</strong>. Operations requested outside of this active perimeter are subject to travel surcharge rates, or will be strictly limited to Tier 1 Remote Support.</p>
+                
+                <h4>Hardware & Service Limitations</h4>
+                <p>To ensure efficiency and quality, VSR explicitly does <strong>not</strong> perform the following services:</p>
+                <ul>
+                    <li>Board-level micro-soldering.</li>
+                    <li>Liquid damage remediation.</li>
+                    <li>Mobile device screen or battery replacements.</li>
+                    <li>Enterprise-grade server or database administration.</li>
+                </ul>
+
+                <h4>Data Liability Protocol</h4>
+                <p>Digital sovereignty requires operational responsibility. While our technicians exercise extreme caution, VSR is not liable for incidental data loss. <strong>Clients are solely responsible for backing up critical files prior to any physical or remote deployment.</strong></p>
+
+                <h4>Pre-Deployment Checklist</h4>
+                <p>To maximize your operational time, please ensure the following prior to technician arrival:</p>
+                <ul>
+                    <li>Have all necessary administrative passwords written down.</li>
+                    <li>Verify all power and connection cables are easily accessible.</li>
+                    <li>Clear the physical operating space around the hardware.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const navList = document.getElementById('main-nav');
+
+        // Navigation Load
+        async function loadNavigation() {
+            try {
+                const response = await fetch('../json/nav.json'); 
+                const navData = await response.json();
+                navList.innerHTML = '';
+                navData.forEach(item => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<a href="${item.link}">${item.name}</a>`;
+                    navList.appendChild(li);
+                });
+            } catch (error) {
+                navList.innerHTML = `
+                    <li><a href="../index.html">HQ</a></li>
+                    <li><a href="mailto:commandrq@gmail.com?subject=[VSR] General Inquiry">Contact Command</a></li>
+                `;
+            }
+        }
+
+        // Modal Controls
+        function openModal(modalId) { 
+            document.getElementById(modalId).style.display = 'flex'; 
+        }
+
+        function closeModal(modalId) { 
+            document.getElementById(modalId).style.display = 'none'; 
+        }
+
+        function closeModalOnOutsideClick(event, modalId) {
+            const modal = document.getElementById(modalId);
+            // Verify click was exactly on the dark overlay, not the content box inside
+            if (event.target === modal) {
+                closeModal(modalId);
+            }
+        }
+
+        window.onload = () => {
+            loadNavigation();
+        };
+    </script>
 </body>
 </html>
