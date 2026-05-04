@@ -1,1 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tech Help | Vanguard Manual</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Inter&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #D4AF37; }
+        body { background: #000; color: #fff; font-family: 'Inter'; padding: 50px; }
+        h1 { font-family: 'Cinzel'; color: var(--gold); text-align: center; margin-bottom: 50px; }
+        .cat-nav { display: flex; justify-content: center; gap: 20px; margin-bottom: 40px; }
+        .cat-btn { background: none; border: 1px solid var(--gold); color: var(--gold); cursor: pointer; padding: 5px 15px; font-family: 'Cinzel'; text-transform: uppercase; }
+        .help-entry { background: #111; border: 1px solid #333; padding: 20px; margin-bottom: 20px; }
+        .help-entry h3 { color: var(--gold); margin-bottom: 10px; font-family: 'Cinzel'; }
+    </style>
+</head>
+<body>
+    <h1>Field Manual: Tech Help</h1>
+    <div class="cat-nav">
+        <button class="cat-btn" onclick="loadCategory('hardware')">Hardware</button>
+        <button class="cat-btn" onclick="loadCategory('software')">Software</button>
+    </div>
+    <div id="help-container"></div>
 
+    <script>
+        async function loadCategory(cat) {
+            const container = document.getElementById('help-container');
+            container.innerHTML = "Accessing Intel...";
+            try {
+                const res = await fetch(`${cat}.json`);
+                const data = await res.json();
+                container.innerHTML = data.map(entry => `
+                    <div class="help-entry">
+                        <h3>${entry.title}</h3>
+                        <p>${entry.content}</p>
+                    </div>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = "No intel found in this category.";
+            }
+        }
+        window.onload = () => loadCategory('hardware');
+    </script>
+</body>
+</html>
