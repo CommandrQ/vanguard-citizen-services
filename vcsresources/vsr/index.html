@@ -1,1 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VSR | Vanguard Support & Repair</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #D4AF37; --dark: #0a0a0a; --glass: rgba(15, 15, 15, 0.95); --border: rgba(212, 175, 55, 0.4); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: #000; color: white; overflow: hidden; }
+        
+        /* Starfield remains consistent */
+        .stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at center, #111 0%, #000 100%); }
+        
+        nav { height: 80px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: center; backdrop-filter: blur(20px); }
+        nav ul { display: flex; list-style: none; gap: 30px; }
+        nav a { color: var(--gold); text-decoration: none; font-family: 'Cinzel'; font-weight: bold; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; }
 
+        .page-content { display: flex; height: calc(100vh - 80px); gap: 20px; padding: 20px; }
+        .console { flex: 1; background: var(--glass); border: 1px solid var(--border); border-radius: 15px; display: flex; flex-direction: column; overflow: hidden; }
+        .header { padding: 20px; border-bottom: 1px solid rgba(212, 175, 55, 0.2); text-align: center; }
+        .header h2 { font-family: 'Cinzel'; color: var(--gold); letter-spacing: 3px; font-size: 1.2rem; }
+        
+        .scroll-body { flex: 1; overflow-y: auto; padding: 20px; scrollbar-width: none; }
+        .scroll-body::-webkit-scrollbar { display: none; }
+
+        /* Guild Directory UI */
+        .filter-bar { padding: 10px 20px; background: rgba(212, 175, 55, 0.1); display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; }
+        .guild-card { border-left: 3px solid var(--gold); background: rgba(255,255,255,0.03); padding: 15px; margin-bottom: 15px; }
+        .guild-card h4 { font-family: 'Cinzel'; margin-bottom: 5px; }
+        .guild-card p { font-size: 0.8rem; color: #ccc; margin-bottom: 10px; }
+        .guild-links a { color: var(--gold); font-size: 0.7rem; margin-right: 15px; text-decoration: none; border: 1px solid var(--gold); padding: 2px 8px; }
+
+        .loc-btn { background: none; border: 1px solid var(--gold); color: var(--gold); padding: 5px 10px; cursor: pointer; font-size: 0.6rem; text-transform: uppercase; }
+
+        @media (max-width: 900px) { .page-content { flex-direction: column; overflow-y: auto; } .console { height: auto; min-height: 500px; } body { overflow: auto; } }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <nav><ul id="main-nav"></ul></nav>
+
+    <main class="page-content">
+        <div class="console">
+            <div class="header"><h2>Field Support & Repair</h2></div>
+            <div class="scroll-body">
+                <p style="color:var(--gold); margin-bottom: 20px; font-size: 0.9rem;">The Vanguard provides light repair and hardware setup for the individual citizen.</p>
+                <div class="guild-card">
+                    <h4>Desktop Fortification</h4>
+                    <p>Clean setup, thermal repasting, and cable management to ensure long-term hardware health.</p>
+                </div>
+                <div class="guild-card">
+                    <h4>System Initialization</h4>
+                    <p>Operating system setup with a focus on privacy-first configurations and debloating.</p>
+                </div>
+                <div class="guild-card">
+                    <h4>Component Diagnostics</h4>
+                    <p>Identifying hardware gremlins before they cause catastrophic system failure.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="console">
+            <div class="header"><h2>Authorized Guilds</h2></div>
+            <div class="filter-bar">
+                <span id="loc-status">Location: Global</span>
+                <button class="loc-btn" onclick="getLocation()">Scan Local Sector</button>
+            </div>
+            <div class="scroll-body" id="guild-list">
+                </div>
+        </div>
+    </main>
+
+    <script>
+        let allGuilds = [];
+
+        async function loadGuilds() {
+            const res = await fetch('guilds.json');
+            allGuilds = await res.json();
+            renderGuilds(allGuilds);
+            
+            // Load Global Nav
+            const navRes = await fetch('../json/nav.json');
+            const navData = await navRes.json();
+            document.getElementById('main-nav').innerHTML = navData.map(i => `<li><a href="../${i.link}">${i.name}</a></li>`).join('');
+        }
+
+        function renderGuilds(list) {
+            const container = document.getElementById('guild-list');
+            container.innerHTML = list.map(g => `
+                <div class="guild-card">
+                    <span>${g.state}</span>
+                    <h4>${g.name}</h4>
+                    <p>${g.desc}</p>
+                    <div class="guild-links">
+                        ${g.phone ? `<a href="tel:${g.phone}">Call</a>` : ''}
+                        ${g.email ? `<a href="mailto:${g.email}">Email</a>` : ''}
+                        <a href="${g.website}" target="_blank">Intel</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getLocation() {
+            const status = document.getElementById('loc-status');
+            status.innerText = "Scanning Sector...";
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    // In a real app, you'd reverse-geocode here. 
+                    // For now, we simulate finding the state or allow manual choice.
+                    status.innerText = "Location Authorized";
+                    // Filter Logic: If g.state matches detected state...
+                }, () => {
+                    status.innerText = "Scan Denied. Manual override required.";
+                });
+            }
+        }
+        window.onload = loadGuilds;
+    </script>
+</body>
+</html>
