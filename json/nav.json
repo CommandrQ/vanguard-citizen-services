@@ -1,6 +1,6 @@
 [
   { "name": "HQ", "link": "index.html" },
-  { "name": "Operations", "link": "operations.html" },
+  { "name": "Operations", "link": "vcsresources/index.html" },
   { "name": "The Knights", "link": "knights.html" },
   { "name": "Chronicles", "link": "about.html" },
   { "name": "Contact Us", "link": "https://vcscontact.vcscitizen.org/" }
