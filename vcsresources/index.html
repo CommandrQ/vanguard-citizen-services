@@ -3,268 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VCS Resources & Partners HQ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --gold: #D4AF37;
-            --gold-glow: rgba(212, 175, 55, 0.5);
-            --dark-glass: rgba(10, 10, 10, 0.98);
-            --border-gold: rgba(212, 175, 55, 0.4);
-            --nav-height: 90px;
-            --footer-height: 60px;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background-color: #000; color: white; overflow: hidden; }
-
-        /* --- STARFIELD ENGINE --- */
-        .stars-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at center, #111 0%, #000 100%); overflow: hidden; }
-        .star-layer { position: absolute; top: -100%; left: 0; width: 200%; height: 200%; background-repeat: repeat; animation: move-stars 100s linear infinite; }
-        .layer-1 { background-image: radial-gradient(1px 1px at 10% 10%, #fff, transparent); background-size: 300px 300px; opacity: 0.3; }
-        @keyframes move-stars { from { transform: translateY(0); } to { transform: translateY(50%); } }
-
-        /* --- HUD NAVIGATION --- */
-        nav { position: fixed; top: 0; width: 100%; height: var(--nav-height); display: flex; align-items: center; background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--border-gold); z-index: 2000; backdrop-filter: blur(20px); }
-        .nav-container { position: relative; width: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-        nav ul { display: flex; list-style: none; gap: 40px; padding: 0 40px; overflow-x: auto; scrollbar-width: none; }
-        nav ul::-webkit-scrollbar { display: none; }
-        nav ul li a { text-decoration: none; color: var(--gold); font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; white-space: nowrap; transition: 0.4s; }
-        nav ul li a:hover { color: white; text-shadow: 0 0 15px var(--gold); }
-
-        .scroll-hint { position: absolute; color: var(--gold); font-size: 1.2rem; pointer-events: none; z-index: 2001; opacity: 0; transition: 0.3s; }
-        #hint-right { right: 15px; animation: pulse-right 2s infinite; }
-        #hint-left { left: 15px; animation: pulse-left 2s infinite; }
-        @keyframes pulse-right { 0%, 100% { opacity: 0; transform: translateX(0); } 50% { opacity: 1; transform: translateX(5px); } }
-        @keyframes pulse-left { 0%, 100% { opacity: 0; transform: translateX(0); } 50% { opacity: 1; transform: translateX(-5px); } }
-
-        /* --- DUAL CONSOLE LAYOUT --- */
-        .page-content {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 25px;
-            padding: var(--nav-height) 30px var(--footer-height);
-        }
-
-        .console-panel {
-            flex: 1;
-            background: var(--dark-glass);
-            border: 1px solid var(--border-gold);
-            border-radius: 20px;
-            height: 100%;
-            max-height: 700px;
-            max-width: 600px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8);
-            position: relative;
-        }
-
-        /* Scanning HUD effect */
-        .console-panel::before {
-            content: ""; position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(transparent, rgba(212, 175, 55, 0.03), transparent);
-            animation: scan 5s linear infinite; pointer-events: none;
-        }
-        @keyframes scan { from { top: -100%; } to { top: 100%; } }
-
-        .console-header { padding: 20px; border-bottom: 1px solid rgba(212, 175, 55, 0.2); text-align: center; background: rgba(212, 175, 55, 0.05); }
-        .console-header h2 { font-family: 'Cinzel', serif; color: var(--gold); letter-spacing: 4px; font-size: 1.3rem; text-transform: uppercase; }
-
-        .scroll-body { flex: 1; overflow-y: auto; padding: 25px; scrollbar-width: none; }
-        .scroll-body::-webkit-scrollbar { display: none; }
-
-        /* Filter Bar */
-        .filter-bar { padding: 12px 20px; background: rgba(212, 175, 55, 0.1); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.1); }
-        .filter-bar p { font-size: 0.65rem; color: #888; font-style: italic; max-width: 65%; }
-        .action-btn { background: none; border: 1px solid var(--gold); color: var(--gold); padding: 4px 10px; cursor: pointer; font-family: 'Cinzel'; font-size: 0.6rem; text-transform: uppercase; transition: 0.3s; }
-        .action-btn:hover { background: var(--gold); color: #000; }
-
-        /* Card Styling */
-        .card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(212, 175, 55, 0.1);
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: 0.3s;
-        }
-        .card:hover { border-color: var(--gold); background: rgba(212, 175, 55, 0.05); }
-        .card h4 { font-family: 'Cinzel', serif; color: #fff; margin-bottom: 8px; font-size: 1.1rem; }
-        .card p { font-size: 0.85rem; color: #ccc; line-height: 1.6; margin-bottom: 12px; }
-        .card .tag { font-size: 0.65rem; color: var(--gold); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 5px; }
-
-        .btn-link { 
-            display: inline-block; color: var(--gold); text-decoration: none; border: 1px solid var(--gold); 
-            padding: 5px 12px; font-size: 0.65rem; text-transform: uppercase; font-weight: bold; transition: 0.3s;
-        }
-        .btn-link:hover { background: var(--gold); color: black; box-shadow: 0 0 10px var(--gold); }
-
-        footer { position: fixed; bottom: 0; width: 100%; height: var(--footer-height); display: flex; justify-content: center; align-items: center; background: #000; border-top: 1px solid var(--border-gold); }
-        .copyright { color: var(--gold); font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 2px; }
-
-        /* Error Text */
-        .error-text { color: #ff4c4c; font-size: 0.85rem; line-height: 1.5; border-left: 2px solid #ff4c4c; padding-left: 10px; }
-
-        /* Responsive Mobile Layout */
-        @media (max-width: 900px) {
-            .page-content { flex-direction: column; overflow-y: auto; height: auto; padding-top: 110px; }
-            .console-panel { max-height: none; width: 100%; margin-bottom: 20px; }
-            body { overflow-y: auto; }
-        }
-    </style>
+    <title>VSR | Vanguard Systems & Remediation</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <header>
+        <div class="logo">VSR_SYSTEMS_v05.E</div>
+        <nav>
+            <a href="../../index.html">VCS_ROOT</a>
+            <a href="https://your-guild-website.com" class="nav-contact">CONTACT</a> 
+            <a href="#instructions">INSTRUCTIONS</a>
+            <a href="#privacy">PRIVACY</a>
+        </nav>
+    </header>
 
-    <div class="stars-container">
-        <div class="star-layer layer-1"></div>
-    </div>
+    <main>
+        <section class="welcome-sector">
+            <h1>SYSTEMS ACCESS GRANTED</h1>
+            <p>Welcome to VSR. Choose a remediation tier to initialize your deployment.</p>
+            <div class="status-indicator">
+                <span class="pulse-green"></span> SYSTEM: ONLINE | SECTOR: KY-CORRIDOR-04
+            </div>
+        </section>
 
-    <nav>
-        <div class="nav-container">
-            <span id="hint-left" class="scroll-hint">❮</span>
-            <ul id="main-nav"></ul>
-            <span id="hint-right" class="scroll-hint">❯</span>
-        </div>
-    </nav>
+        <section class="menu-grid">
+            <div class="tier-card">
+                <div class="tier-header">TIER I</div>
+                <h2>DIAGNOSTIC</h2>
+                <p class="price">$25</p>
+                <ul class="specs">
+                    <li>30-45 Minute Audit</li>
+                    <li>Quick Issue Resolution</li>
+                    <li>Digital Hygiene Check</li>
+                </ul>
+                <a href="mailto:commandrq@gmail.com?subject=[TIER-1-REQUEST] Diagnostic Assessment" class="btn-select">SELECT TIER I</a>
+            </div>
 
-    <main class="page-content">
-        <div class="console-panel">
-            <div class="console-header"><h2>VCS Resources</h2></div>
-            <div class="filter-bar">
-                <p>Internal intelligence, field manuals, and operational guides.</p>
+            <div class="tier-card">
+                <div class="tier-header">TIER II</div>
+                <h2>STANDARD SETUP</h2>
+                <p class="price">$40</p>
+                <ul class="specs">
+                    <li>1 Hour Deployment</li>
+                    <li>Router/Smart TV Setup</li>
+                    <li>Foundation Hardening</li>
+                </ul>
+                <a href="mailto:commandrq@gmail.com?subject=[TIER-2-REQUEST] Standard Setup" class="btn-select">SELECT TIER II</a>
             </div>
-            <div class="scroll-body" id="resource-list">
-                <p style="color:var(--gold); opacity:0.7;">Decrypting records...</p>
-            </div>
-        </div>
 
-        <div class="console-panel">
-            <div class="console-header"><h2>Authorized Partners</h2></div>
-            <div class="filter-bar">
-                <p>Location scanning is used to identify local providers. Coordinates are not logged.</p>
-                <button class="action-btn" onclick="getLocation()">Scan Sector</button>
+            <div class="tier-card highlight">
+                <div class="tier-header">TIER III</div>
+                <h2>DEEP REMEDIATION</h2>
+                <p class="price">$55+</p>
+                <ul class="specs">
+                    <li>1.5+ Hour Deep Dive</li>
+                    <li>Full Network Overhaul</li>
+                    <li>Multi-Device Sync</li>
+                </ul>
+                <a href="mailto:commandrq@gmail.com?subject=[TIER-3-REQUEST] Deep Remediation" class="btn-select">SELECT TIER III</a>
             </div>
-            <div class="scroll-body" id="guild-list">
-                <p style="color:var(--gold); opacity:0.7;">Scanning for local Guilds...</p>
+
+            <div class="tier-card vip">
+                <div class="tier-header">VIP</div>
+                <h2>PROCUREMENT</h2>
+                <p class="price">INQUIRE</p>
+                <ul class="specs">
+                    <li>In-Store VIP Support</li>
+                    <li>Hardware Procurement</li>
+                    <li>Home Delivery & Setup</li>
+                </ul>
+                <a href="mailto:commandrq@gmail.com?subject=[VIP-REQUEST] Procurement & Delivery" class="btn-select">REQUEST VIP</a>
             </div>
-        </div>
+        </section>
+
+        <section class="comms-hub">
+            <h3>SIGNAL CENTER</h3>
+            <div class="button-row">
+                <a href="mailto:commandrq@gmail.com?subject=[SCHEDULE] Deployment Request" class="comms-btn">SCHEDULE APPOINTMENT</a>
+                <a href="mailto:commandrq@gmail.com?subject=[SUPPORT] Existing Order Assistance" class="comms-btn">SUPPORT (EXISTING ORDER)</a>
+                <a href="https://your-guild-website.com" class="comms-btn guild-highlight">CONTACT</a>
+            </div>
+        </section>
+
+        <section id="instructions" class="info-block">
+            <h3>INSTRUCTIONS / FAQ</h3>
+            <p><strong>Step 1:</strong> Select the Tier that matches your needs (Diagnostic, Setup, or Deep Remediation).</p>
+            <p><strong>Step 2:</strong> Your email client will open with a pre-filled subject line. Do not change this; it helps our automated routing system.</p>
+            <p><strong>Step 3:</strong> An operator will respond within 24 hours to finalize your time slot and location.</p>
+            <p><strong>Existing Work?</strong> If you have an open order, use the "SUPPORT" button in the Signal Center.</p>
+        </section>
+
+        <section id="privacy" class="info-block">
+            <h3>PRIVACY POLICY</h3>
+            <p>VSR operates on a zero-retention policy. No personal information is saved, tracked, or stored through this web interface. All business is conducted through external encrypted email. While using this portal, you are bound by the terms and conditions of your email provider and GitHub Pages.</p>
+        </section>
     </main>
 
     <footer>
-        <div class="copyright">Vanguard Citizen Services // Operational HQ</div>
+        <p>VSR (c) 2026 | SOVEREIGNTY THROUGH SYSTEMS | REPAIR SERVICES: REFERRAL_ONLY</p>
     </footer>
 
-    <script>
-        const navList = document.getElementById('main-nav');
-        const hLeft = document.getElementById('hint-left');
-        const hRight = document.getElementById('hint-right');
-
-        async function init() {
-            // 1. Load Global Navigation (Looking OUTSIDE the vcsresources folder)
-            try {
-                const nRes = await fetch('../json/nav.json');
-                if(!nRes.ok) throw new Error("Nav file not found.");
-                const nData = await nRes.json();
-                navList.innerHTML = nData.map(i => `<li><a href="../${i.link}">${i.name}</a></li>`).join('');
-                updateHints();
-            } catch(e) {
-                console.warn("Navigation fallback deployed.");
-                navList.innerHTML = `<li><a href="../index.html">HQ Home</a></li>`;
-            }
-
-            // 2. Load Resources (Looking INSIDE the vcsresources/json folder)
-            try {
-                const rRes = await fetch('json/resources.json');
-                if(!rRes.ok) throw new Error(`HTTP Error: ${rRes.status}`);
-                const rData = await rRes.json();
-                
-                document.getElementById('resource-list').innerHTML = rData.map(r => `
-                    <div class="card">
-                        <span class="tag">Field Manual</span>
-                        <h4>${r.title}</h4>
-                        <p>${r.desc}</p>
-                        <a href="${r.path}" class="btn-link">Access Protocol</a>
-                    </div>
-                `).join('');
-            } catch(e) {
-                document.getElementById('resource-list').innerHTML = `
-                    <div class="error-text">
-                        <strong>Link Severed: json/resources.json</strong><br>
-                        ${e.message} <br>
-                        <em>Ensure you are using a local server (like Live Server) and not just opening the HTML file directly.</em>
-                    </div>`;
-            }
-
-            // 3. Load Guilds (Looking INSIDE the vcsresources/json folder)
-            loadGuilds();
-        }
-
-        async function loadGuilds(filterState = null) {
-            try {
-                const gRes = await fetch('json/guilds.json');
-                if(!gRes.ok) throw new Error(`HTTP Error: ${gRes.status}`);
-                const gData = await gRes.json();
-                
-                let filtered = gData;
-                if(filterState) {
-                    filtered = gData.filter(g => g.state.toLowerCase() === filterState.toLowerCase());
-                }
-
-                if (filtered.length === 0) {
-                    document.getElementById('guild-list').innerHTML = `<p>No authorized guilds found in the selected sector.</p>`;
-                    return;
-                }
-
-                document.getElementById('guild-list').innerHTML = filtered.map(g => `
-                    <div class="card">
-                        <span class="tag">${g.state} Sector</span>
-                        <h4>${g.name}</h4>
-                        <p>${g.desc}</p>
-                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                            ${g.phone ? `<a href="tel:${g.phone}" class="btn-link">Comms</a>` : ''}
-                            ${g.email ? `<a href="mailto:${g.email}" class="btn-link">Email</a>` : ''}
-                            ${g.website ? `<a href="${g.website}" target="_blank" class="btn-link">Intel</a>` : ''}
-                        </div>
-                    </div>
-                `).join('');
-            } catch(e) {
-                document.getElementById('guild-list').innerHTML = `
-                    <div class="error-text">
-                        <strong>Link Severed: json/guilds.json</strong><br>
-                        ${e.message} <br>
-                        <em>Check for typos in the JSON file or ensure you are running on a local server.</em>
-                    </div>`;
-            }
-        }
-
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    // Placeholder for future geo-filtering
-                    alert("Scanning Local Sector... Coordinate Sync complete.");
-                }, () => {
-                    alert("Coordinate Sync Denied. Displaying global directory.");
-                });
-            } else {
-                alert("Geo-location hardware not detected.");
-            }
-        }
-
-        function updateHints() {
-            if(window.innerWidth > 600) return;
-            const sL = navList.scrollLeft;
-            const mS = navList.scrollWidth - navList.clientWidth;
-            hLeft.style.opacity = (sL > 15) ? "1" : "0";
-            hRight.style.opacity = (sL < mS - 15) ? "1" : "0";
-        }
-
-        navList.addEventListener('scroll', updateHints);
-        window.addEventListener('resize', updateHints);
-        window.onload = init;
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
