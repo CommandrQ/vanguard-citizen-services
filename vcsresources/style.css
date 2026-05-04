@@ -1,34 +1,16 @@
-/* --- NEW UI COMPONENTS: BUTTONS & MODALS --- */
+/* --- UI COMPONENTS: NAVIGATION & MODALS --- */
 
 /* Small 'Return to HQ' button */
 .nav-return-btn {
     border: 1px solid var(--border-dim);
-    padding: 5px 10px;
+    padding: 3px 8px;
     border-radius: 3px;
-    font-size: 0.75rem;
     color: var(--text-muted);
-    transition: all 0.2s ease;
 }
 
 .nav-return-btn:hover {
-    color: var(--bg-dark);
     background: var(--text-muted);
-}
-
-/* Nav Link Buttons (Invisible styling to look like links) */
-.nav-link-btn {
-    background: none;
-    border: none;
-    color: var(--text-main);
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.8rem;
-    cursor: pointer;
-    padding: 0;
-    transition: color 0.3s ease;
-}
-
-.nav-link-btn:hover {
-    color: var(--vcs-amber);
+    color: var(--bg-dark);
 }
 
 /* Modal Overlay (Dark background) */
@@ -37,13 +19,13 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(13, 17, 23, 0.9);
-    z-index: 2000;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(13, 17, 23, 0.85); /* Dark transparent background */
+    z-index: 9999; /* Forces it to the absolute front */
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(3px); /* Tactical blur effect */
+    backdrop-filter: blur(4px);
 }
 
 /* Modal Content Box */
@@ -54,7 +36,7 @@
     max-width: 600px;
     width: 90%;
     position: relative;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
 }
 
 .modal-title {
@@ -71,19 +53,16 @@
     line-height: 1.6;
 }
 
-/* Close [X] Button */
+/* Close [X] Link */
 .close-btn {
     position: absolute;
     top: 15px;
     right: 15px;
-    background: none;
-    border: none;
     color: var(--vcs-orange);
     font-family: 'Courier New', Courier, monospace;
     font-size: 0.9rem;
-    cursor: pointer;
+    text-decoration: none;
     font-weight: bold;
-    transition: color 0.2s ease;
 }
 
 .close-btn:hover {
