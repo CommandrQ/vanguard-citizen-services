@@ -3,269 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Citizen Services | Vanguard Citizen Services</title>
+    <title>VCS | Ops Center</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --gold: #D4AF37;
-            --gold-glow: rgba(212, 175, 55, 0.5);
-            --ambient-glow: rgba(212, 175, 55, 0.2);
-            --dark-glass: rgba(15, 15, 15, 0.95);
-            --border-gold: rgba(212, 175, 55, 0.4);
-            --nav-height: 90px;
-            --footer-height: 85px;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background-color: #000; color: white; overflow: hidden; }
-
-        /* --- STARFIELD ENGINE (Synced with Root) --- */
-        .stars-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at center, #111 0%, #000 100%); overflow: hidden; }
-        .star-layer { position: absolute; top: -100%; left: 0; width: 200%; height: 200%; background-repeat: repeat; animation: move-stars linear infinite; }
-        .layer-1 { background-image: radial-gradient(1px 1px at 10% 10%, #fff, transparent); background-size: 300px 300px; animation-duration: 120s; opacity: 0.3; }
-        .layer-2 { background-image: radial-gradient(2px 2px at 20% 80%, #fff, transparent); background-size: 400px 400px; animation-duration: 80s; opacity: 0.5; }
-        .layer-3 { background-image: radial-gradient(4px 4px at 40% 40%, #fff, transparent); background-size: 600px 600px; animation-duration: 40s; opacity: 0.7; }
-        @keyframes move-stars { from { transform: translateY(0); } to { transform: translateY(50%); } }
-
-        /* --- HUD NAVIGATION (Synced with Root) --- */
-        nav { position: fixed; top: 0; width: 100%; height: var(--nav-height); display: flex; align-items: center; background: rgba(0,0,0,0.9); border-bottom: 1px solid var(--border-gold); z-index: 2000; backdrop-filter: blur(20px); }
-        .nav-container { position: relative; width: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-        nav ul { display: flex; list-style: none; gap: 45px; padding: 0 40px; scroll-behavior: smooth; }
-        nav ul::-webkit-scrollbar { display: none; }
-        nav ul li a { text-decoration: none; color: var(--gold); font-family: 'Cinzel', serif; font-weight: bold; font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap; transition: 0.4s; }
-        nav ul li a:hover { color: white; text-shadow: 0 0 15px var(--gold); }
-
-        .scroll-hint { position: absolute; color: var(--gold); font-size: 1.2rem; pointer-events: none; z-index: 2001; opacity: 0; transition: 0.3s; }
-        #hint-right { right: 15px; animation: pulse-right 2s infinite; }
-        #hint-left { left: 15px; animation: pulse-left 2s infinite; }
-        @keyframes pulse-right { 0%, 100% { opacity: 0; transform: translateX(0); } 50% { opacity: 1; transform: translateX(5px); } }
-        @keyframes pulse-left { 0%, 100% { opacity: 0; transform: translateX(0); } 50% { opacity: 1; transform: translateX(-5px); } }
-
-        /* --- DUAL CONSOLE LAYOUT --- */
-        .page-content {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
-            padding: var(--nav-height) 40px var(--footer-height);
-        }
-
-        .console-panel {
-            flex: 1;
-            background: var(--dark-glass);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid var(--border-gold);
-            border-radius: 20px;
-            height: 100%;
-            max-height: 650px;
-            max-width: 550px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 0 50px var(--ambient-glow);
-            position: relative;
-        }
-
-        /* Scanning Line Animation */
-        .console-panel::before {
-            content: ""; position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(transparent, rgba(212, 175, 55, 0.05), transparent);
-            animation: scan 4s linear infinite; pointer-events: none;
-        }
-        @keyframes scan { from { top: -100%; } to { top: 100%; } }
-
-        .console-header { padding: 25px; border-bottom: 1px solid rgba(212, 175, 55, 0.2); text-align: center; }
-        .console-header h2 { font-family: 'Cinzel', serif; color: var(--gold); letter-spacing: 4px; font-size: 1.4rem; text-transform: uppercase; }
-
-        .scroll-body { flex: 1; overflow-y: auto; padding: 25px; scrollbar-width: none; }
-        .scroll-body::-webkit-scrollbar { display: none; }
-
-        /* Location Bar */
-        .loc-bar { padding: 15px 25px; background: rgba(212, 175, 55, 0.05); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 175, 55, 0.1); }
-        .loc-bar p { font-size: 0.7rem; color: #aaa; font-style: italic; max-width: 65%; line-height: 1.4; }
-        .loc-btn { background: none; border: 1px solid var(--gold); color: var(--gold); padding: 6px 12px; cursor: pointer; font-family: 'Cinzel', serif; font-weight: bold; font-size: 0.65rem; text-transform: uppercase; transition: 0.3s; }
-        .loc-btn:hover { background: var(--gold); color: black; box-shadow: 0 0 10px var(--gold); }
-
-        /* Content Cards */
-        .card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(212, 175, 55, 0.1);
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: 0.3s;
-        }
-        .card:hover { border-color: var(--gold); background: rgba(212, 175, 55, 0.06); }
-        .card h4 { font-family: 'Cinzel', serif; color: white; font-size: 1.2rem; margin-bottom: 8px; }
-        .card p { font-size: 0.9rem; color: #ccc; line-height: 1.6; margin-bottom: 15px; font-weight: 300; }
-        .card .tag { font-size: 0.7rem; color: var(--gold); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 5px; letter-spacing: 1px; }
-
-        .btn-link { display: inline-block; color: var(--gold); text-decoration: none; border: 1px solid var(--gold); padding: 5px 15px; font-size: 0.7rem; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
-        .btn-link:hover { background: var(--gold); color: black; box-shadow: 0 0 10px var(--gold); }
-
-        /* --- FOOTER (Synced with Root) --- */
-        footer { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--footer-height); display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(to top, rgba(0,0,0,1) 70%, transparent); z-index: 2000; }
-        .legal-links { margin-bottom: 8px; }
-        .legal-links a { color: white; text-decoration: none; font-size: 0.8rem; margin: 0 15px; }
-        .copyright { color: var(--gold); font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 2px; }
-
-        /* --- MOBILE HUD OPTIMIZATION --- */
-        @media (max-width: 900px) {
-            .page-content { flex-direction: column; overflow-y: auto; padding: 110px 20px 100px; height: auto; min-height: 100vh; }
-            .console-panel { max-height: none; width: 100%; margin-bottom: 20px; }
-            body { overflow-y: auto; }
-        }
-
-        @media (max-width: 600px) {
-            .nav-container { justify-content: flex-start; }
-            nav::before, nav::after { content: ""; position: absolute; top: 0; height: 100%; width: 50px; z-index: 10; pointer-events: none; }
-            nav::before { left: 0; background: linear-gradient(to left, transparent, #000); }
-            nav::after { right: 0; background: linear-gradient(to right, transparent, #000); }
-            nav ul { gap: 30px; overflow-x: auto; width: 100%; padding: 0 30px; }
-            nav ul li a { font-size: 1.1rem; }
-            
-            footer { flex-direction: row; white-space: nowrap; }
-            .legal-links { margin-bottom: 0; display: flex; align-items: center; }
-            .legal-links a { font-size: 0.65rem; margin: 0 8px; }
-            .legal-links::after { content: "|"; color: var(--gold); margin-right: 10px; font-size: 0.7rem; }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <div class="stars-container">
         <div class="star-layer layer-1"></div>
         <div class="star-layer layer-2"></div>
         <div class="star-layer layer-3"></div>
     </div>
 
-    <nav>
-        <div class="nav-container">
-            <span id="hint-left" class="scroll-hint">❮</span>
-            <ul id="main-nav"></ul>
-            <span id="hint-right" class="scroll-hint">❯</span>
-        </div>
-    </nav>
+    <header class="ops-header">
+        <h1 class="ops-title">VCS Ops Center</h1>
+        <nav class="ops-nav">
+            <a href="../index.html" class="nav-btn">HQ</a>
+            <a href="javascript:void(0);" onclick="openModal('modal-instructions')" class="nav-btn">INSTRUCTIONS</a>
+            <a href="javascript:void(0);" onclick="openModal('modal-privacy')" class="nav-btn">PRIVACY</a>
+        </nav>
+    </header>
 
-    <main class="page-content">
-        <div class="console-panel">
-            <div class="console-header"><h2>Citizen Resources</h2></div>
-            <div class="scroll-body" id="resource-list">
-                </div>
-        </div>
-
-        <div class="console-panel">
-            <div class="console-header"><h2>Authorized Guilds</h2></div>
-            <div class="loc-bar">
-                <p>Location scanning is used to identify local providers. VCS does not log or store coordinates.</p>
-                <button class="loc-btn" onclick="getLocation()">Scan Sector</button>
+    <main class="windows-container">
+        <section class="window-pane">
+            <div class="window-header">RESOURCE_DIRECTORY</div>
+            <div id="resources-container" class="window-content scroll-box">
+                <p style="color: var(--gold);">[ INITIALIZING RESOURCE DATA... ]</p>
             </div>
-            <div class="scroll-body" id="guild-list">
-                </div>
-        </div>
+        </section>
+
+        <section class="window-pane">
+            <div class="window-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <span>AUTHORIZED_PARTNERS</span>
+                <button id="sort-btn" class="nav-btn sort-toggle-btn" onclick="toggleSort()">SORT: DEFAULT</button>
+            </div>
+            <div id="guilds-container" class="window-content scroll-box">
+                <p style="color: var(--gold);">[ ESTABLISHING GUILD UPLINK... ]</p>
+            </div>
+        </section>
     </main>
 
     <footer>
-        <div class="legal-links">
-            <a href="../privacy.html">Privacy</a>
-            <a href="../terms.html">Terms</a>
-        </div>
-        <div class="copyright">VCS &copy; 2026 | Protect. Empower. Elevate.</div>
+        <div class="copyright">VANGUARD CITIZEN SERVICES (c) 2026 | SECTOR: COMMAND_HUB</div>
     </footer>
 
-    <script>
-        const navList = document.getElementById('main-nav');
-        const hLeft = document.getElementById('hint-left');
-        const hRight = document.getElementById('hint-right');
+    <div id="modal-instructions" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-instructions')">
+        <div class="modal-content">
+            <a href="javascript:void(0);" class="close-btn" onclick="closeModal('modal-instructions')">[X] CLOSE</a>
+            <h3 class="modal-title">INSTRUCTIONS</h3>
+            <div class="markdown-box">
+                <p><strong># NAVIGATION PROTOCOL</strong></p>
+                <p>Welcome, Operator. This terminal is divided into two primary categories:</p>
+                <ul>
+                    <li><strong>Resources:</strong> Internal guides, manuals, and operational protocols.</li>
+                    <li><strong>Partners:</strong> Authorized external Guild networks.</li>
+                </ul>
+                <p><em>> Click the 'SORT' button above the Partners list to cycle through Default, Alphabetical (A-Z), and State-based sorting.</em></p>
+            </div>
+        </div>
+    </div>
 
-        async function init() {
-            // 1. Load Master Navigation (Resolves to root folder)
-            try {
-                const nRes = await fetch('../json/nav.json');
-                const nData = await nRes.json();
-                
-                // Adjust links to point to root, except for current directory
-                navList.innerHTML = nData.map(item => {
-                    const isRootLink = item.link.includes('.html') && !item.link.includes('/');
-                    const href = isRootLink ? `../${item.link}` : item.link;
-                    return `<li><a href="${href}">${item.name}</a></li>`;
-                }).join('');
-                updateHints();
-            } catch(e) {
-                console.error("Nav Link Failed:", e);
-            }
+    <div id="modal-privacy" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-privacy')">
+        <div class="modal-content">
+            <a href="javascript:void(0);" class="close-btn" onclick="closeModal('modal-privacy')">[X] CLOSE</a>
+            <h3 class="modal-title">PRIVACY_POLICY</h3>
+            <div class="markdown-box">
+                <p><strong># DATA & LOCATION PROTOCOLS</strong></p>
+                <p>Vanguard Citizen Services operates on a strict digital sovereignty framework. No operational habits or metrics are retained by this terminal.</p>
+            </div>
+        </div>
+    </div>
 
-            // 2. Load Resources (Internal)
-            try {
-                const rRes = await fetch('json/resources.json');
-                const rData = await rRes.json();
-                document.getElementById('resource-list').innerHTML = rData.map(r => `
-                    <div class="card">
-                        <span class="tag">Internal Protocol</span>
-                        <h4>${r.title}</h4>
-                        <p>${r.desc}</p>
-                        <a href="${r.path}" class="btn-link">Access Module</a>
-                    </div>
-                `).join('');
-            } catch(e) {
-                document.getElementById('resource-list').innerHTML = "<p style='color:red;'>Intelligence Feed Offline.</p>";
-            }
-
-            // 3. Load Guilds (External)
-            loadGuilds();
-        }
-
-        async function loadGuilds(filterState = null) {
-            try {
-                const gRes = await fetch('json/guilds.json');
-                const gData = await gRes.json();
-                let filtered = gData;
-                
-                if(filterState) {
-                    filtered = gData.filter(g => g.state.toLowerCase() === filterState.toLowerCase());
-                }
-
-                document.getElementById('guild-list').innerHTML = filtered.map(g => `
-                    <div class="card">
-                        <span class="tag">${g.state} Sector</span>
-                        <h4>${g.name}</h4>
-                        <p>${g.desc}</p>
-                        <div style="display:flex; gap:10px;">
-                            ${g.phone ? `<a href="tel:${g.phone}" class="btn-link">Comms</a>` : ''}
-                            ${g.email ? `<a href="mailto:${g.email}" class="btn-link">Email</a>` : ''}
-                            ${g.website ? `<a href="${g.website}" target="_blank" class="btn-link">Intel</a>` : ''}
-                        </div>
-                    </div>
-                `).join('');
-            } catch(e) {
-                document.getElementById('guild-list').innerHTML = "<p style='color:red;'>Data Link Severed: Cannot resolve json/guilds.json.</p>";
-            }
-        }
-
-        function getLocation() {
-            if (navigator.geolocation) {
-                document.getElementById('guild-list').innerHTML = "<p style='color:var(--gold);'>Synchronizing coordinates...</p>";
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    // Logic to map lat/long to State for filtering goes here
-                    alert("Scanning Local Sector... Coordinate Sync complete.");
-                    // loadGuilds("Kentucky"); // Example manual trigger
-                });
-            }
-        }
-
-        function updateHints() {
-            if (window.innerWidth > 600) return;
-            const sL = navList.scrollLeft;
-            const mS = navList.scrollWidth - navList.clientWidth;
-            hLeft.style.opacity = (sL > 15) ? "1" : "0";
-            hRight.style.opacity = (sL < mS - 15) ? "1" : "0";
-        }
-
-        navList.addEventListener('scroll', updateHints);
-        window.addEventListener('resize', updateHints);
-        window.onload = init;
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
