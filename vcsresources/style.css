@@ -300,3 +300,25 @@ footer {
         width: 100%;
     }
 }
+/* Scroll Box Functionality for VCS Hub */
+.split-layout {
+    align-items: flex-start; /* Keeps columns at the top */
+}
+
+.scroll-box {
+    max-height: 60vh; /* Limits the height to 60% of the screen */
+    overflow-y: auto; /* Adds a scrollbar only when needed */
+    padding-right: 15px; /* Keeps scrollbar from overlapping text */
+}
+
+/* Custom Tactical Scrollbar */
+.scroll-box::-webkit-scrollbar {
+    width: 6px;
+}
+.scroll-box::-webkit-scrollbar-track {
+    background: #0d1117; 
+}
+.scroll-box::-webkit-scrollbar-thumb {
+    background: #ffcc00; 
+    border-radius: 3px;
+}
