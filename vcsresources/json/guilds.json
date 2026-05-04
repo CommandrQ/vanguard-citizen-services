@@ -1,10 +1,10 @@
 [
   {
-    "name": "Vanguard Support & Repair",
-    "state": "Kentucky",
-    "phone": "",
-    "email": "",
-    "website": "vcsresources/vsr/index.html",
-    "desc": "Specializing in simple support & Light Repair"
+    "title": "Vanguard Support & Repair",
+    "description": "agement.",
+    "link": "docs/actuation-guide.html",
+    "buttonText": "ACCESS",
+    "highlight": false
   }
 ]
+
