@@ -3,45 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VCS | Operations Center</title>
+    <title>VCS | Ops Center</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="logo">VCS_OPS_CENTER_v10.N</div>
-        <nav>
-            <a href="../index.html" class="nav-return-btn">RETURN TO HQ</a>
-            <a href="javascript:void(0);" onclick="openModal('modal-instructions')">INSTRUCTIONS</a>
-            <a href="javascript:void(0);" onclick="openModal('modal-privacy')">PRIVACY</a>
+    <header class="ops-header">
+        <h1 class="ops-title">VCS Ops Center</h1>
+        <nav class="ops-nav">
+            <a href="../index.html" class="nav-btn">HQ</a>
+            <a href="javascript:void(0);" onclick="openModal('modal-instructions')" class="nav-btn">INSTRUCTIONS</a>
+            <a href="javascript:void(0);" onclick="openModal('modal-privacy')" class="nav-btn">PRIVACY</a>
         </nav>
     </header>
 
-    <main class="hub-container split-layout">
-        <section class="resources-sector">
-            <h2 class="sector-title">RESOURCE_DIRECTORY</h2>
-            <div id="resources-container" class="scroll-box">
+    <main class="windows-container">
+        <section class="window-pane">
+            <div class="window-header">RESOURCE_DIRECTORY</div>
+            <div id="resources-container" class="window-content scroll-box">
                 <p style="color: var(--vcs-amber);">[ INITIALIZING RESOURCE DATA... ]</p>
             </div>
         </section>
 
-        <section class="guilds-sector">
-            <h2 class="sector-title">AUTHORIZED_PARTNERS</h2>
-            <div id="guilds-container" class="scroll-box">
+        <section class="window-pane">
+            <div class="window-header">AUTHORIZED_PARTNERS</div>
+            <div id="guilds-container" class="window-content scroll-box">
                 <p style="color: var(--vcs-amber);">[ ESTABLISHING GUILD UPLINK... ]</p>
             </div>
         </section>
     </main>
 
     <footer>
-        VANGUARD CITIZEN SERVICES (c) 2026 | SECTOR: COMMAND_HUB | "ACTUATION THROUGH ART"
+        VANGUARD CITIZEN SERVICES (c) 2026 | SECTOR: COMMAND_HUB
     </footer>
 
     <div id="modal-instructions" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-instructions')">
         <div class="modal-content">
             <a href="javascript:void(0);" class="close-btn" onclick="closeModal('modal-instructions')">[X] CLOSE</a>
-            <h3 class="modal-title">INSTRUCTIONS / FAQ</h3>
-            <p><strong>Resources (Left):</strong> Scroll the directory to access internal VCS guides, protocols, and manuals. These files are hosted internally and open in your current viewport.</p>
-            <p><strong>Partners (Right):</strong> Scroll to view authorized Guilds that power our infrastructure. External partner links will automatically open securely in a new window.</p>
+            <h3 class="modal-title">INSTRUCTIONS</h3>
+            
+            <div class="markdown-box">
+                <p><strong># NAVIGATION PROTOCOL</strong></p>
+                <p>Welcome, Operator. This terminal is divided into two primary sectors:</p>
+                <ul>
+                    <li><strong>[Left Window] Resources:</strong> Internal guides, manuals, and operational protocols. Links open locally in this viewport.</li>
+                    <li><strong>[Right Window] Partners:</strong> Authorized external Guild networks. Links will open securely in a new uplink tab.</li>
+                </ul>
+                <p><em>> Use the scrollbars within each window to browse available databases.</em></p>
+            </div>
+
         </div>
     </div>
 
@@ -49,7 +58,15 @@
         <div class="modal-content">
             <a href="javascript:void(0);" class="close-btn" onclick="closeModal('modal-privacy')">[X] CLOSE</a>
             <h3 class="modal-title">PRIVACY_POLICY</h3>
-            <p>Vanguard Citizen Services operates on a zero-tracking framework. No user metrics, data, or operational habits are retained by this terminal.</p>
+            
+            <div class="markdown-box">
+                <p><strong># DATA & LOCATION PROTOCOLS</strong></p>
+                <p>Vanguard Citizen Services operates on a strict digital sovereignty framework. No operational habits or metrics are retained by this terminal.</p>
+                <p><strong>## LOCATION SCANNING</strong><br>
+                If prompted for location access by a specific module, this data is used <strong>exclusively</strong> to identify your local Sector (e.g., KY-CORRIDOR-04). This enables the system to match you with geographically relevant physical Guilds, Makers, or Vanguard System Remediation (VSR) deployment zones.</p>
+                <p><em>> Your coordinates are never stored, tracked, or transmitted to third parties. All processing is strictly client-side.</em></p>
+            </div>
+
         </div>
     </div>
 
