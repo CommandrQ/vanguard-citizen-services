@@ -3,69 +3,505 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VCS | Ops Center</title>
-    <link rel="stylesheet" href="style.css">
+    <title>VSR | Vanguard Systems & Remediation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --gold-glow: rgba(212, 175, 55, 0.5);
+            --ambient-glow: rgba(212, 175, 55, 0.2);
+            --dark-glass: rgba(10, 10, 10, 0.85); /* Slightly darker for edge-to-edge contrast */
+            --border-gold: rgba(212, 175, 55, 0.4);
+            --nav-height: 80px;
+            --footer-height: 60px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: white;
+            overflow: hidden; /* Locks the body, inner panel scrolls */
+        }
+
+        /* --- SLOWER STARFIELD ENGINE --- */
+        .stars-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
+            overflow: hidden;
+        }
+        .star-layer {
+            position: absolute;
+            top: -100%; left: 0; width: 200%; height: 200%;
+            background-repeat: repeat;
+            animation: move-stars linear infinite;
+        }
+        .layer-1 { background-image: radial-gradient(1px 1px at 10% 10%, #fff, transparent); background-size: 300px 300px; animation-duration: 180s; opacity: 0.3; }
+        .layer-2 { background-image: radial-gradient(2px 2px at 20% 80%, #fff, transparent); background-size: 400px 400px; animation-duration: 140s; opacity: 0.5; }
+        .layer-3 { background-image: radial-gradient(4px 4px at 40% 40%, #fff, transparent); background-size: 600px 600px; animation-duration: 100s; opacity: 0.7; }
+        @keyframes move-stars { from { transform: translateY(0); } to { transform: translateY(50%); } }
+
+        /* --- UNIFORM NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            height: var(--nav-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.9);
+            border-bottom: 1px solid var(--border-gold);
+            z-index: 2000;
+            backdrop-filter: blur(20px);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 45px;
+            padding: 0 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none; 
+            color: var(--gold);
+            font-family: 'Cinzel', serif; 
+            font-weight: bold;
+            font-size: 0.9rem; 
+            letter-spacing: 2px;
+            text-transform: uppercase; 
+            transition: 0.4s;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        nav ul li a:hover { color: white; text-shadow: 0 0 15px var(--gold); }
+
+        /* --- CONTENT WINDOW (EDGE-TO-EDGE) --- */
+        .page-content {
+            height: 100vh;
+            width: 100vw;
+            display: block;
+            padding-top: var(--nav-height);
+            padding-bottom: var(--footer-height);
+        }
+
+        .glass-panel {
+            background: var(--dark-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            width: 100%;
+            height: 100%;
+            padding: 50px 5% 100px; /* 5% padding gives it clean margins on massive monitors */
+            text-align: center;
+            overflow-y: auto; 
+            scrollbar-width: thin;
+            scrollbar-color: var(--gold) rgba(0,0,0,0.5);
+        }
+
+        .glass-panel::-webkit-scrollbar { width: 8px; }
+        .glass-panel::-webkit-scrollbar-track { background: rgba(0,0,0,0.5); }
+        .glass-panel::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 4px; }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-size: 3rem;
+            margin-bottom: 20px;
+            letter-spacing: 5px;
+        }
+
+        .divider {
+            height: 1px; width: 100px;
+            background: var(--gold);
+            margin: 0 auto 30px;
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        .intro-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #ececec;
+            font-weight: 300;
+            margin: 0 auto 40px;
+            max-width: 800px;
+        }
+
+        /* --- VSR TIERS GRID --- */
+        .tier-grid {
+            display: grid;
+            /* Auto-adjusts: will sit side-by-side on desktop, stack on mobile */
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+            text-align: left;
+            max-width: 1600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tier-card {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid var(--border-gold);
+            border-left: 4px solid var(--gold);
+            padding: 30px 25px;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            transition: 0.3s ease;
+        }
+        .tier-card:hover { 
+            background: rgba(212, 175, 55, 0.12); 
+            transform: translateY(-4px); 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+        }
+
+        .tier-card h3 { 
+            font-family: 'Cinzel', serif; 
+            color: var(--gold); 
+            font-size: 1.3rem; 
+            margin-bottom: 8px; 
+            letter-spacing: 1px; 
+        }
+
+        .tier-price {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 15px;
+            font-family: 'Cinzel', serif;
+        }
+
+        .tier-specs {
+            list-style: none;
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+        .tier-specs li {
+            font-size: 0.9rem;
+            color: #ccc;
+            margin-bottom: 10px;
+            line-height: 1.5;
+            padding-left: 18px;
+            position: relative;
+        }
+        .tier-specs li::before {
+            content: "✦";
+            color: var(--gold);
+            position: absolute;
+            left: 0;
+            font-size: 0.8rem;
+        }
+
+        .warranty-tag {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--gold);
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-gold);
+            align-self: flex-start;
+        }
+
+        /* --- BUTTONS (WHITE TEXT) --- */
+        .action-btn {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--gold);
+            color: #ffffff !important; 
+            padding: 12px 0;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 3px;
+            transition: 0.3s;
+        }
+        .action-btn:hover {
+            background: var(--gold);
+            color: #000000 !important; 
+            box-shadow: 0 0 15px var(--gold-glow);
+        }
+
+        /* --- SECONDARY SIGNAL CENTER --- */
+        .signal-center {
+            border-top: 1px solid var(--border-gold);
+            padding-top: 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .signal-center h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+        }
+
+        .signal-grid {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .signal-btn {
+            flex: 1;
+            min-width: 280px;
+            max-width: 400px;
+            padding: 15px 20px;
+            border: 1px dashed var(--gold);
+            background: rgba(0,0,0,0.4);
+            color: #ffffff !important;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+        .signal-btn:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-style: solid;
+        }
+
+        /* --- MODAL (TERMS & CONDITIONS) --- */
+        .modal-overlay {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            background: var(--dark-glass);
+            border: 1px solid var(--gold);
+            padding: 40px 30px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            text-align: left;
+            box-shadow: 0 0 50px rgba(0,0,0,0.9);
+        }
+
+        .modal-content::-webkit-scrollbar { width: 5px; }
+        .modal-content::-webkit-scrollbar-thumb { background: var(--gold); }
+
+        .modal-title {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            border-bottom: 1px dashed var(--border-gold);
+            padding-bottom: 10px;
+        }
+
+        .modal-content h4 {
+            color: var(--gold);
+            margin: 20px 0 10px;
+            font-size: 1.1rem;
+            font-family: 'Cinzel', serif;
+        }
+
+        .modal-content p {
+            font-size: 0.95rem;
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px; right: 20px;
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+        .close-btn:hover { color: #fff; }
+
+        /* --- UNIFORM FOOTER --- */
+        footer {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            height: var(--footer-height);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to top, rgba(0,0,0,1) 70%, transparent);
+            z-index: 2000;
+        }
+        .copyright { color: var(--gold); font-family: 'Cinzel', serif; font-size: 0.8rem; letter-spacing: 3px; }
+
+        /* --- MOBILE OPTIMIZATION --- */
+        @media (max-width: 768px) {
+            nav ul { gap: 20px; padding: 0 10px; }
+            nav ul li a { font-size: 0.8rem; }
+            .glass-panel { padding: 30px 5% 80px; } 
+            h1 { font-size: 2.2rem; }
+            .tier-grid { grid-template-columns: 1fr; }
+            .signal-btn { min-width: 100%; }
+        }
+    </style>
 </head>
 <body>
-    <header class="ops-header">
-        <h1 class="ops-title">VCS Ops Center</h1>
-        <nav class="ops-nav">
-            <a href="../index.html" class="nav-btn">HQ</a>
-            <a href="javascript:void(0);" onclick="openModal('modal-instructions')" class="nav-btn">INSTRUCTIONS</a>
-            <a href="javascript:void(0);" onclick="openModal('modal-privacy')" class="nav-btn">PRIVACY</a>
-        </nav>
-    </header>
 
-    <main class="windows-container">
-        <section class="window-pane">
-            <div class="window-header">RESOURCE_DIRECTORY</div>
-            <div id="resources-container" class="window-content scroll-box">
-                <p style="color: var(--vcs-amber);">[ INITIALIZING RESOURCE DATA... ]</p>
-            </div>
-        </section>
+    <div class="stars-container">
+        <div class="star-layer layer-1"></div>
+        <div class="star-layer layer-2"></div>
+        <div class="star-layer layer-3"></div>
+    </div>
 
-        <section class="window-pane">
-            <div class="window-header" style="display: flex; justify-content: space-between; align-items: center;">
-                <span>AUTHORIZED_PARTNERS</span>
-                <button id="sort-btn" class="nav-btn" style="padding: 3px 10px; font-size: 0.7rem;" onclick="toggleSort()">SORT: DEFAULT</button>
+    <nav>
+        <ul>
+            <li><a href="../index.html">RETURN</a></li>
+            <li><a href="javascript:void(0);" onclick="openModal('modal-terms')">VSR TERMS & CONDITIONS</a></li>
+        </ul>
+    </nav>
+
+    <main class="page-content">
+        <div class="glass-panel">
+            <h1>VSR COMMAND</h1>
+            <div class="divider"></div>
+            
+            <p class="intro-text">
+                Welcome to Vanguard Systems & Remediation. Select a support tier below to dispatch a secure mail request to Command HQ. 
+            </p>
+
+            <div class="tier-grid">
+                
+                <div class="tier-card">
+                    <h3>Tier 1: Essential Support</h3>
+                    <div class="tier-price">FREE</div>
+                    <ul class="tier-specs">
+                        <li>Email or Video Call dispatch.</li>
+                        <li>Up to 30 minutes of assistance.</li>
+                        <li>Rapid issue troubleshooting.</li>
+                    </ul>
+                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Tier 1 Essential Support Request" class="action-btn">Select Tier 1</a>
+                </div>
+
+                <div class="tier-card">
+                    <h3>Tier 2: Enhanced Support</h3>
+                    <div class="tier-price">$25</div>
+                    <div class="warranty-tag">14-Day Warranty</div>
+                    <ul class="tier-specs">
+                        <li>30-45 minute deployment.</li>
+                        <li>Standard setup and diagnostic procedures.</li>
+                        <li>Covers workmanship & setup errors.</li>
+                    </ul>
+                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Tier 2 Enhanced Support Request" class="action-btn">Select Tier 2</a>
+                </div>
+
+                <div class="tier-card">
+                    <h3>Tier 3: Extended Support</h3>
+                    <div class="tier-price">$55</div>
+                    <div class="warranty-tag">14-Day Warranty</div>
+                    <ul class="tier-specs">
+                        <li>1 Hour extended deployment.</li>
+                        <li>Advanced setup and deep diagnostic.</li>
+                        <li>Covers workmanship & setup errors.</li>
+                    </ul>
+                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Tier 3 Extended Support Request" class="action-btn">Select Tier 3</a>
+                </div>
+
+                <div class="tier-card">
+                    <h3>Tier 4: Premier Support</h3>
+                    <div class="tier-price">$85+</div>
+                    <div class="warranty-tag">14-Day Warranty</div>
+                    <ul class="tier-specs">
+                        <li>2+ Hours extended deployment.</li>
+                        <li>Multi-device synchronization.</li>
+                        <li>Extended light hardware repair.</li>
+                    </ul>
+                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Tier 4 Premier Support Request" class="action-btn">Select Tier 4</a>
+                </div>
+
+                <div class="tier-card" style="border-color: #fff;">
+                    <h3 style="color: #fff;">VIP TIER</h3>
+                    <div class="tier-price" style="color: var(--gold);">INQUIRE</div>
+                    <div class="warranty-tag">30-Day Warranty</div>
+                    <ul class="tier-specs">
+                        <li>Hardware shopping recommendations.</li>
+                        <li>Home delivery (product dependent).</li>
+                        <li>Basic setup and priority support.</li>
+                    </ul>
+                    <a href="mailto:commandrq@gmail.com?subject=[VSR] VIP Tier Inquiry" class="action-btn" style="border-color: #fff;">Request VIP</a>
+                </div>
+
             </div>
-            <div id="guilds-container" class="window-content scroll-box">
-                <p style="color: var(--vcs-amber);">[ ESTABLISHING GUILD UPLINK... ]</p>
+
+            <div class="signal-center">
+                <h3>SIGNAL CENTER</h3>
+                <div class="signal-grid">
+                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Request Installation" class="signal-btn">REQUEST INSTALLATION</a>
+                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Work Order Support" class="signal-btn">WORK ORDER SUPPORT</a>
+                </div>
             </div>
-        </section>
+
+        </div>
     </main>
 
     <footer>
-        VANGUARD CITIZEN SERVICES (c) 2026 | SECTOR: COMMAND_HUB
+        <div class="copyright">VSR &copy; 2026</div>
     </footer>
 
-    <div id="modal-instructions" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-instructions')">
+    <div id="modal-terms" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-terms')">
         <div class="modal-content">
-            <a href="javascript:void(0);" class="close-btn" onclick="closeModal('modal-instructions')">[X] CLOSE</a>
-            <h3 class="modal-title">INSTRUCTIONS</h3>
-            <div class="markdown-box">
-                <p><strong># NAVIGATION PROTOCOL</strong></p>
-                <p>Welcome, Operator. This terminal is divided into two primary categories:</p>
-                <ul>
-                    <li><strong>Resources:</strong> Internal guides, manuals, and operational protocols.</li>
-                    <li><strong>Partners:</strong> Authorized external Guild networks.</li>
-                </ul>
-                <p><em>> Click the 'SORT' button above the Partners list to cycle through Default, Alphabetical (A-Z), and State-based sorting.</em></p>
-            </div>
+            <a href="javascript:void(0);" class="close-btn" onclick="closeModal('modal-terms')">[X] CLOSE</a>
+            <h3 class="modal-title">Terms & Conditions</h3>
+            
+            <h4>Warranty Protocols</h4>
+            <p>Tiers 2 through 4 carry a standard 14-day warranty covering workmanship and setup errors. The VIP Tier extends this protection to a 30-day warranty.</p>
+            
+            <h4>Hardware & Service Limitations</h4>
+            <p>We <strong>do not</strong> perform board-level micro-soldering, liquid damage repair, mobile screen replacements, or enterprise server management. VSR is not liable for data loss; it is the sole responsibility of the client to back up their files prior to deployment.</p>
+
+            <h4>Installation Boundaries</h4>
+            <p>Smart TV and monitor physical installations are strictly limited to displays measuring <strong>up to 50 inches</strong>. We <strong>do not</strong> perform wall mounting of any kind.</p>
+
+            <h4>On-Site Add-On Services</h4>
+            <p>Additional services requested on-site are limited to one (1) add-on per deployment. These are strictly pending technician time constraints and are not guaranteed to be fulfilled during the initial visit.</p>
+
+            <h4>Cancellation & Rescheduling</h4>
+            <p>Missing an appointment or failing to provide notification at least <strong>two (2) hours prior</strong> to the scheduled time will lock the deployment and forfeit the service fee. A new purchase will be required to reset the service. You may reschedule an active deployment up to <strong>two (2) times</strong> before the service is permanently canceled and your fee is automatically refunded.</p>
         </div>
     </div>
 
-    <div id="modal-privacy" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-privacy')">
-        <div class="modal-content">
-            <a href="javascript:void(0);" class="close-btn" onclick="closeModal('modal-privacy')">[X] CLOSE</a>
-            <h3 class="modal-title">PRIVACY_POLICY</h3>
-            <div class="markdown-box">
-                <p><strong># DATA & LOCATION PROTOCOLS</strong></p>
-                <p>Vanguard Citizen Services operates on a strict digital sovereignty framework. No operational habits or metrics are retained by this terminal.</p>
-            </div>
-        </div>
-    </div>
+    <script>
+        // --- MODAL CONTROLS ---
+        function openModal(modalId) { 
+            document.getElementById(modalId).style.display = 'flex'; 
+        }
 
-    <script src="script.js"></script>
+        function closeModal(modalId) { 
+            document.getElementById(modalId).style.display = 'none'; 
+        }
+
+        function closeModalOnOutsideClick(event, modalId) {
+            if (event.target === document.getElementById(modalId)) {
+                closeModal(modalId);
+            }
+        }
+    </script>
 </body>
 </html>
