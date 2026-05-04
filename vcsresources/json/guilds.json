@@ -2,7 +2,7 @@
   {
     "title": "Vanguard Support & Repair",
     "description": "Simple tech support and light repair.",
-    "link": "vcsresources/vsr/index.html",
+    "link": "/vsr/index.html",
     "buttonText": "Contact",
     "locked": false,
     "state": "Kentucky"
