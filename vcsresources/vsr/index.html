@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VSR | Vanguard Support & Repair</title>
+    <title>VSR | Simple Tech Help</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
@@ -11,18 +11,13 @@
             --gold: #D4AF37;
             --gold-glow: rgba(212, 175, 55, 0.5);
             --ambient-glow: rgba(212, 175, 55, 0.2);
-            --dark-glass: rgba(10, 10, 10, 0.85); 
+            --dark-glass: rgba(10, 10, 10, 0.9);
             --border-gold: rgba(212, 175, 55, 0.4);
             --nav-height: 80px;
             --footer-height: 60px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            scroll-behavior: smooth;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -31,7 +26,7 @@
             overflow: hidden; 
         }
 
-        /* --- SLOWER STARFIELD ENGINE --- */
+        /* --- CALM STARFIELD --- */
         .stars-container {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -45,337 +40,79 @@
             background-repeat: repeat;
             animation: move-stars linear infinite;
         }
-        .layer-1 { background-image: radial-gradient(1px 1px at 10% 10%, #fff, transparent); background-size: 300px 300px; animation-duration: 180s; opacity: 0.3; }
-        .layer-2 { background-image: radial-gradient(2px 2px at 20% 80%, #fff, transparent); background-size: 400px 400px; animation-duration: 140s; opacity: 0.5; }
-        .layer-3 { background-image: radial-gradient(4px 4px at 40% 40%, #fff, transparent); background-size: 600px 600px; animation-duration: 100s; opacity: 0.7; }
+        .layer-1 { background-image: radial-gradient(1px 1px at 10% 10%, #fff, transparent); background-size: 300px 300px; animation-duration: 250s; opacity: 0.2; }
+        .layer-2 { background-image: radial-gradient(2px 2px at 20% 80%, #fff, transparent); background-size: 400px 400px; animation-duration: 180s; opacity: 0.3; }
         @keyframes move-stars { from { transform: translateY(0); } to { transform: translateY(50%); } }
 
-        /* --- UNIFORM NAVIGATION --- */
         nav {
             position: fixed;
-            top: 0; width: 100%;
-            height: var(--nav-height);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0,0,0,0.9);
-            border-bottom: 1px solid var(--border-gold);
-            z-index: 2000;
-            backdrop-filter: blur(20px);
+            top: 0; width: 100%; height: var(--nav-height);
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.9); border-bottom: 1px solid var(--border-gold);
+            z-index: 2000; backdrop-filter: blur(20px);
         }
 
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 45px;
-            padding: 0 20px;
-        }
+        nav ul { display: flex; list-style: none; gap: 40px; }
+        nav ul li a { text-decoration: none; color: var(--gold); font-family: 'Cinzel', serif; font-weight: bold; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; }
 
-        nav ul li a {
-            text-decoration: none; 
-            color: var(--gold);
-            font-family: 'Cinzel', serif; 
-            font-weight: bold;
-            font-size: 0.9rem; 
-            letter-spacing: 2px;
-            text-transform: uppercase; 
-            transition: 0.4s;
-            white-space: nowrap;
-            cursor: pointer;
-        }
-        nav ul li a:hover { color: white; text-shadow: 0 0 15px var(--gold); }
-
-        /* --- CONTENT WINDOW (EDGE-TO-EDGE) --- */
-        .page-content {
-            height: 100vh;
-            width: 100vw;
-            display: block;
-            padding-top: var(--nav-height);
-            padding-bottom: var(--footer-height);
-        }
+        .page-content { height: 100vh; width: 100vw; padding-top: var(--nav-height); padding-bottom: var(--footer-height); }
 
         .glass-panel {
-            background: var(--dark-glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            width: 100%;
-            height: 100%;
-            padding: 50px 5% 100px; 
-            text-align: center;
-            overflow-y: auto; 
-            scrollbar-width: thin;
-            scrollbar-color: var(--gold) rgba(0,0,0,0.5);
+            background: var(--dark-glass); backdrop-filter: blur(25px);
+            width: 100%; height: 100%; padding: 60px 8% 120px; 
+            text-align: center; overflow-y: auto; 
         }
 
-        .glass-panel::-webkit-scrollbar { width: 8px; }
-        .glass-panel::-webkit-scrollbar-track { background: rgba(0,0,0,0.5); }
-        .glass-panel::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 4px; }
+        h1 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 3.5rem; letter-spacing: 6px; margin-bottom: 10px; }
+        .divider { height: 1px; width: 100px; background: var(--gold); margin: 0 auto 30px; }
 
-        h1 {
-            font-family: 'Cinzel', serif;
-            color: var(--gold);
-            font-size: 2.6rem; /* Scaled down slightly to fit the longer title */
-            margin-bottom: 20px;
-            letter-spacing: 4px;
-        }
+        .intro-text { font-size: 1.1rem; color: #ececec; margin: 0 auto 50px; max-width: 800px; font-weight: 300; }
 
-        .divider {
-            height: 1px; width: 100px;
-            background: var(--gold);
-            margin: 0 auto 30px;
-            box-shadow: 0 0 10px var(--gold);
-        }
-
-        .intro-text {
-            font-size: 1.05rem;
-            line-height: 1.8;
-            color: #ececec;
-            font-weight: 300;
-            margin: 0 auto 40px;
-            max-width: 850px;
-        }
-
-        .intro-text strong {
-            color: var(--gold);
-            font-weight: 600;
-        }
-
-        .intro-text a.inline-link {
-            color: var(--gold);
-            text-decoration: underline;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-
-        .intro-text a.inline-link:hover {
-            color: #fff;
-        }
-
-        /* --- VSR TIERS GRID --- */
         .tier-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 25px;
-            margin-bottom: 50px;
-            text-align: left;
-            max-width: 1600px;
-            margin-left: auto;
-            margin-right: auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px; max-width: 1600px; margin: 0 auto 60px; text-align: left;
         }
 
         .tier-card {
-            background: rgba(212, 175, 55, 0.05);
-            border: 1px solid var(--border-gold);
-            border-left: 4px solid var(--gold);
-            padding: 30px 25px;
-            border-radius: 5px;
-            display: flex;
-            flex-direction: column;
-            transition: 0.3s ease;
+            background: rgba(212, 175, 55, 0.05); border: 1px solid var(--border-gold);
+            border-left: 5px solid var(--gold); padding: 30px;
+            display: flex; flex-direction: column; transition: 0.3s;
         }
-        .tier-card:hover { 
-            background: rgba(212, 175, 55, 0.12); 
-            transform: translateY(-4px); 
-            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
-        }
+        .tier-card:hover { transform: translateY(-5px); background: rgba(212, 175, 55, 0.1); }
 
-        .tier-card h3 { 
-            font-family: 'Cinzel', serif; 
-            color: var(--gold); 
-            font-size: 1.3rem; 
-            margin-bottom: 8px; 
-            letter-spacing: 1px; 
-        }
+        .tier-card h3 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.3rem; margin-bottom: 5px; }
+        .tier-price { font-size: 1.8rem; font-weight: bold; margin-bottom: 15px; font-family: 'Cinzel', serif; }
 
-        .tier-price {
-            font-size: 1.6rem;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 15px;
-            font-family: 'Cinzel', serif;
-        }
+        .tier-specs { list-style: none; margin-bottom: 25px; flex-grow: 1; }
+        .tier-specs li { font-size: 0.9rem; color: #ccc; margin-bottom: 10px; padding-left: 20px; position: relative; }
+        .tier-specs li::before { content: "→"; color: var(--gold); position: absolute; left: 0; }
 
-        .tier-specs {
-            list-style: none;
-            margin-bottom: 25px;
-            flex-grow: 1;
-        }
-        .tier-specs li {
-            font-size: 0.9rem;
-            color: #ccc;
-            margin-bottom: 10px;
-            line-height: 1.5;
-            padding-left: 18px;
-            position: relative;
-        }
-        .tier-specs li::before {
-            content: "✦";
-            color: var(--gold);
-            position: absolute;
-            left: 0;
-            font-size: 0.8rem;
-        }
-
-        .warranty-tag {
-            display: inline-block;
-            background: rgba(212, 175, 55, 0.15);
-            color: var(--gold);
-            font-size: 0.75rem;
-            padding: 4px 10px;
-            border-radius: 3px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border-gold);
-            align-self: flex-start;
-        }
-
-        /* --- BUTTONS --- */
         .action-btn {
-            display: inline-block;
-            width: 100%;
-            text-align: center;
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid var(--gold);
-            color: #ffffff !important; 
-            padding: 12px 0;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 0.95rem;
-            text-decoration: none;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            border-radius: 3px;
-            transition: 0.3s;
+            display: block; width: 100%; text-align: center;
+            background: rgba(212, 175, 55, 0.1); border: 1px solid var(--gold);
+            color: #fff !important; padding: 12px 0; font-weight: 600;
+            text-decoration: none; text-transform: uppercase; transition: 0.3s;
         }
-        .action-btn:hover {
-            background: var(--gold);
-            color: #000000 !important; 
-            box-shadow: 0 0 15px var(--gold-glow);
-        }
+        .action-btn:hover { background: var(--gold); color: #000 !important; }
 
-        /* --- SECONDARY SIGNAL CENTER --- */
-        .signal-center {
-            border-top: 1px solid var(--border-gold);
-            padding-top: 40px;
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-        
-        .signal-center h3 {
-            font-family: 'Cinzel', serif;
-            color: var(--gold);
-            margin-bottom: 25px;
-            letter-spacing: 2px;
-        }
+        /* --- SPECIAL ECTC CARD --- */
+        .pathway-card { border: 2px solid #fff; background: rgba(255, 255, 255, 0.05); grid-column: 1 / -1; }
+        .pathway-card h3 { color: #fff; }
 
-        .signal-grid {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+        .signal-center { border-top: 1px solid var(--border-gold); padding-top: 50px; }
+        .signal-grid { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+        .signal-btn { flex: 1; min-width: 280px; padding: 15px; border: 1px dashed var(--gold); color: #fff !important; text-decoration: none; font-weight: bold; text-align: center; }
 
-        .signal-btn {
-            flex: 1;
-            min-width: 280px;
-            max-width: 400px;
-            padding: 15px 20px;
-            border: 1px dashed var(--gold);
-            background: rgba(0,0,0,0.4);
-            color: #ffffff !important;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: 0.3s;
-        }
-        .signal-btn:hover {
-            background: rgba(212, 175, 55, 0.2);
-            border-style: solid;
-        }
-
-        /* --- MODAL (TERMS & CONDITIONS) --- */
-        .modal-overlay {
-            display: none; 
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(8px);
-        }
-
-        .modal-content {
-            background: var(--dark-glass);
-            border: 1px solid var(--gold);
-            padding: 40px 30px;
-            max-width: 800px;
-            width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
-            position: relative;
-            text-align: left;
-            box-shadow: 0 0 50px rgba(0,0,0,0.9);
-        }
-
-        .modal-content::-webkit-scrollbar { width: 5px; }
-        .modal-content::-webkit-scrollbar-thumb { background: var(--gold); }
-
-        .modal-title {
-            font-family: 'Cinzel', serif;
-            color: var(--gold);
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            border-bottom: 1px dashed var(--border-gold);
-            padding-bottom: 10px;
-        }
-
-        .modal-content h4 {
-            color: var(--gold);
-            margin: 20px 0 10px;
-            font-size: 1.1rem;
-            font-family: 'Cinzel', serif;
-        }
-
-        .modal-content p {
-            font-size: 0.95rem;
-            color: #ccc;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 20px; right: 20px;
-            color: var(--gold);
-            font-family: 'Cinzel', serif;
-            font-weight: bold;
-            text-decoration: none;
-            font-size: 1.1rem;
-        }
-        .close-btn:hover { color: #fff; }
-
-        /* --- UNIFORM FOOTER --- */
-        footer {
-            position: fixed;
-            bottom: 0; left: 0; width: 100%;
-            height: var(--footer-height);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(to top, rgba(0,0,0,1) 70%, transparent);
-            z-index: 2000;
-        }
+        footer { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--footer-height); display: flex; justify-content: center; align-items: center; background: #000; }
         .copyright { color: var(--gold); font-family: 'Cinzel', serif; font-size: 0.8rem; letter-spacing: 3px; }
 
-        /* --- MOBILE OPTIMIZATION --- */
-        @media (max-width: 768px) {
-            nav ul { gap: 20px; padding: 0 10px; }
-            nav ul li a { font-size: 0.8rem; }
-            .glass-panel { padding: 30px 5% 80px; } 
-            h1 { font-size: 1.8rem; }
-            .tier-grid { grid-template-columns: 1fr; }
-            .signal-btn { min-width: 100%; }
-        }
+        /* MODAL */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
+        .modal-content { background: #0a0a0a; border: 1px solid var(--gold); padding: 40px; max-width: 800px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative; text-align: left; }
+        .modal-title { font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.8rem; margin-bottom: 20px; }
+        .modal-content h4 { color: var(--gold); margin: 20px 0 10px; }
+        .modal-content p { font-size: 0.9rem; color: #bbb; margin-bottom: 10px; line-height: 1.6; }
+        .close-btn { position: absolute; top: 20px; right: 20px; color: var(--gold); text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -383,152 +120,145 @@
     <div class="stars-container">
         <div class="star-layer layer-1"></div>
         <div class="star-layer layer-2"></div>
-        <div class="star-layer layer-3"></div>
     </div>
 
     <nav>
         <ul>
-            <li><a href="../index.html">RETURN</a></li>
-            <li><a href="javascript:void(0);" onclick="openModal('modal-terms')">VSR TERMS & CONDITIONS</a></li>
+            <li><a href="../index.html">GO BACK</a></li>
+            <li><a href="javascript:void(0);" onclick="openModal('modal-terms')">THE FINE PRINT</a></li>
         </ul>
     </nav>
 
     <main class="page-content">
         <div class="glass-panel">
-            <h1>Vanguard Support and Repair</h1>
+            <h1>VSR HELP</h1>
             <div class="divider"></div>
             
             <p class="intro-text">
-                Welcome to the VSR operational terminal. This platform provides direct access to our tiered technical remediation services, ranging from rapid remote assistance to comprehensive in-home deployment and setup.<br><br>
-                <strong>Operational Scope:</strong> All physical deployments are based in Kentucky and are subject to operational travel limits. We highly encourage all operators to review the <a href="javascript:void(0);" onclick="openModal('modal-terms')" class="inline-link">VSR Terms & Conditions</a> to understand our service boundaries, warranties, and cancellation policies before initiating a dispatch.
+                Technology is complicated. I'm here to make it simple. Pick a level of help that fits your problem, and let's get your gear working right.
             </p>
 
             <div class="tier-grid">
                 
+                <div class="tier-card pathway-card">
+                    <h3 style="color: var(--gold);">The ECTC Student Special</h3>
+                    <div class="tier-price">$45 <span style="font-size: 0.9rem; text-decoration: line-through; opacity: 0.5;">$55</span></div>
+                    <p style="margin-bottom: 15px;">Heads up, ECTC students: Chromebooks and iPads won't work for your Blackboard assignments. I'll get your laptop "Day One Ready."</p>
+                    <ul class="tier-specs" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                        <li>Install your free Office 365</li>
+                        <li>Check your Blackboard login</li>
+                        <li>Make your Wi-Fi safe for coffee shops</li>
+                        <li>Set up a backup for your essays</li>
+                    </ul>
+                    <a href="mailto:commandrq@gmail.com?subject=ECTC Student Special Request" class="action-btn">Get School Ready</a>
+                </div>
+
                 <div class="tier-card">
-                    <h3>Tier 1: Essential Support</h3>
+                    <h3>Quick Fix</h3>
                     <div class="tier-price">FREE</div>
                     <ul class="tier-specs">
-                        <li>Email or Video Call dispatch.</li>
-                        <li>Up to 30 minutes of assistance.</li>
-                        <li>Rapid issue troubleshooting.</li>
+                        <li>30-minute email or video call</li>
+                        <li>Great for simple questions</li>
+                        <li>Quick troubleshooting tips</li>
                     </ul>
-                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Tier 1 Essential Support Request" class="action-btn">Select Tier 1</a>
+                    <a href="mailto:commandrq@gmail.com?subject=Tier 1 Quick Fix Request" class="action-btn">Email Me</a>
                 </div>
 
                 <div class="tier-card">
-                    <h3>Tier 2: Enhanced Support</h3>
+                    <h3>The Tune-Up</h3>
                     <div class="tier-price">$25</div>
-                    <div class="warranty-tag">14-Day Warranty</div>
                     <ul class="tier-specs">
-                        <li>30-45 minute deployment.</li>
-                        <li>Standard setup and diagnostic procedures.</li>
-                        <li>Covers workmanship & setup errors.</li>
+                        <li>I'll swing by for about 45 mins</li>
+                        <li>Basic hardware/software setup</li>
+                        <li>I'll make sure it's working right</li>
+                        <li>14-day "it stays fixed" warranty</li>
                     </ul>
-                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Tier 2 Enhanced Support Request" class="action-btn">Select Tier 2</a>
+                    <a href="mailto:commandrq@gmail.com?subject=Tier 2 Tune-Up Request" class="action-btn">Schedule a Visit</a>
                 </div>
 
                 <div class="tier-card">
-                    <h3>Tier 3: Extended Support</h3>
+                    <h3>Deep Dive</h3>
                     <div class="tier-price">$55</div>
-                    <div class="warranty-tag">14-Day Warranty</div>
                     <ul class="tier-specs">
-                        <li>1 Hour extended deployment.</li>
-                        <li>Advanced setup and deep diagnostic.</li>
-                        <li>Covers workmanship & setup errors.</li>
+                        <li>An hour of focused expert work</li>
+                        <li>Map out your Wi-Fi dead zones</li>
+                        <li>Lock down your digital privacy</li>
+                        <li>Stop your internet from lagging</li>
                     </ul>
-                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Tier 3 Extended Support Request" class="action-btn">Select Tier 3</a>
+                    <a href="mailto:commandrq@gmail.com?subject=Tier 3 Deep Dive Request" class="action-btn">Get Optimized</a>
                 </div>
 
                 <div class="tier-card">
-                    <h3>Tier 4: Premier Support</h3>
+                    <h3>The Overhaul</h3>
                     <div class="tier-price">$85+</div>
-                    <div class="warranty-tag">14-Day Warranty</div>
                     <ul class="tier-specs">
-                        <li>2 Hours extended deployment.</li>
-                        <li>Multi-device synchronization.</li>
-                        <li>Extended light hardware repair.</li>
+                        <li>For the big, complicated jobs</li>
+                        <li>Fix multiple devices at once</li>
+                        <li>Light hardware repairs</li>
+                        <li>Everything back to 100%</li>
                     </ul>
-                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Tier 4 Premier Support Request" class="action-btn">Select Tier 4</a>
+                    <a href="mailto:commandrq@gmail.com?subject=Tier 4 Overhaul Request" class="action-btn">Send the Expert</a>
                 </div>
 
                 <div class="tier-card" style="border-color: #fff;">
-                    <h3 style="color: #fff;">VIP TIER</h3>
-                    <div class="tier-price" style="color: var(--gold);">INQUIRE</div>
-                    <div class="warranty-tag">30-Day Warranty</div>
+                    <h3 style="color: #fff;">Personal Tech Assistant</h3>
+                    <div class="tier-price">Inquire</div>
                     <ul class="tier-specs">
-                        <li>Hardware shopping recommendations.</li>
-                        <li>Home delivery (product dependent).</li>
-                        <li>Basic setup and priority support.</li>
+                        <li>I'll help you shop for the right gear</li>
+                        <li>Hand-delivered to your door</li>
+                        <li>White-glove setup and support</li>
+                        <li>No stress, just good tech</li>
                     </ul>
-                    <a href="mailto:commandrq@gmail.com?subject=[VSR] VIP Tier Inquiry" class="action-btn" style="border-color: #fff;">Request VIP</a>
+                    <p style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 15px;">*Custom quotes start at $99.</p>
+                    <a href="mailto:commandrq@gmail.com?subject=VIP Assistant Inquiry" class="action-btn" style="background:#fff; color:#000 !important;">Request Quote</a>
                 </div>
 
             </div>
 
             <div class="signal-center">
-                <h3>SIGNAL CENTER</h3>
+                <h3 style="font-family: 'Cinzel', serif; color: var(--gold);">Other Support</h3>
                 <div class="signal-grid">
-                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Request Installation" class="signal-btn">REQUEST INSTALLATION</a>
-                    <a href="mailto:commandrq@gmail.com?subject=[VSR] Work Order Support" class="signal-btn">WORK ORDER SUPPORT</a>
+                    <a href="mailto:commandrq@gmail.com?subject=Installation Request" class="signal-btn">Request Installation</a>
+                    <a href="mailto:commandrq@gmail.com?subject=Work Order Help" class="signal-btn">Work Order Support</a>
                 </div>
             </div>
-
         </div>
     </main>
 
     <footer>
-        <div class="copyright">VSR &copy; 2026</div>
+        <div class="copyright">VSR &copy; 2026 | Local Tech Help</div>
     </footer>
 
     <div id="modal-terms" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-terms')">
         <div class="modal-content">
             <a href="javascript:void(0);" class="close-btn" onclick="closeModal('modal-terms')">[X] CLOSE</a>
-            <h3 class="modal-title">Terms & Conditions</h3>
+            <h3 class="modal-title">The Fine Print</h3>
             
-            <h4>1. Modification & Right to Refuse</h4>
-            <p>VSR reserves the right to refuse, modify, or terminate any service at our sole discretion, without prior notice. If the on-site situation significantly differs from the client's initial dispatch description (misrepresentation of issues), VSR reserves the right to immediately alter the deployment tier, pricing, or abort the service entirely.</p>
+            <h4>The Basics</h4>
+            <p>I’m here to help, but I can’t do everything. If a situation looks unsafe or a job is misrepresented, I reserve the right to change the price or decline the work. Be cool, and I’ll do the same.</p>
 
-            <h4>2. Site Safety & Adult Presence</h4>
-            <p>An adult (18 years or older) <strong>must</strong> be present for the entire duration of any in-home deployment. Pets must be secured. The workspace must be clean, accessible, and safe prior to arrival. Technicians will not move heavy furniture. VSR operators will abort the deployment immediately, without refund, if the environment is deemed hazardous or hostile.</p>
+            <h4>Safety First</h4>
+            <p>An adult (18+) has to be there the whole time I’m in your house. Please put the dog in another room and make sure the workspace is clear and safe. I won't move heavy furniture.</p>
 
-            <h4>3. Dead on Arrival (DOA) & Diagnostics</h4>
-            <p>If a device is deemed unrepairable, catastrophic, or "Dead on Arrival" during a Tier 3 or Tier 4 deployment, the service will immediately convert to a Tier 2 Diagnostic ($25 fee). The remainder of the initial fee will be refunded. Attempting to conceal pre-existing liquid or physical damage to secure lower rates immediately voids all warranties and forfeits all refunds.</p>
+            <h4>What I Don't Do</h4>
+            <p>I don't do tiny screen repairs on phones, liquid damage, or enterprise server work. I'm also not responsible for your data—please back up your stuff before I get there!</p>
 
-            <h4>4. Credentials & Software Legitimacy</h4>
-            <p>Clients must have all necessary administrative passwords, PINs, and network keys available upon arrival. Delays caused by lost passwords consume your deployment time. VSR will not bypass legal security locks. We strictly adhere to digital software licensing laws and will not install, configure, or support cracked, pirated, or unlicensed software.</p>
+            <h4>Verification (Students)</h4>
+            <p>To get the Student Special ($45), you have to show me a valid ECTC ID or log in to your .edu email when I arrive. If you aren't a student, the price will revert to the standard $55 rate.</p>
 
-            <h4>5. Hardware Procurement & Abandonment</h4>
-            <p>Hardware and replacement parts are billed completely separate from the deployment tier fee and must be paid in full prior to procurement. If a device is transported off-site for repair, it must be claimed and paid for within thirty (30) days of completion notification. Equipment left beyond 30 days is legally considered abandoned and will be recycled or sold to recover operational costs.</p>
+            <h4>Limits</h4>
+            <p>I only set up TVs and monitors up to 50 inches. <strong>No wall mounting.</strong></p>
 
-            <h4>6. Hardware & Service Limitations</h4>
-            <p>We <strong>do not</strong> perform board-level micro-soldering, liquid damage repair, mobile screen replacements, or enterprise server management. VSR is not liable for data loss; it is the sole responsibility of the client to back up their files prior to our arrival.</p>
-
-            <h4>7. Installation Boundaries</h4>
-            <p>Smart TV and monitor physical installations are strictly limited to displays measuring <strong>up to 50 inches</strong>. We <strong>do not</strong> perform wall mounting of any kind.</p>
-
-            <h4>8. On-Site Add-On Services</h4>
-            <p>Additional services requested on-site are limited to one (1) add-on per deployment. These are strictly pending technician time constraints and are not guaranteed to be fulfilled during the initial visit.</p>
-
-            <h4>9. Cancellation & Rescheduling</h4>
-            <p>Missing an appointment or failing to provide notification at least <strong>two (2) hours prior</strong> to the scheduled time will lock the deployment and forfeit the service fee. A new purchase will be required to reset the service. You may reschedule an active deployment up to <strong>two (2) times</strong> before the service is permanently canceled and your fee is automatically refunded.</p>
+            <h4>Cancellations</h4>
+            <p>If you need to cancel, let me know at least 2 hours early. If you miss the appointment without telling me, you'll lose the fee and have to purchase again. You get 2 free reschedules before I refund the money and cancel the job.</p>
         </div>
     </div>
 
     <script>
-        // --- MODAL CONTROLS ---
-        function openModal(modalId) { 
-            document.getElementById(modalId).style.display = 'flex'; 
-        }
-
-        function closeModal(modalId) { 
-            document.getElementById(modalId).style.display = 'none'; 
-        }
-
+        function openModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
+        function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
         function closeModalOnOutsideClick(event, modalId) {
-            if (event.target === document.getElementById(modalId)) {
-                closeModal(modalId);
-            }
+            if (event.target === document.getElementById(modalId)) closeModal(modalId);
         }
     </script>
 </body>
