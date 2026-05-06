@@ -16,21 +16,47 @@
         }
 
         .hud-header, .vanguard-footer {
-            flex-shrink: 0; /* Keeps them pinned at the top/bottom */
+            flex-shrink: 0;
             background: #000;
             z-index: 20;
         }
 
         .hud-workspace {
-            flex: 1; /* Takes up all available space between header and footer */
-            overflow-y: auto; /* This is the ONLY part that scrolls */
+            flex: 1;
+            overflow-y: auto; /* Only this section scrolls */
             display: grid;
             grid-template-columns: 1fr 1fr;
             align-items: center;
             justify-items: center;
             padding: 40px;
             gap: 40px;
-            -webkit-overflow-scrolling: touch; /* Smooth scroll for mobile */
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* --- THEMED HEADER BUTTON --- */
+        .btn-header-gold {
+            background: var(--v-gold);
+            color: #000 !important;
+            font-weight: 900;
+            padding: 8px 20px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            border: none;
+            box-shadow: 0 3px 0 #8a6d0d; /* 3D depth */
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-header-gold:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 0 #8a6d0d;
+        }
+
+        .btn-header-gold:active {
+            transform: translateY(2px);
+            box-shadow: 0 0px 0 #8a6d0d;
         }
 
         /* --- 3D GLASSY CARDS (OPAQUE) --- */
@@ -50,7 +76,6 @@
             animation: fadeInUp 0.8s ease forwards;
         }
 
-        /* Subtle Sheen */
         .support-card::after {
             content: '';
             position: absolute;
@@ -76,7 +101,7 @@
             text-shadow: 1px 1px 3px #000;
         }
 
-        /* 3D BUTTONS */
+        /* 3D BUTTONS (BODY) */
         .btn-vanguard-solid {
             background: var(--v-gold);
             color: #000 !important;
@@ -96,13 +121,14 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- MOBILE SCROLLING FIX --- */
+        /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 850px) {
             .hud-workspace {
                 grid-template-columns: 1fr;
-                padding: 60px 20px; /* Space for items inside scroll area */
+                padding: 60px 20px;
             }
             .support-card { width: 100%; }
+            .btn-header-gold { padding: 6px 15px; font-size: 0.65rem; }
         }
     </style>
 </head>
@@ -114,11 +140,11 @@
     <header class="hud-header" style="border-bottom: 2px solid var(--v-gold); padding: 15px 25px;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <div style="display: flex; align-items: center;">
-                <img src="images/vanguardorglogo.png" alt="VCS" class="hud-logo" style="width:30px; margin-right:10px;">
+                <img src="images/vanguardorglogo.png" alt="VCS" style="width:30px; margin-right:10px;">
                 <span class="gold-text-outline" style="font-size: 0.9rem;">SUPPORT TRIAGE</span>
             </div>
             <nav>
-                <button class="btn-outline" onclick="location.href='index.html'" style="font-size: 0.7rem; padding: 5px 10px;">LOBBY</button>
+                <button class="btn-header-gold" onclick="location.href='directory.html'">DIRECTORY</button>
             </nav>
         </div>
     </header>
