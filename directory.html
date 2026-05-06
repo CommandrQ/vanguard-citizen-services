@@ -3,104 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fort Toward | Directory</title>
+    <title>Fort Toward | Citizen Directory</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         /* --- CORE OS ARCHITECTURE --- */
         body, html {
-            overflow: hidden; height: 100%;
-            display: flex; flex-direction: column;
+            overflow: hidden; height: 100%; display: flex; flex-direction: column;
+            background: #000; margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
         }
 
-        .scanlines {
-            position: fixed; inset: 0;
-            background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(255, 255, 255, 0.02) 50%);
-            background-size: 100% 4px; z-index: 1; pointer-events: none;
-        }
+        .scanlines { position: fixed; inset: 0; background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(255, 255, 255, 0.02) 50%); background-size: 100% 4px; z-index: 1; pointer-events: none; }
 
-        /* --- HEADER --- */
-        .hud-header {
-            flex-shrink: 0; background: #000; border-bottom: 2px solid var(--v-gold); z-index: 10;
-        }
-        .header-content {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 30px; width: 100%; box-sizing: border-box;
-        }
+        /* --- HEADER & NAVIGATION --- */
+        .hud-header { flex-shrink: 0; background: #000; border-bottom: 2px solid var(--v-gold); z-index: 10; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; }
+        
+        .nav-cluster { display: flex; gap: 10px; }
 
-        /* --- NAVIGATION --- */
-        .tuner-wrapper {
-            position: relative; width: 100%; background: #000; border-bottom: 1px solid #222;
-            display: flex; align-items: center; z-index: 10;
-        }
-        .category-nav {
-            display: flex; gap: 15px; padding: 15px 40px; overflow-x: auto;
-            scrollbar-width: none; scroll-behavior: smooth; width: 100%;
-            justify-content: center;
-        }
-        .category-nav::-webkit-scrollbar { display: none; }
-
-        .btn-pill {
-            flex: 0 0 auto; font-family: inherit; font-weight: 900; padding: 10px 22px;
-            font-size: 0.85rem; border-radius: 50px; cursor: pointer;
-            transition: 0.3s var(--v-curve); border: none; text-align: center;
-        }
-        .btn-active { background: var(--v-gold) !important; color: #000 !important; box-shadow: 0 4px 0 #8a6d0d; }
-        .btn-inactive { background: transparent !important; border: 1px solid #555 !important; color: #bbb !important; }
-
-        .scroll-arrow {
-            position: absolute; right: 15px; color: var(--v-gold); font-size: 1.2rem;
-            pointer-events: none; animation: arrowPulse 2s infinite; display: none;
-        }
-
-        /* --- CONTENT --- */
+        /* --- DIRECTORY VIEWPORT --- */
         .os-viewport {
             flex: 1; overflow-y: auto; padding: 40px 20px;
             display: flex; flex-direction: column; align-items: center; z-index: 5;
         }
-        .portal-card {
-            background: #0a0a0a; border: 1px solid #333; border-left: 5px solid var(--v-gold);
-            width: 100%; max-width: 800px; padding: 30px; margin-bottom: 25px;
+
+        .welcome-hero { text-align: center; margin-bottom: 40px; animation: systemWake 0.5s ease-out; }
+
+        .directory-container {
+            width: 100%; max-width: 900px; background: rgba(10, 10, 10, 0.9);
+            border: 1px solid #333; border-top: 4px solid var(--v-gold);
             box-shadow: 20px 20px 40px rgba(0,0,0,1);
-            display: flex; justify-content: space-between; align-items: center;
-            gap: 25px; animation: systemWake 0.6s var(--v-curve) forwards;
         }
 
-        /* --- FOOTER DESKTOP LAYOUT --- */
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1000px;
-            margin: 0 auto;
-            width: 100%;
-            gap: 10px;
+        /* --- TACTICAL TABLE --- */
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { 
+            background: #111; color: var(--v-gold); font-weight: 900; 
+            text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px;
+            padding: 15px 20px; border-bottom: 1px solid #333;
         }
-        
-        .footer-nav {
-            display: flex;
-            gap: 15px;
-            align-items: center;
+        td { padding: 15px 20px; color: #ddd; border-bottom: 1px solid #1a1a1a; font-size: 0.95rem; }
+        tr:hover td { background: rgba(212, 175, 55, 0.05); color: #fff; }
+
+        .rank-tag {
+            font-weight: bold; font-size: 0.75rem; padding: 3px 10px;
+            border: 1px solid currentColor; text-transform: uppercase;
         }
 
-        /* --- MOBILE REFINEMENTS --- */
+        /* --- BUTTONS --- */
+        .btn-pill {
+            font-weight: 900; padding: 8px 18px; font-size: 0.75rem;
+            border-radius: 50px; cursor: pointer; transition: 0.3s; border: none;
+            text-transform: uppercase;
+        }
+        .btn-active { background: var(--v-gold) !important; color: #000 !important; box-shadow: 0 4px 0 #8a6d0d; }
+
         @media (max-width: 768px) {
-            .header-content { flex-direction: column; text-align: center; gap: 15px; padding: 15px 10px; }
-            .header-content nav { flex-direction: row; justify-content: center; width: 100%; flex-wrap: wrap; }
-            .category-nav { justify-content: flex-start; padding: 15px 20px; }
-            .portal-card { flex-direction: column; text-align: left; }
-            .card-btn { width: 100%; text-align: center; }
-            
-            /* FOOTER STACKING ON MOBILE */
-            .footer-content { 
-                flex-direction: column; 
-                justify-content: center; 
-                text-align: center; 
-                gap: 15px; 
-            }
-            .footer-nav {
-                justify-content: center;
-                width: 100%;
-            }
+            .header-content { flex-direction: column; gap: 12px; padding: 15px 10px; }
+            .nav-cluster { flex-wrap: wrap; justify-content: center; }
+            th:nth-child(3), td:nth-child(3) { display: none; } /* Hide handle on small mobile */
         }
     </style>
 </head>
@@ -112,103 +74,118 @@
     <header class="hud-header">
         <div class="header-content">
             <div style="display: flex; align-items: center; gap: 12px;">
-                <img src="images/vanguardorglogo.png" alt="VCS Logo" style="width:35px;">
-                <span id="os-title" class="gold-text-outline" style="font-size: 1.2rem;">Fort Toward Directory</span>
+                <img src="images/vanguardorglogo.png" alt="VCS" style="width:35px;">
+                <span class="gold-text-outline" id="welcome-header" style="font-size: 1.2rem;">Vanguard Directory</span>
             </div>
-            <nav style="display: flex; gap: 10px;">
-                <button class="btn-pill btn-active" style="padding: 6px 18px; font-size: 0.75rem;" onclick="location.href='vcsinfo.html'">ABOUT VANGUARD</button>
-                <button class="btn-pill btn-active" style="padding: 6px 18px; font-size: 0.75rem;" onclick="location.href='support.html'">CUSTOMER SERVICE</button>
+            <nav class="nav-cluster">
+                <button class="btn-pill btn-active" onclick="location.href='vcsinfo.html'">ABOUT</button>
+                <button class="btn-pill btn-active" onclick="location.href='support.html'">SUPPORT</button>
+                <button class="btn-pill btn-active" onclick="location.href='settings.html'">SETTINGS</button>
             </nav>
         </div>
     </header>
 
-    <div class="tuner-wrapper">
-        <nav class="category-nav" id="category-row"></nav>
-        <div class="scroll-arrow" id="nav-arrow" aria-hidden="true">➔</div>
-    </div>
-
-    <main class="os-viewport" id="portal-feed"></main>
-
-    <footer class="vanguard-footer" style="border-top: 2px solid #222; padding: 20px; background: #000; z-index: 10;">
-        <div class="footer-content">
-            <p style="color: #FFF; font-size: 0.75rem; margin: 0;">&copy; 2026 VANGUARD CITIZEN SERVICES</p>
-            <nav class="footer-nav">
-                <a href="legal.html" style="color: #bbb; text-decoration: none; font-size: 0.8rem;">LEGAL</a>
-                <span style="color: #333;">|</span>
-                <a href="settings.html" style="color: #FFF; text-decoration: none; font-weight: bold; font-size: 1rem;">⚙️ SYSTEM SETTINGS</a>
-            </nav>
+    <main class="os-viewport">
+        
+        <div class="welcome-hero">
+            <h1 class="gold-text-outline" style="font-size: 2.5rem; margin-bottom: 10px;">Citizen Ledger</h1>
+            <p style="color: #888; font-family: monospace;">[ STATUS: ACTIVE POOL SYNCED ]</p>
         </div>
+
+        <div class="directory-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Citizen Name</th>
+                        <th>Rank</th>
+                        <th>Handle</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody id="directory-body">
+                    <tr><td colspan="4" style="text-align:center; padding: 40px; color: #555;">Initializing Ledger...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <footer style="padding: 20px; text-align: center; border-top: 1px solid #222; background: #000; z-index: 10;">
+        <p style="color: #444; font-size: 0.7rem; margin: 0;">&copy; 2026 VANGUARD CITIZEN SERVICES | SECURE LEDGER v4.2</p>
     </footer>
 
     <script>
-        const VANGUARD_DB = {
-            "Services": [
-                { title: "Vanguard Support & Repair", desc: "Friendly tech help and simple hardware repairs for your devices.", link: "support.html", btnText: "REQUEST HELP" }
-            ],
-            "Guides": [
-                { title: "Technology Guides", desc: "Easy-to-read resources to help you master your digital world.", link: "#", btnText: "READ NOW" }
-            ],
-            "Academy": [
-                { title: "Computer Basics 101", desc: "A simple, stress-free class to help you get the most out of your devices.", link: "#", btnText: "JOIN CLASS" }
-            ],
-            "Volunteer": [
-                { title: "Community Hands", desc: "Request help for local projects or neighborly assistance with physical tasks.", link: "support.html", btnText: "SIGNAL CREW" }
-            ]
-        };
+        // --- CONFIGURATION ---
+        const SB_URL = 'https://dvyjupytbwbrcoyouxpf.supabase.co';
+        const SB_KEY = 'sb_publishable_wjgbPekKmodd5mSDXIeUeg_Wq73GzOk';
+        const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 
-        const navRow = document.getElementById('category-row');
-        const feed = document.getElementById('portal-feed');
-        const arrow = document.getElementById('nav-arrow');
+        // --- IDENTITY SYNC ---
+        async function syncWelcomeMessage() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            const header = document.getElementById('welcome-header');
 
-        function syncIdentity() {
-            const citizen = JSON.parse(localStorage.getItem('vanguard_citizen'));
-            if (citizen && citizen.full_name) {
-                const firstName = citizen.full_name.split(' ')[0];
-                document.getElementById('os-title').innerText = `Welcome, ${firstName}`;
-            }
-        }
-
-        Object.keys(VANGUARD_DB).forEach((cat, index) => {
-            const btn = document.createElement('button');
-            btn.innerText = cat;
-            btn.className = index === 0 ? 'btn-pill btn-active' : 'btn-pill btn-inactive';
-            btn.onclick = () => switchCategory(cat, btn);
-            navRow.appendChild(btn);
-            if (index === 0) renderCards(cat);
-        });
-
-        function checkOverflow() {
-            if (navRow.scrollWidth > navRow.clientWidth) {
-                arrow.style.display = 'block';
+            if (session) {
+                const { data } = await supabaseClient.from('citizens').select('full_name').eq('auth_id', session.user.id).single();
+                if (data) {
+                    header.innerText = `Welcome, ${data.full_name.split(' ')[0]}`;
+                }
             } else {
-                arrow.style.display = 'none';
+                header.innerText = "Vanguard Directory";
             }
         }
 
-        function switchCategory(cat, targetBtn) {
-            document.querySelectorAll('#category-row button').forEach(b => b.className = 'btn-pill btn-inactive');
-            targetBtn.className = 'btn-pill btn-active';
-            renderCards(cat);
-        }
+        // --- DATA FETCH ---
+        async function fetchCitizens() {
+            const tbody = document.getElementById('directory-body');
+            
+            const { data, error } = await supabaseClient
+                .from('citizens')
+                .select('full_name, rank, handle, created_at')
+                .order('created_at', { ascending: false });
 
-        function renderCards(cat) {
-            feed.innerHTML = '';
-            VANGUARD_DB[cat].forEach(item => {
-                const card = document.createElement('section');
-                card.className = 'portal-card';
-                card.innerHTML = `
-                    <div style="flex: 1;">
-                        <h2 style="font-size: 1.5rem; color: #fff; margin-bottom: 12px; font-weight: 900;">${item.title}</h2>
-                        <p style="font-size: 1.15rem; color: #ddd; line-height: 1.6;">${item.desc}</p>
-                    </div>
-                    <a href="${item.link}" class="btn-pill btn-active card-btn" style="padding: 15px 30px; font-size: 0.9rem; text-decoration: none;">${item.btnText}</a>
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="4" style="color:red; text-align:center;">SYNC ERROR: ${error.message}</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = ''; // Clear loader
+
+            data.forEach(citizen => {
+                const row = document.createElement('tr');
+                const date = new Date(citizen.created_at).toLocaleDateString();
+                
+                // Rank Styling
+                let rankColor = "#aaa";
+                if(citizen.rank === "Knight") rankColor = "var(--v-gold)";
+                if(citizen.rank === "Special Role") rankColor = "#ff5f1f";
+
+                row.innerHTML = `
+                    <td style="font-weight:bold; color:#fff;">${citizen.full_name}</td>
+                    <td><span class="rank-tag" style="color:${rankColor}; border-color:${rankColor}">${citizen.rank || 'Citizen'}</span></td>
+                    <td style="font-family:monospace; color: #888;">@${citizen.handle || '---'}</td>
+                    <td style="font-size: 0.8rem; color: #555;">${date}</td>
                 `;
-                feed.appendChild(card);
+                tbody.appendChild(row);
             });
         }
 
-        window.onload = () => { syncIdentity(); checkOverflow(); };
-        window.onresize = checkOverflow;
+        // --- THE IRONCLAD AUTO-REFRESH PROTOCOL ---
+        // This ensures data is ALWAYS fresh even if the user hits the "Back" button
+        window.addEventListener('pageshow', function(event) {
+            // Trigger a hard reload if the page is being pulled from the browser cache
+            if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+                window.location.reload();
+            } else {
+                // Otherwise, perform a standard sync
+                syncWelcomeMessage();
+                fetchCitizens();
+            }
+        });
+
+        // Initial Load
+        syncWelcomeMessage();
+        fetchCitizens();
     </script>
 </body>
 </html>
