@@ -1,143 +1,63 @@
-/* =========================================
-   VANGUARD OS: CORE DESIGN SYSTEM
-   Theme: Human-Centric Sovereign
-   ========================================= */
-
 :root {
-    --v-gold: #D4AF37;
-    --v-black: #000000;
-    --v-white: #FFFFFF;
-    --v-grey: #121212;
-    --v-soft-grey: #888888;
-    /* The "Snappy-Smooth" Curve */
-    --v-curve: cubic-bezier(0.19, 1, 0.22, 1); 
+    --v-gold: #d4af37;
+    --v-gold-glow: rgba(212, 175, 55, 0.3);
+    --v-curve: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-* { 
-    box-sizing: border-box; 
-    -webkit-font-smoothing: antialiased;
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-body, html {
-    background-color: var(--v-black);
-    color: var(--v-white);
-    /* Simple, legible, human-centric font stack */
+body {
+    background-color: #000;
+    color: #fff;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-}
-
-/* --- GLOBAL SYSTEM ANIMATIONS --- */
-
-@keyframes systemWake {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Applies a gentle fade-in to every page content */
-main, section, .hud-workspace {
-    animation: systemWake 0.8s var(--v-curve) forwards;
-}
-
-/* --- THE "SNAPPY" BUTTON FEEL --- */
-
-.btn-pill-gold {
-    background: var(--v-gold);
-    color: var(--v-black);
-    font-weight: 700;
-    padding: 10px 24px;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 0.8rem;
-    /* Snappy transition */
-    transition: all 0.3s var(--v-curve);
-    box-shadow: 0 4px 0 #8a6d0d;
-}
-
-.btn-pill-gold:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
-}
-
-.btn-pill-gold:active {
-    transform: translateY(2px);
-    box-shadow: 0 1px 0 #8a6d0d;
-}
-
-/* --- LEGIBILITY & HIERARCHY --- */
-
-.gold-text-outline {
-    color: var(--v-gold);
-    text-transform: uppercase;
-    font-weight: 900;
-    letter-spacing: 2px;
-    /* Clean outline for legibility over stars */
-    text-shadow: 
-        -1.5px -1.5px 0 #000,  
-         1.5px -1.5px 0 #000,
-        -1.5px  1.5px 0 #000,
-         1.5px  1.5px 0 #000;
-}
-
-p, .support-desc {
-    font-size: 1.05rem;
     line-height: 1.6;
-    color: #E0E0E0;
-    font-weight: 400;
+    /* Accessibility: Smoother text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* --- OS HUD ELEMENTS --- */
-
-.hud-header {
-    background: var(--v-black);
-    border-bottom: 2px solid var(--v-gold);
-    padding: 15px 30px;
-}
-
-.vanguard-footer {
-    background: var(--v-black);
-    border-top: 1px solid #222;
-    padding: 20px;
-    text-align: center;
-}
-
-/* Status Pulse (Requested for Index/OS) */
-.status-dot {
-    height: 8px;
-    width: 8px;
-    background-color: #00FF00;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 8px;
-    box-shadow: 0 0 10px #00FF00;
-    animation: statusPulse 2s infinite ease-in-out;
-}
-
-@keyframes statusPulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.3); opacity: 0.5; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-/* Background FX */
-.scanlines {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-    background-size: 100% 2px;
-    z-index: 999;
-    pointer-events: none;
-}
-
+/* --- THE BACKGROUND ENGINE --- */
 .starfield {
     position: fixed;
-    inset: 0;
-    z-index: -1;
-    opacity: 0.4; /* Softened for a less "scary" feel */
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 0;
+    background: radial-gradient(circle at center, #111 0%, #000 100%);
+}
+
+.s1 {
+    background-image: 
+        radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 50px 160px, var(--v-gold), rgba(0,0,0,0));
+    background-size: 200px 200px;
+    opacity: 0.3;
+}
+
+/* --- ACCESSIBILITY FOCUS --- */
+button:focus, a:focus {
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+}
+
+/* --- REUSABLE HUD CLASSES --- */
+.gold-text-outline {
+    color: var(--v-gold);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes systemWake {
+    from { opacity: 0; transform: translateY(10px); filter: blur(5px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes arrowPulse {
+    0%, 100% { opacity: 0.2; transform: translateX(0); }
+    50% { opacity: 1; transform: translateX(5px); }
 }
