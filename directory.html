@@ -75,6 +75,10 @@
             color: #000 !important;
             box-shadow: 0 4px 0 #8a6d0d;
         }
+        .btn-active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
+        }
 
         /* --- THE TUNER (CATEGORY ROW) --- */
         .tuner-wrapper {
@@ -162,6 +166,7 @@
                 flex-direction: row;
                 justify-content: center;
                 width: 100%;
+                flex-wrap: wrap;
             }
             .category-nav { justify-content: flex-start; padding: 15px 20px; }
             .portal-card { flex-direction: column; text-align: left; }
@@ -182,7 +187,7 @@
                 <span class="gold-text-outline" style="font-size: 1.2rem;">Fort Toward Directory</span>
             </div>
             <nav style="display: flex; gap: 10px;">
-                <button class="btn-pill btn-inactive" style="padding: 6px 18px; font-size: 0.75rem;" onclick="location.href='vcsinfo.html'">ABOUT VANGUARD</button>
+                <button class="btn-pill btn-active" style="padding: 6px 18px; font-size: 0.75rem;" onclick="location.href='vcsinfo.html'">ABOUT VANGUARD</button>
                 <button class="btn-pill btn-active" style="padding: 6px 18px; font-size: 0.75rem;" onclick="location.href='support.html'">CUSTOMER SERVICE</button>
             </nav>
         </div>
@@ -208,19 +213,19 @@
     </footer>
 
     <script>
-        /* --- VANGUARD DATABASE --- */
+        /* --- EASY ADD DATABASE --- */
         const VANGUARD_DB = {
             "Services": [
-                { title: "Vanguard Support & Repair", desc: "Simple tech help and light hardware repair for citizens.", link: "support.html", btnText: "REQUEST HELP" }
+                { title: "Vanguard Support & Repair", desc: "Simple tech help and light repair", link: "support.html", btnText: "REQUEST HELP" }
             ],
             "Guides": [
-                { title: "Technology Guides", desc: "A curated library of easy-to-follow digital citizenship resources.", link: "legal.html", btnText: "READ INTEL" }
+                { title: "Technology Guides", desc: "Guidebook", link: "#", btnText: "Read" }
             ],
             "Academy": [
-                { title: "Computer Basics 101", desc: "A lightweight, human-centric class for mastering the digital world.", link: "vcsinfo.html", btnText: "ATTEND" }
+                { title: "Computer Basics 101", desc: "Lightweight class", link: "#", btnText: "Attend" }
             ],
             "Volunteer": [
-                { title: "Community Hands", desc: "Request physical assistance for local community projects or neighborhood events.", link: "support.html", btnText: "SIGNAL CREW" }
+                { title: "Community Hands", desc: "Request physical help for local community projects or neighborhood events.", link: "support.html", btnText: "SIGNAL CREW" }
             ]
         };
 
@@ -258,6 +263,7 @@
             VANGUARD_DB[cat].forEach(item => {
                 const card = document.createElement('section');
                 card.className = 'portal-card';
+                // Note: No 'tag' references below to prevent undefined text
                 card.innerHTML = `
                     <div style="flex: 1;">
                         <h2 style="font-size: 1.5rem; color: #fff; margin-bottom: 12px; font-weight: 900;">${item.title}</h2>
