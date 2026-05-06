@@ -3,113 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vanguard OS | System Directory</title>
+    <title>Vanguard OS | Directory</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        body, html { overflow: hidden; height: 100%; display: flex; flex-direction: column; background: #000; margin: 0; }
-        .window-pane { background: #050505; border-right: 2px solid var(--v-border); display: flex; flex-direction: column; height: 100%; }
-        .window-header { background: #000; padding: 15px 20px; border-bottom: 2px solid var(--v-gold); flex-shrink: 0; }
-        
-        /* 3D Module Cards */
+        /* --- OS LAYOUT LOCK --- */
+        body, html {
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #000;
+        }
+
+        /* --- OPAQUE 3D PANELS --- */
+        .window-pane {
+            background: #000000; /* Solid opaque wall */
+            border-right: 1px solid #222;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .window-header {
+            padding: 20px;
+            border-bottom: 2px solid var(--v-gold);
+            background: #000;
+            flex-shrink: 0;
+        }
+
+        /* --- SCROLLABLE AREAS --- */
+        .scroll-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* --- INTERACTIVE CARDS --- */
         .os-card {
-            background: #111; border: 1px solid #222; padding: 20px; margin-bottom: 15px;
-            border-left: 4px solid var(--v-gold); box-shadow: 10px 10px 20px rgba(0,0,0,0.8);
-            transition: 0.3s; cursor: pointer; opacity: 0; animation: slideIn 0.5s ease forwards;
+            background: #0a0a0a;
+            border: 1px solid #222;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--v-gold);
+            box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: all 0.4s var(--v-curve);
+            animation: slideIn 0.5s var(--v-curve) forwards;
         }
-        .os-card:hover { transform: translateX(8px); background: #181818; border-color: var(--v-gold); }
 
-        .gold-text-outline {
-            color: var(--v-gold); text-transform: uppercase; font-weight: 900;
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        .os-card:hover {
+            transform: translateX(10px);
+            background: #111;
+            border-color: var(--v-gold);
         }
 
-        .scroll-area { flex: 1; overflow-y: auto; padding: 20px; -webkit-overflow-scrolling: touch; }
-        
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-15px); } to { opacity: 1; transform: translateX(0); } }
+        .card-name { font-weight: 900; font-size: 1.1rem; color: #fff; margin-bottom: 5px; }
+        .card-tag { font-size: 0.75rem; color: var(--v-gold); text-transform: uppercase; letter-spacing: 1px; }
 
+        /* --- CATEGORY SELECTORS --- */
+        .tuner {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-top: 15px;
+            scrollbar-width: none;
+        }
+        .tuner::-webkit-scrollbar { display: none; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* --- MOBILE REFINEMENTS --- */
         @media (max-width: 850px) {
             .hud-workspace { grid-template-columns: 1fr !important; overflow-y: auto; }
             .window-pane { height: auto; border-right: none; border-bottom: 2px solid #222; }
             body, html { overflow-y: auto; height: auto; }
+            .scroll-list { overflow-y: visible; }
         }
     </style>
 </head>
 <body class="fixed-hud">
+
     <div class="scanlines"></div>
     <div class="starfield s1"></div>
 
-    <header class="hud-header" style="border-bottom: 2px solid var(--v-gold); padding: 12px 25px;">
+    <header class="hud-header">
         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <div style="display: flex; align-items: center;">
                 <img src="images/vanguardorglogo.png" alt="VCS" style="width:30px; margin-right:12px;">
                 <span class="gold-text-outline">VANGUARD OS // DIRECTORY</span>
             </div>
-            <button class="btn-pill-gold" onclick="location.href='support.html'" style="background:var(--v-gold); border-radius:50px; border:none; padding:8px 20px; font-weight:900; cursor:pointer;">SIGNAL DISPATCH</button>
+            <button class="btn-pill-gold" onclick="location.href='support.html'">GET SUPPORT</button>
         </div>
     </header>
 
     <main class="hud-workspace" style="display: grid; grid-template-columns: 1fr 1.5fr; flex: 1; overflow: hidden;">
+        
         <section class="window-pane">
             <div class="window-header">
-                <span class="gold-text-outline" style="font-size: 0.7rem;">SELECT MODULE</span>
-                <div style="display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; scrollbar-width: none;">
-                    <button class="cat-btn active" onclick="loadModule('field')">FIELD OPS</button>
-                    <button class="cat-btn" onclick="loadModule('intel')">INTEL VAULT</button>
-                    <button class="cat-btn" onclick="loadModule('hub')">CITIZEN HUB</button>
+                <span class="gold-text-outline" style="font-size: 0.7rem;">Select Category</span>
+                <div class="tuner" id="category-tuner">
+                    </div>
+            </div>
+            <div class="scroll-list" id="entry-list">
+                </div>
+        </section>
+
+        <section class="window-pane" id="details-pane" style="background: #050505;">
+            <div class="window-header">
+                <span class="gold-text-outline" style="font-size: 0.7rem;">Information Display</span>
+            </div>
+            <div class="scroll-list" id="details-content">
+                <div style="text-align: center; margin-top: 30%; color: #444;">
+                    <p class="gold-text-outline" style="font-size: 0.9rem;">Select an entry to view details</p>
                 </div>
             </div>
-            <div class="scroll-area" id="module-list"></div>
         </section>
 
-        <section class="window-pane" style="background: #080808;">
-            <div class="window-header"><span class="gold-text-outline" style="font-size: 0.7rem;">INTELLIGENCE REPORT</span></div>
-            <div class="scroll-area" id="intel-view">
-                <div style="text-align: center; margin-top: 30%; color: #333;"><p class="gold-text-outline">Initializing Data Stream...</p></div>
-            </div>
-        </section>
     </main>
 
-    <footer class="vanguard-footer" style="border-top: 2px solid var(--v-gold); padding: 12px; background: #000; display: flex; justify-content: space-between; align-items: center;">
-        <p style="font-size: 0.65rem; color: #FFF; margin: 0;">&copy; 2026 VANGUARD OS</p>
-        <a href="settings.html" style="color: #FFF; text-decoration: none; font-size: 0.7rem;">⚙️ SYSTEM SETTINGS</a>
+    <footer class="vanguard-footer">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+            <p style="color: #FFF; font-size: 0.65rem;">&copy; 2026 VANGUARD CITIZEN SERVICES</p>
+            <a href="settings.html" style="color: #FFF; text-decoration: none; font-size: 0.7rem;">⚙️ SYSTEM SETTINGS</a>
+        </div>
     </footer>
 
     <script>
-        const kernel = {
-            field: [
-                { title: "WiFi Infrastructure", desc: "Network hardening and setup.", Intel: "A specialized Knight will assist in deploying a secure, high-speed perimeter for your home or business." },
-                { title: "Hardware Recovery", desc: "Diagnostic and repair services.", Intel: "If your tech is failing, we provide the tools and expertise to bring it back online." }
+        /* ============================================================
+           VANGUARD DATABASE KERNEL
+           This is where you add new businesses or services.
+           Just follow the pattern: { title: "", tag: "", info: "" }
+           ============================================================ */
+        const DATABASE_KERNEL = {
+            "Services": [
+                { title: "WiFi Optimization", tag: "Tech Support", info: "We analyze your home network, fix dead zones, and harden your security settings to ensure your connection is private and fast." },
+                { title: "Hardware Repair", tag: "Maintenance", info: "If your computer or smart device is failing, a Vanguard Knight can diagnose the issue and provide a clear fix." }
             ],
-            intel: [
-                { title: "Slow Connection Fix", desc: "Diagnostic Report #402", Intel: "ISSUE: Channel interference. FIX: Log into router 192.168.1.1, switch to a 5GHz band on channel 36. If issues persist, signal us for a hardware swap." },
-                { title: "Privacy Leak Audit", desc: "Diagnostic Report #109", Intel: "ISSUE: Metadata exposure. FIX: Disable EXIF data on mobile devices and use a hardened browser like Brave or Librewolf." }
+            "Businesses": [
+                { title: "Hardin Tech Solutions", tag: "Alliance Partner", info: "A local leader in commercial IT. Authorized by Vanguard for large-scale enterprise networking." },
+                { title: "River City Solar", tag: "Alliance Partner", info: "Specializing in off-grid power solutions. A trusted partner for energy sovereignty." }
             ],
-            hub: [
-                { title: "Request Volunteers", desc: "Call for community assistance.", Intel: "Need extra hands for a local project? Submit a request here to mobilize the Citizen network." },
-                { title: "The Path of the Knight", desc: "Recruitment & Training.", Intel: "Start as a Citizen, prove your integrity, and undergo training to become a Vanguard Knight." }
+            "Academy": [
+                { title: "Digital Safety 101", tag: "Education", info: "A simple guide on how to protect your identity, avoid scams, and use the internet like a pro." },
+                { title: "Home Soldering", tag: "Skillset", info: "Learn the basics of circuit repair. A foundational class for any aspiring Vanguard Knight." }
             ]
         };
 
-        function loadModule(key) {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            const list = document.getElementById('module-list');
-            list.innerHTML = '';
-            kernel[key].forEach(item => {
+        const tuner = document.getElementById('category-tuner');
+        const entryList = document.getElementById('entry-list');
+        const detailsView = document.getElementById('details-content');
+
+        // 1. Create Category Buttons
+        Object.keys(DATABASE_KERNEL).forEach((cat, index) => {
+            const btn = document.createElement('button');
+            btn.className = `btn-pill-gold ${index === 0 ? '' : 'inactive-btn'}`;
+            btn.style.fontSize = '0.65rem';
+            btn.style.padding = '5px 15px';
+            btn.innerText = cat;
+            btn.onclick = (e) => switchCategory(cat, e.target);
+            tuner.appendChild(btn);
+        });
+
+        // 2. Switch Categories
+        function switchCategory(cat, btn) {
+            document.querySelectorAll('.tuner button').forEach(b => {
+                b.style.background = '#111';
+                b.style.color = '#888';
+            });
+            btn.style.background = 'var(--v-gold)';
+            btn.style.color = '#000';
+
+            entryList.innerHTML = '';
+            DATABASE_KERNEL[cat].forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'os-card';
-                card.innerHTML = `<div class="gold-text-outline">${item.title}</div><div style="font-size:0.75rem; color:#888;">${item.desc}</div>`;
-                card.onclick = () => {
-                    document.getElementById('intel-view').innerHTML = `
-                        <h2 class="gold-text-outline" style="font-size: 1.6rem;">${item.title}</h2>
-                        <p style="color: #bbb; line-height: 1.8; margin-top: 20px;">${item.Intel}</p>
-                        <button class="btn-pill-gold" style="width: 100%; margin-top: 30px; background:var(--v-gold); border:none; padding:15px; font-weight:900;" onclick="location.href='support.html'">REQUEST FURTHER ASSISTANCE</button>
-                    `;
-                };
-                list.appendChild(card);
+                card.innerHTML = `<div class="card-tag">${item.tag}</div><div class="card-name">${item.title}</div>`;
+                card.onclick = () => showDetails(item);
+                entryList.appendChild(card);
             });
         }
-        window.onload = () => loadModule('field');
+
+        // 3. Show Details
+        function showDetails(item) {
+            detailsView.innerHTML = `
+                <h2 class="gold-text-outline" style="font-size: 1.8rem; margin-bottom: 10px;">${item.title}</h2>
+                <div class="card-tag" style="margin-bottom: 20px;">Category: ${item.tag}</div>
+                <p style="color: #ddd; font-size: 1.1rem; line-height: 1.8;">${item.info}</p>
+                <hr style="border: 0; border-top: 1px solid #222; margin: 30px 0;">
+                <button class="btn-pill-gold" style="width: 100%; padding: 15px;" onclick="location.href='support.html'">REQUEST ASSISTANCE</button>
+            `;
+        }
+
+        // Boot system to first category
+        window.onload = () => {
+            const firstCat = Object.keys(DATABASE_KERNEL)[0];
+            switchCategory(firstCat, tuner.firstChild);
+        };
     </script>
+
 </body>
 </html>
