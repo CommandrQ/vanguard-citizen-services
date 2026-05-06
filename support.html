@@ -3,18 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vanguard Command | Support Triage</title>
+    <title>Vanguard Support | Get in Touch</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* CSS for the "Black Outline" and "Solid Backgrounds" */
+        
+        .support-card {
+            background: #000000; /* SOLID BLACK: No stars can shine through */
+            border: 1px solid var(--v-gold);
+            padding: 40px;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .gold-text-outline {
+            color: var(--v-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            /* The Black Outline (Text Shadow) */
+            text-shadow: 
+                -1px -1px 0 #000,  
+                 1px -1px 0 #000,
+                -1px  1px 0 #000,
+                 1px  1px 0 #000,
+                 2px  2px 5px rgba(0,0,0,0.8);
+        }
+
+        .support-desc {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #ddd;
+            margin-bottom: 30px;
+        }
+
+        /* Ensuring buttons are solid black */
+        .btn-gold, .btn-vanguard {
+            background-color: var(--v-gold) !important;
+            color: #000 !important;
+            opacity: 1 !important; /* Forces 100% solidness */
+        }
+
+        .btn-vanguard-outline {
+            background-color: #000 !important; /* Solid black inside */
+            border: 1px solid var(--v-gold);
+            color: var(--v-gold);
+            padding: 15px 30px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .support-icon { font-size: 3rem; margin-bottom: 10px; }
+
+        @media (max-width: 850px) {
+            .hud-workspace { 
+                grid-template-columns: 1fr !important; 
+                padding: 20px !important;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
 </head>
 <body class="fixed-hud">
 
     <div class="scanlines"></div>
     <div class="starfield s1"></div>
 
-    <header class="hud-header">
+    <header class="hud-header" style="background: #000; border-bottom: 2px solid var(--v-gold);">
         <div class="logo-area">
             <img src="images/vanguardorglogo.png" alt="VCS Logo" class="hud-logo">
-            <span class="gold-text">SUPPORT TRIAGE</span>
+            <span class="gold-text-outline">SUPPORT TRIAGE</span>
         </div>
         <nav class="hud-nav">
             <button class="btn-outline" onclick="location.href='index.html'">LOBBY</button>
@@ -22,84 +82,37 @@
         </nav>
     </header>
 
-    <main class="hud-workspace" style="grid-template-columns: 1fr 1fr; align-items: center; justify-items: center; padding: 40px;">
+    <main class="hud-workspace" style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; justify-items: center; height: 80vh;">
         
         <section class="support-card">
             <div class="support-icon">✉️</div>
-            <h2 class="gold-text">Vanguard Notification System (VNS)</h2>
+            <h2 class="gold-text-outline">Email Support</h2>
             <p class="support-desc">
-                The VNS is our **email-based communication channel**. Use this for non-urgent triage, long-form intelligence reporting, or formal service inquiries.
+                Email is best for general questions or if you aren't in a rush. Send us a message and we'll get back to you as soon as we can.
             </p>
-            <p class="status-indicator"><span class="pulse-amber">●</span> ASYNCHRONOUS RESPONSE</p>
-            <a href="mailto:support@vcscitizen.org" class="btn-vanguard" style="width: 100%; text-align: center;">INITIATE VNS CHAT</a>
+            <a href="mailto:support@vcscitizen.org" class="btn-vanguard-outline">SEND AN EMAIL</a>
         </section>
 
         <section class="support-card">
             <div class="support-icon">🛡️</div>
-            <h2 class="gold-text">Direct Operational Support</h2>
+            <h2 class="gold-text-outline">Live Chat</h2>
             <p class="support-desc">
-                Our **Discord server** is the heart of Vanguard operations. Connect here for instant interaction, live calls, and the 1-on-1 support ticket system.
+                Discord is our live community. Join us here if you want to chat with us directly, get quick help, or jump on a voice call.
             </p>
-            <p class="status-indicator"><span class="pulse-green">●</span> LIVE OPERATIONAL THEATER</p>
-            <button id="discord-btn" class="btn-gold" style="width: 100%;" onclick="joinDiscord()">JOIN DISCORD COMMAND</button>
+            <button class="btn-gold" onclick="joinDiscord()">JOIN THE DISCORD</button>
         </section>
 
     </main>
 
-    <footer class="vanguard-footer">
+    <footer class="vanguard-footer" style="background: #000; border-top: 2px solid var(--v-gold);">
         <p>&copy; 2026 Vanguard Citizen Services. All Rights Reserved.</p>
-        <div class="footer-links">
-            <a href="#" onclick="openModal('privacy-modal')">Privacy Policy</a>
-            <span class="divider">|</span>
-            <a href="#" onclick="openModal('terms-modal')">Terms of Service</a>
-        </div>
     </footer>
 
     <script>
-        // CHANGE THIS LINK WHENEVER YOU NEED TO ROTATE THE INVITE
         const DISCORD_INVITE = "https://discord.gg/YOUR_INVITE_CODE";
-
         function joinDiscord() {
             window.open(DISCORD_INVITE, '_blank');
         }
-
-        // Dummy modal functions for footer consistency
-        function openModal(id) { alert("Please view policies on the Main Lobby page."); }
     </script>
-
-    <style>
-        .support-card {
-            background: rgba(10, 10, 10, 0.9);
-            border: 1px solid var(--v-border);
-            padding: 40px;
-            max-width: 450px;
-            text-align: center;
-            transition: 0.3s;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .support-card:hover {
-            border-color: var(--v-gold);
-            transform: translateY(-5px);
-        }
-        .support-icon { font-size: 3rem; margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--v-gold)); }
-        .support-desc { font-size: 0.9rem; line-height: 1.6; color: #aaa; margin-bottom: 30px; min-height: 80px; }
-        
-        .status-indicator { font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 20px; color: #666; }
-        .pulse-green { color: #00ff00; animation: blink 2s infinite; margin-right: 5px; }
-        .pulse-amber { color: #ffaa00; animation: blink 3s infinite; margin-right: 5px; }
-        
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-
-        /* Responsive Mobile Stack */
-        @media (max-width: 850px) {
-            .hud-workspace { 
-                grid-template-columns: 1fr !important; 
-                gap: 20px; 
-                padding: 20px !important;
-                overflow-y: auto !important;
-            }
-            .support-card { max-width: 100%; }
-        }
-    </style>
 </body>
 </html>
