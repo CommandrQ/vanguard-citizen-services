@@ -3,70 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vanguard Command | Directory</title>
+    <title>Vanguard OS | System Directory</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* VANGUARD OS SYSTEM OVERRIDES */
+        body, html {
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #000;
+        }
+
+        /* Opaque 3D UI Panels */
+        .window-pane {
+            background: #050505;
+            border-right: 2px solid var(--v-border);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .window-header {
+            background: #000;
+            padding: 15px 20px;
+            border-bottom: 2px solid var(--v-gold);
+        }
+
+        /* System Status Text */
+        .sys-status {
+            font-size: 0.6rem;
+            color: #00ff00;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* OS Item Cards */
+        .os-module-card {
+            background: #111;
+            border: 1px solid #222;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--v-gold);
+            box-shadow: 10px 10px 20px rgba(0,0,0,0.8);
+            transition: 0.3s;
+            cursor: pointer;
+            opacity: 0;
+            animation: slideIn 0.5s ease forwards;
+        }
+        .os-module-card:hover {
+            transform: translateX(8px);
+            background: #181818;
+            border-color: var(--v-gold);
+        }
+
+        .gold-text-outline {
+            color: var(--v-gold);
+            text-transform: uppercase;
+            font-weight: 900;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        }
+
+        /* Scrolling Area */
+        .scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-15px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Footer System Links */
+        .footer-nav a {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.7rem;
+            margin: 0 10px;
+            transition: 0.2s;
+        }
+        .footer-nav a:hover { color: var(--v-gold); }
+
+        @media (max-width: 850px) {
+            .hud-workspace { grid-template-columns: 1fr !important; overflow-y: auto; }
+            .window-pane { height: auto; border-right: none; border-bottom: 2px solid #222; }
+            body, html { overflow-y: auto; height: auto; }
+        }
+    </style>
 </head>
 <body class="fixed-hud">
 
     <div class="scanlines"></div>
     <div class="starfield s1"></div>
 
-    <header class="hud-header">
-        <div class="logo-area">
-            <img src="images/vanguardorglogo.png" alt="VCS Logo" class="hud-logo">
-            <span class="gold-text">OPERATIONAL DIRECTORY</span>
+    <header class="hud-header" style="border-bottom: 2px solid var(--v-gold); padding: 12px 25px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div>
+                <span class="gold-text-outline" style="font-size: 1rem;">VANGUARD OS</span>
+                <div class="sys-status">● System v1.02_Active</div>
+            </div>
+            <button class="btn-header-gold" onclick="location.href='support.html'" style="background:var(--v-gold); border:none; padding:8px 15px; font-weight:900; cursor:pointer; box-shadow: 0 3px 0 #8a6d0d;">
+                SIGNAL DISPATCH
+            </button>
         </div>
-        <nav class="hud-nav">
-            <button class="btn-outline" onclick="location.href='index.html'">EXIT SYSTEM</button>
-            <button class="btn-gold" onclick="showRequestModal()">REQUEST SIGNAL</button>
-        </nav>
     </header>
 
-    <main class="hud-workspace">
+    <main class="hud-workspace" style="display: grid; grid-template-columns: 1fr 1.5fr; flex: 1; overflow: hidden;">
         
-        <section class="window-pane" id="window-resources">
+        <section class="window-pane">
             <div class="window-header">
-                <h2 class="pane-title">INTELLIGENCE & RESOURCES</h2>
-                <div class="category-tuner" id="cat-bar"></div>
+                <span class="gold-text-outline" style="font-size: 0.7rem;">SELECT CAPABILITY</span>
+                <div style="display: flex; gap: 8px; margin-top: 10px; overflow-x: auto;">
+                    <button class="cat-btn active" onclick="loadModule('field')">FIELD OPS</button>
+                    <button class="cat-btn" onclick="loadModule('academy')">ACADEMY</button>
+                    <button class="cat-btn" onclick="loadModule('archive')">ARCHIVE</button>
+                </div>
             </div>
-            <div class="window-content" id="res-list">
+            <div class="scroll-area" id="module-list">
                 </div>
         </section>
 
-        <section class="window-pane" id="window-services">
+        <section class="window-pane" style="background: #080808;">
             <div class="window-header">
-                <h2 class="pane-title">OPERATIONAL SERVICES</h2>
-                <p class="sub-title">Internal Capabilities & External Alliances</p>
+                <span class="gold-text-outline" style="font-size: 0.7rem;">INTELLIGENCE REPORT</span>
             </div>
-            <div class="window-content">
-                
-                <h3 class="section-divider">VANGUARD SERVICES</h3>
-                <div id="internal-list">
-                    </div>
-
-                <h3 class="section-divider" style="margin-top: 30px;">AUTHORIZED ALLIANCES</h3>
-                <div id="alliance-list">
-                    </div>
-
+            <div class="scroll-area" id="intel-view">
+                <div style="text-align: center; margin-top: 30%; color: #333;">
+                    <p class="gold-text-outline">Awaiting User Selection...</p>
+                </div>
             </div>
         </section>
 
     </main>
 
-    <div id="request-modal" class="modal hidden">
-        <div class="modal-box">
-            <h3 class="gold-text">INITIATE MISSION</h3>
-            <p style="font-size: 0.75rem; color: #888; margin-bottom: 15px;">Describe the operational requirement for manual triage.</p>
-            <textarea id="mission-details" rows="5" placeholder="Enter details here..."></textarea>
-            <button class="btn-gold" onclick="alert('Signal Logged. Awaiting Dispatch.')">SUBMIT</button>
-            <button class="btn-link" onclick="document.getElementById('request-modal').classList.add('hidden')">CANCEL</button>
+    <footer class="vanguard-footer" style="border-top: 2px solid var(--v-gold); padding: 12px; background: #000;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <p style="font-size: 0.65rem; color: #555; margin: 0;">&copy; 2026 VANGUARD OS</p>
+            <nav class="footer-nav">
+                <a href="settings.html">⚙️ SYSTEM SETTINGS</a>
+                <span style="color:#222;">|</span>
+                <a href="#">PRIVACY_VAULT</a>
+            </nav>
         </div>
-    </div>
-
-    <footer class="vanguard-footer">
-        <p>&copy; 2026 Vanguard Citizen Services. All Rights Reserved. | <a href="privacy.html" style="color:var(--v-gold); text-decoration:none;">Privacy Policy</a> | <a href="terms.html" style="color:var(--v-gold); text-decoration:none;">Terms of Service</a></p>
     </footer>
 
-    <script src="app.js"></script>
+    <script>
+        const osKernel = {
+            field: [
+                { id: 1, title: "Network Optimization", desc: "Hardening and Speed for local WiFi.", Intel: "Vanguard Knights will analyze your frequency bands and security protocols to ensure 100% uptime and privacy." },
+                { id: 2, title: "Hardware Integration", desc: "Sync your digital tools.", Intel: "Seamlessly connect your smart devices under one secure, localized command." }
+            ],
+            academy: [
+                { id: 3, title: "Sovereign School", desc: "Learn the skills of tomorrow.", Intel: "A structured learning environment focused on repair, privacy, and digital self-reliance." }
+            ],
+            archive: [
+                { id: 4, title: "Media Library", desc: "Explore Vanguard Originals.", Intel: "Access movies and training films designed to elevate your understanding of the future." }
+            ]
+        };
+
+        function loadModule(key) {
+            // Update Buttons
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const list = document.getElementById('module-list');
+            list.innerHTML = '';
+            osKernel[key].forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'os-module-card';
+                card.innerHTML = `<div class="gold-text-outline">${item.title}</div><div style="font-size:0.75rem; color:#888;">${item.desc}</div>`;
+                card.onclick = () => showIntel(item);
+                list.appendChild(card);
+            });
+        }
+
+        function showIntel(item) {
+            document.getElementById('intel-view').innerHTML = `
+                <h2 class="gold-text-outline" style="font-size: 1.6rem;">${item.title}</h2>
+                <p style="color: #bbb; line-height: 1.8; margin-top: 20px;">${item.Intel}</p>
+                <button class="btn-vanguard-solid" style="width: 100%; margin-top: 30px;" onclick="location.href='support.html'">INITIALIZE MISSION</button>
+            `;
+        }
+
+        window.onload = () => loadModule('field');
+    </script>
 </body>
 </html>
