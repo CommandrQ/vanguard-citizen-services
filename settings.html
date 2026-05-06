@@ -32,7 +32,6 @@
             transition: 0.3s ease;
         }
 
-        /* Success Pulse Keyframe */
         @keyframes successPulse {
             0% { box-shadow: 0 0 0px var(--v-gold); border-color: #333; }
             50% { box-shadow: 0 0 50px var(--v-gold); border-color: var(--v-gold); }
@@ -140,19 +139,20 @@
     </footer>
 
     <script>
-        const SB_URL = 'YOUR_SUPABASE_URL';
-        const SB_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        // --- SUPABASE CONFIGURATION ---
+        const SB_URL = 'https://dvyjupytbwbrcoyouxpf.supabase.co';
+        const SB_KEY = 'sb_publishable_wjgbPekKmodd5mSDXIeUeg_Wq73GzOk';
         const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 
-        // --- THE AUDIO KERNEL (Synthesized Success Sound) ---
+        // --- THE AUDIO KERNEL ---
         function playSuccessSound() {
             const context = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = context.createOscillator();
             const gain = context.createGain();
 
             oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(880, context.currentTime); // High 'A' note
-            oscillator.frequency.exponentialRampToValueAtTime(440, context.currentTime + 0.1); // Slide down
+            oscillator.frequency.setValueAtTime(880, context.currentTime); 
+            oscillator.frequency.exponentialRampToValueAtTime(440, context.currentTime + 0.1); 
             
             gain.gain.setValueAtTime(0.1, context.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.1);
@@ -167,7 +167,7 @@
         function triggerSuccessUI() {
             const card = document.getElementById('main-card');
             card.classList.remove('sync-success');
-            void card.offsetWidth; // Trigger reflow to restart animation
+            void card.offsetWidth; 
             card.classList.add('sync-success');
             playSuccessSound();
         }
@@ -196,7 +196,7 @@
                 msg("Error: " + error.message, "red");
             } else {
                 fetchAndSync(emailValue);
-                triggerSuccessUI(); // Visual & Audio Feedback
+                triggerSuccessUI(); 
                 msg("Changes submitted successfully.", "var(--v-gold)");
             }
         }
