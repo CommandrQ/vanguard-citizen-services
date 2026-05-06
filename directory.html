@@ -6,6 +6,7 @@
     <title>Fort Toward | Directory</title>
     <link rel="stylesheet" href="style.css">
     <style>
+        /* --- CORE OS ARCHITECTURE --- */
         body, html {
             overflow: hidden; height: 100%;
             display: flex; flex-direction: column;
@@ -64,11 +65,42 @@
             gap: 25px; animation: systemWake 0.6s var(--v-curve) forwards;
         }
 
+        /* --- FOOTER DESKTOP LAYOUT --- */
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            gap: 10px;
+        }
+        
+        .footer-nav {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* --- MOBILE REFINEMENTS --- */
         @media (max-width: 768px) {
             .header-content { flex-direction: column; text-align: center; gap: 15px; padding: 15px 10px; }
+            .header-content nav { flex-direction: row; justify-content: center; width: 100%; flex-wrap: wrap; }
             .category-nav { justify-content: flex-start; padding: 15px 20px; }
             .portal-card { flex-direction: column; text-align: left; }
             .card-btn { width: 100%; text-align: center; }
+            
+            /* FOOTER STACKING ON MOBILE */
+            .footer-content { 
+                flex-direction: column; 
+                justify-content: center; 
+                text-align: center; 
+                gap: 15px; 
+            }
+            .footer-nav {
+                justify-content: center;
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -98,9 +130,9 @@
     <main class="os-viewport" id="portal-feed"></main>
 
     <footer class="vanguard-footer" style="border-top: 2px solid #222; padding: 20px; background: #000; z-index: 10;">
-        <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; width: 100%; flex-wrap: wrap; gap: 10px;">
+        <div class="footer-content">
             <p style="color: #FFF; font-size: 0.75rem; margin: 0;">&copy; 2026 VANGUARD CITIZEN SERVICES</p>
-            <nav style="display: flex; gap: 15px; align-items: center;">
+            <nav class="footer-nav">
                 <a href="legal.html" style="color: #bbb; text-decoration: none; font-size: 0.8rem;">LEGAL</a>
                 <span style="color: #333;">|</span>
                 <a href="settings.html" style="color: #FFF; text-decoration: none; font-weight: bold; font-size: 1rem;">⚙️ SYSTEM SETTINGS</a>
