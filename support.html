@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vanguard Support | Triage</title>
+    <title>Vanguard OS | Support Triage</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* --- HUD ARCHITECTURE --- */
+        /* --- OS HUD ARCHITECTURE --- */
         body, html {
             overflow: hidden;
             height: 100%;
             display: flex;
             flex-direction: column;
             background: #000;
+            margin: 0;
         }
 
         .hud-header, .vanguard-footer {
             flex-shrink: 0;
             background: #000;
-            z-index: 20;
+            z-index: 100;
         }
 
         .hud-workspace {
@@ -33,72 +34,62 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* --- 3D BUTTONS & ICONS --- */
-        .btn-header-gold {
+        /* --- PILL-SHAPED DIRECTORY BUTTON --- */
+        .btn-pill-gold {
             background: var(--v-gold);
             color: #000 !important;
             font-weight: 900;
-            padding: 8px 20px;
+            padding: 10px 25px;
             text-decoration: none;
-            font-size: 0.75rem;
-            box-shadow: 0 3px 0 #8a6d0d;
-            transition: 0.2s;
-            cursor: pointer;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
             border: none;
-        }
-
-        .btn-vanguard-solid {
-            background: var(--v-gold);
-            color: #000 !important;
-            font-weight: 900;
-            padding: 15px 30px;
-            text-decoration: none;
-            display: inline-block;
+            border-radius: 50px; /* The Pill Shape */
             box-shadow: 0 4px 0 #8a6d0d;
-            transition: 0.2s;
-            border: none;
+            transition: 0.2s cubic-bezier(0.19, 1, 0.22, 1);
             cursor: pointer;
+            white-space: nowrap;
         }
 
-        .btn-vanguard-solid:hover { transform: translateY(-2px); }
-        .btn-vanguard-solid:active { transform: translateY(2px); box-shadow: 0 1px 0 #8a6d0d; }
-
-        /* Help Icon Style */
-        .info-trigger {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 30px;
-            height: 30px;
-            background: #111;
-            border: 1px solid var(--v-gold);
-            color: var(--v-gold);
-            border-radius: 50%;
-            margin-left: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.9rem;
-            vertical-align: middle;
-            transition: 0.3s;
+        .btn-pill-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #8a6d0d;
         }
-        .info-trigger:hover { background: var(--v-gold); color: #000; box-shadow: 0 0 10px var(--v-gold); }
 
-        /* --- 3D GLASSY CARDS --- */
+        .btn-pill-gold:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #8a6d0d;
+        }
+
+        /* --- SOLID 3D CARDS (OPAQUE) --- */
         .support-card {
-            background: linear-gradient(135deg, #050505 0%, #111 100%);
-            border-top: 1px solid rgba(212, 175, 55, 0.5);
-            border-left: 1px solid rgba(212, 175, 55, 0.3);
+            background: #080808; /* Strictly Solid Opaque Black */
+            border-top: 1px solid rgba(212, 175, 55, 0.4);
+            border-left: 1px solid rgba(212, 175, 55, 0.2);
             border-right: 1px solid #111;
-            border-bottom: 1px solid #000;
+            border-bottom: 2px solid #000;
             padding: 50px 30px;
             max-width: 420px;
+            width: 100%;
             text-align: center;
-            box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.9);
-            border-radius: 4px;
+            position: relative;
+            box-shadow: 25px 25px 60px rgba(0, 0, 0, 1); /* Deep Shadow for 3D lift */
+            border-radius: 8px;
             opacity: 0;
             animation: fadeInUp 0.8s ease forwards;
         }
 
+        /* Faux-Glass Sheen (Opaque) */
+        .support-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 40%);
+            pointer-events: none;
+            border-radius: 8px;
+        }
+
+        /* TEXT OUTLINE (BLACK) */
         .gold-text-outline {
             color: var(--v-gold);
             text-transform: uppercase;
@@ -109,16 +100,34 @@
 
         .support-desc {
             font-size: 1rem;
-            line-height: 1.5;
+            line-height: 1.6;
             color: #eee;
             margin: 20px 0 30px 0;
         }
 
-        /* --- INFO MODAL (OPAQUE) --- */
+        /* HELP ICON TRIGGER */
+        .info-trigger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: #111;
+            border: 1px solid var(--v-gold);
+            color: var(--v-gold);
+            border-radius: 50%;
+            margin-left: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .info-trigger:hover { background: var(--v-gold); color: #000; box-shadow: 0 0 15px var(--v-gold); }
+
+        /* MODAL (SOLID OPAQUE) */
         .help-modal {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.95);
+            background: rgba(0,0,0,0.98);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -128,27 +137,27 @@
         .help-box {
             background: #000;
             border: 2px solid var(--v-gold);
-            padding: 30px;
+            padding: 40px;
             max-width: 500px;
             width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            text-align: left;
+            box-shadow: 0 0 50px rgba(0,0,0,1);
         }
-        .help-box h3 { margin-top: 0; }
-        .help-box p { font-size: 0.9rem; line-height: 1.6; color: #ccc; }
-        .platform-list { list-style: none; padding: 0; }
-        .platform-list li { margin-bottom: 15px; border-left: 2px solid var(--v-gold); padding-left: 15px; }
-        .platform-list strong { color: var(--v-white); display: block; margin-bottom: 5px; }
+
+        .hidden { display: none !important; }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* MOBILE OPTIMIZATION */
         @media (max-width: 850px) {
-            .hud-workspace { grid-template-columns: 1fr; padding: 60px 20px; }
-            .support-card { width: 100%; }
+            .hud-workspace {
+                grid-template-columns: 1fr;
+                padding: 80px 20px;
+            }
+            .header-content { padding: 10px 15px !important; }
+            .gold-text-outline { font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -157,14 +166,17 @@
     <div class="scanlines"></div>
     <div class="starfield s1"></div>
 
-    <header class="hud-header" style="border-bottom: 2px solid var(--v-gold); padding: 15px 25px;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+    <header class="hud-header" style="border-bottom: 2px solid var(--v-gold);">
+        <div class="header-content" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; max-width: 100%;">
             <div style="display: flex; align-items: center;">
-                <img src="images/vanguardorglogo.png" alt="VCS" style="width:30px; margin-right:10px;">
-                <span class="gold-text-outline" style="font-size: 0.9rem;">SUPPORT TRIAGE</span>
+                <img src="images/vanguardorglogo.png" alt="VCS" style="width:35px; margin-right:12px;">
+                <div>
+                    <span class="gold-text-outline">VANGUARD OS</span>
+                    <div style="font-size: 0.6rem; color: #00ff00; letter-spacing: 1px;">● SUPPORT_MODE_ACTIVE</div>
+                </div>
             </div>
             <nav>
-                <button class="btn-header-gold" onclick="location.href='directory.html'">DIRECTORY</button>
+                <button class="btn-pill-gold" onclick="location.href='directory.html'">DIRECTORY</button>
             </nav>
         </div>
     </header>
@@ -172,22 +184,22 @@
     <main class="hud-workspace">
         
         <section class="support-card" style="animation-delay: 0.1s;">
-            <div style="font-size: 2.5rem; margin-bottom: 10px;">✉️</div>
-            <h2 class="gold-text-outline">Email Support</h2>
+            <div style="font-size: 3rem; margin-bottom: 10px;">✉️</div>
+            <h2 class="gold-text-outline">Email Liaison</h2>
             <p class="support-desc">
-                Good for general questions. We'll reply as soon as we're back at the desk.
+                Ideal for general questions or formal reports. We will reply to your signal as soon as possible.
             </p>
-            <a href="mailto:support@vcscitizen.org" class="btn-vanguard-solid">SEND EMAIL</a>
+            <a href="mailto:support@vcscitizen.org" class="btn-pill-gold" style="width: 80%; display: block; margin: 0 auto; text-align: center;">SEND EMAIL</a>
         </section>
 
         <section class="support-card" style="animation-delay: 0.3s;">
-            <div style="font-size: 2.5rem; margin-bottom: 10px;">🛡️</div>
-            <h2 class="gold-text-outline">Live Chat</h2>
+            <div style="font-size: 3rem; margin-bottom: 10px;">🛡️</div>
+            <h2 class="gold-text-outline">Live Command</h2>
             <p class="support-desc">
-                Join our Discord community. Best for quick help or voice calls.
+                Access our Discord for real-time talk, live help, and direct voice consultation.
             </p>
             <div style="display: flex; align-items: center; justify-content: center;">
-                <button class="btn-vanguard-solid" onclick="window.open('https://discord.gg/YOUR_CODE', '_blank')">JOIN DISCORD</button>
+                <button class="btn-pill-gold" style="flex: 1; max-width: 250px;" onclick="window.open('https://discord.gg/YOUR_CODE', '_blank')">JOIN DISCORD</button>
                 <div class="info-trigger" onclick="toggleHelp()">?</div>
             </div>
         </section>
@@ -197,33 +209,25 @@
     <div id="discord-help" class="help-modal hidden">
         <div class="help-box">
             <h3 class="gold-text-outline">What is Discord?</h3>
-            <p>Discord is a free app that the Vanguard community uses to talk. It's like a mix between a group chat and a phone call. We use it to coordinate help, share resources, and speak with citizens 1-on-1.</p>
+            <p>Discord is our primary live communication hub. Think of it as a private digital office where we can chat, screen-share, and speak via voice in real-time.</p>
             
-            <h3 class="gold-text-outline" style="font-size: 1rem; margin-top: 20px;">How to Install</h3>
-            <ul class="platform-list">
-                <li>
-                    <strong>Windows / Mac</strong>
-                    Visit <a href="https://discord.com/download" target="_blank" style="color:var(--v-gold);">discord.com/download</a> and click "Download." Run the file once it finishes to set up the app.
-                </li>
-                <li>
-                    <strong>Mobile (iPhone or Android)</strong>
-                    Open your App Store or Google Play Store. Search for <strong>"Discord"</strong> and tap Install.
-                </li>
-            </ul>
-            <p style="font-size: 0.8rem; font-style: italic;">Once installed, come back here and click "Join Discord" to enter our Command Center.</p>
+            <h3 class="gold-text-outline" style="font-size: 1rem; margin-top: 25px;">Getting Started</h3>
+            <div style="border-left: 2px solid var(--v-gold); padding-left: 15px; margin-bottom: 15px;">
+                <p><strong>PC/Mac:</strong> Visit <a href="https://discord.com" style="color:var(--v-gold);">discord.com</a> to download.</p>
+                <p><strong>Mobile:</strong> Search "Discord" in the App Store or Google Play.</p>
+            </div>
             
-            <button class="btn-vanguard-solid" style="width: 100%; margin-top: 10px;" onclick="toggleHelp()">UNDERSTOOD</button>
+            <button class="btn-pill-gold" style="width: 100%;" onclick="toggleHelp()">RETURN TO TRIAGE</button>
         </div>
     </div>
 
-    <footer class="vanguard-footer" style="border-top: 2px solid var(--v-gold); padding: 10px;">
-        <p style="font-size: 0.6rem; color: #fff; text-align: center; margin: 0;">&copy; 2026 Vanguard Citizen Services. All Rights Reserved.</p>
+    <footer class="vanguard-footer" style="border-top: 2px solid var(--v-gold); padding: 12px;">
+        <p style="font-size: 0.65rem; color: #666; text-align: center; margin: 0;">VANGUARD OPERATING SYSTEM // SECURE TERMINAL &copy; 2026</p>
     </footer>
 
     <script>
         function toggleHelp() {
-            const modal = document.getElementById('discord-help');
-            modal.classList.toggle('hidden');
+            document.getElementById('discord-help').classList.toggle('hidden');
         }
     </script>
 
