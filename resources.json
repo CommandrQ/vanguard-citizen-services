@@ -1,14 +1,4 @@
 [
-  {
-    "cat": "Tech",
-    "name": "System Hardening 101",
-    "desc": "The Vanguard guide to local OS security.",
-    "url": "/guides/hardening.html"
-  },
-  {
-    "cat": "Labor",
-    "name": "Squire Deployment Map",
-    "desc": "Current operational zones for physical labor.",
-    "url": "/operations/map.html"
-  }
+  { "cat": "Tech", "name": "OS Hardening Guide", "desc": "Step-by-step security protocols.", "url": "#" },
+  { "cat": "Labor", "name": "Squire Deployment Map", "desc": "Current operational zones.", "url": "#" }
 ]
