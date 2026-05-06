@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vanguard OS | Directory</title>
+    <title>Fort Toward | Directory</title>
     <link rel="stylesheet" href="style.css">
     <style>
         body, html {
@@ -14,21 +14,56 @@
             background: #000;
         }
 
-        /* --- CATEGORY NAVIGATION (Horizontal Row) --- */
-        .category-nav {
+        /* --- UPDATED HEADER FOR FORT TOWARD --- */
+        .hud-header {
             flex-shrink: 0;
             background: #000;
-            padding: 15px 25px;
+            border-bottom: 2px solid var(--v-gold);
+            z-index: 100;
+            width: 100%;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Slim Button Version */
+        .btn-slim {
+            background: var(--v-gold);
+            color: #000 !important;
+            font-weight: 900;
+            padding: 6px 18px; /* Reduced vertical padding for "slim" look */
+            text-decoration: none;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 3px 0 #8a6d0d;
+            transition: 0.2s var(--v-curve);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-slim:hover { transform: translateY(-1px); box-shadow: 0 4px 0 #8a6d0d; }
+        .btn-slim:active { transform: translateY(1px); box-shadow: 0 0px 0 #8a6d0d; }
+
+        /* --- VIEWPORT & FEED --- */
+        .category-nav {
+            flex-shrink: 0;
+            padding: 12px 25px;
             border-bottom: 1px solid #222;
             display: flex;
-            gap: 12px;
+            gap: 10px;
             overflow-x: auto;
-            scrollbar-width: none; /* Firefox */
-            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
         }
-        .category-nav::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+        .category-nav::-webkit-scrollbar { display: none; }
 
-        /* --- THE MAIN VIEWPORT --- */
         .os-viewport {
             flex: 1;
             overflow-y: auto;
@@ -36,16 +71,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            -webkit-overflow-scrolling: touch;
         }
 
-        /* --- WIDE PORTAL CARDS --- */
         .portal-card {
-            background: #080808; /* Solid Opaque */
+            background: #080808;
             border: 1px solid #222;
             border-left: 4px solid var(--v-gold);
             width: 100%;
-            max-width: 800px; /* Comfortable reading width on desktop */
+            max-width: 800px;
             padding: 30px;
             margin-bottom: 25px;
             box-shadow: 15px 15px 40px rgba(0,0,0,0.8);
@@ -53,35 +86,33 @@
             justify-content: space-between;
             align-items: center;
             gap: 20px;
-            opacity: 0;
             animation: systemWake 0.6s var(--v-curve) forwards;
         }
 
-        .card-info { flex: 1; }
-        .card-title { font-size: 1.2rem; font-weight: 900; color: #fff; margin-bottom: 8px; }
-        .card-desc { font-size: 0.95rem; color: #bbb; line-height: 1.5; }
-        .card-tag { font-size: 0.7rem; color: var(--v-gold); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
-
-        /* --- ACTION BUTTONS --- */
-        .btn-action {
-            flex-shrink: 0;
-            background: var(--v-gold);
-            color: #000 !important;
-            padding: 12px 25px;
-            border-radius: 50px;
-            font-weight: 900;
-            font-size: 0.75rem;
-            text-decoration: none;
-            box-shadow: 0 4px 0 #8a6d0d;
-            transition: 0.3s var(--v-curve);
-        }
-        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 6px 15px var(--v-shadow); }
-        .btn-action:active { transform: translateY(2px); box-shadow: 0 1px 0 #8a6d0d; }
-
+        /* --- MOBILE STACKING LOGIC --- */
         @media (max-width: 600px) {
-            .portal-card { flex-direction: column; align-items: flex-start; text-align: left; }
+            .header-content {
+                flex-direction: column; /* Stack vertically on mobile */
+                text-align: center;
+                padding: 15px 10px;
+                gap: 12px;
+            }
+
+            .logo-area {
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .logo-area img {
+                margin: 0 0 8px 0 !important;
+            }
+
+            .portal-card { 
+                flex-direction: column; 
+                align-items: flex-start; 
+            }
+
             .btn-action { width: 100%; text-align: center; }
-            .os-viewport { padding: 20px; }
         }
     </style>
 </head>
@@ -91,12 +122,14 @@
     <div class="starfield s1"></div>
 
     <header class="hud-header">
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 30px;">
-            <div style="display: flex; align-items: center;">
-                <img src="images/vanguardorglogo.png" alt="VCS" style="width:30px; margin-right:12px;">
-                <span class="gold-text-outline">Vanguard OS // Portal</span>
+        <div class="header-content">
+            <div class="logo-area" style="display: flex; align-items: center;">
+                <img src="images/vanguardorglogo.png" alt="VCS" style="width:32px; margin-right:12px;">
+                <span class="gold-text-outline">Fort Toward Directory</span>
             </div>
-            <button class="btn-pill-gold" onclick="location.href='support.html'">Signal Dispatch</button>
+            <nav>
+                <button class="btn-slim" onclick="location.href='support.html'">CUSTOMER SERVICE</button>
+            </nav>
         </div>
     </header>
 
@@ -114,62 +147,59 @@
     </footer>
 
     <script>
-        /* --- EASY TO EDIT DATABASE --- */
         const VANGUARD_DB = {
             "Internal": [
-                { title: "Vanguard Academy", tag: "Education", desc: "Access the Git-based curriculum for hardware repair and digital sovereignty.", link: "https://git.vanguard.org/academy", btnText: "ACCESS GIT" },
-                { title: "Knight Onboarding", tag: "Recruitment", desc: "Documentation for Citizens wishing to advance to the rank of Knight.", link: "https://git.vanguard.org/manual", btnText: "VIEW DOCS" }
+                { title: "Vanguard Academy", tag: "Education", desc: "Access the curriculum for hardware repair and digital sovereignty.", link: "https://git.vanguard.org/academy", btnText: "ACCESS GIT" },
+                { title: "Knight Onboarding", tag: "Recruitment", desc: "Pathways for Citizens advancing to the rank of Knight.", link: "https://git.vanguard.org/manual", btnText: "VIEW DOCS" }
             ],
             "Alliances": [
-                { title: "Hardin Tech Solutions", tag: "Local Business", desc: "The county leader in commercial IT and server management.", link: "https://hardintech.com", btnText: "VISIT SITE" },
-                { title: "River City Solar", tag: "Energy Partner", desc: "Authorized installation partner for Vanguard-approved off-grid power.", link: "https://riversolar.com", btnText: "VIEW SERVICES" }
+                { title: "Hardin Tech Solutions", tag: "Alliance Partner", desc: "Commercial IT and server management experts.", link: "https://hardintech.com", btnText: "VISIT SITE" }
             ],
             "Fixes": [
-                { title: "WiFi Signal Triage", tag: "Quick Fix", desc: "A simple guide to analyzing interference and optimizing your 5GHz bands.", link: "https://git.vanguard.org/fixes/wifi", btnText: "READ INTEL" }
+                { title: "WiFi Signal Triage", tag: "Quick Fix", desc: "Diagnostic guide for analyzing and optimizing home networks.", link: "https://git.vanguard.org/fixes/wifi", btnText: "READ INTEL" }
             ]
         };
 
         const navRow = document.getElementById('category-row');
         const feed = document.getElementById('portal-feed');
 
-        // Create Buttons
         Object.keys(VANGUARD_DB).forEach((cat, index) => {
             const btn = document.createElement('button');
-            btn.className = 'btn-pill-gold';
+            btn.className = 'btn-slim';
             btn.style.background = index === 0 ? 'var(--v-gold)' : '#111';
             btn.style.color = index === 0 ? '#000' : '#888';
+            btn.style.boxShadow = index === 0 ? '0 3px 0 #8a6d0d' : 'none';
             btn.innerText = cat;
             btn.onclick = (e) => switchCategory(cat, e.target);
             navRow.appendChild(btn);
         });
 
         function switchCategory(cat, targetBtn) {
-            // Update button styles
             document.querySelectorAll('#category-row button').forEach(b => {
                 b.style.background = '#111';
                 b.style.color = '#888';
+                b.style.boxShadow = 'none';
             });
             targetBtn.style.background = 'var(--v-gold)';
             targetBtn.style.color = '#000';
+            targetBtn.style.boxShadow = '0 3px 0 #8a6d0d';
 
-            // Update Feed
             feed.innerHTML = '';
             VANGUARD_DB[cat].forEach(item => {
                 const card = document.createElement('section');
                 card.className = 'portal-card';
                 card.innerHTML = `
                     <div class="card-info">
-                        <div class="card-tag">${item.tag}</div>
-                        <h2 class="card-title">${item.title}</h2>
-                        <p class="card-desc">${item.desc}</p>
+                        <div style="font-size: 0.7rem; color: var(--v-gold); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px;">${item.tag}</div>
+                        <h2 style="font-size: 1.2rem; font-weight: 900; color: #fff; margin-bottom: 8px;">${item.title}</h2>
+                        <p style="font-size: 0.95rem; color: #bbb; line-height: 1.5;">${item.desc}</p>
                     </div>
-                    <a href="${item.link}" target="_blank" class="btn-action">${item.btnText}</a>
+                    <a href="${item.link}" target="_blank" class="btn-slim" style="padding: 12px 25px;">${item.btnText}</a>
                 `;
                 feed.appendChild(card);
             });
         }
 
-        // Boot
         window.onload = () => switchCategory(Object.keys(VANGUARD_DB)[0], navRow.firstChild);
     </script>
 </body>
