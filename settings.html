@@ -150,7 +150,9 @@
         // --- CONFIGURATION ---
         const SB_URL = 'https://dvyjupytbwbrcoyouxpf.supabase.co';
         const SB_KEY = 'sb_publishable_wjgbPekKmodd5mSDXIeUeg_Wq73GzOk';
-        const supabase = supabase.createClient(SB_URL, SB_KEY);
+        
+        // FIX: Renamed variable to supabaseClient so it doesn't crash the browser
+        const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 
         let isReturningUser = false;
 
@@ -177,7 +179,7 @@
 
         // --- AUTHENTICATION STATE LOGIC ---
         async function checkSession() {
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
                 isReturningUser = true;
                 loadProfileUI(session.user);
@@ -205,16 +207,16 @@
             msg("Checking Credentials...", "#888");
 
             // 1. Try to Log In first
-            const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+            const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({ email, password });
             let user = null;
 
             if (signInError) {
                 // If the system says "Invalid login", they might be a new user. Try creating an account.
-                if (signInError.message.includes("Invalid login")) {
+                if (signInError.message.includes("Invalid login credentials") || signInError.message.includes("Invalid login")) {
                     if (!fullName) return msg("Real Name is required to create a new Citizen profile.", "red");
                     
                     msg("Creating New Identity...", "#888");
-                    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+                    const { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({
                         email, password, options: { data: { full_name: fullName } }
                     });
 
@@ -237,7 +239,7 @@
             if (handle) updates.handle = handle;
             if (discord) updates.discord_id = discord;
 
-            const { error: updateError } = await supabase.from('citizens').update(updates).eq('auth_id', user.id);
+            const { error: updateError } = await supabaseClient.from('citizens').update(updates).eq('auth_id', user.id);
 
             if (updateError) return msg("Profile sync error: " + updateError.message, "red");
 
@@ -249,7 +251,7 @@
         }
 
         async function updateExistingProfile() {
-            const { data: { user } } = await supabase.auth.getUser();
+            const { data: { user } } = await supabaseClient.auth.getUser();
             if (!user) return handleLogout();
 
             const updates = {
@@ -259,7 +261,7 @@
 
             msg("Saving changes...", "#888");
 
-            const { error } = await supabase.from('citizens').update(updates).eq('auth_id', user.id);
+            const { error } = await supabaseClient.from('citizens').update(updates).eq('auth_id', user.id);
 
             if (error) {
                 msg("Error: " + error.message, "red");
@@ -268,7 +270,7 @@
                 msg("Profile Updated Successfully.", "var(--v-gold)");
                 
                 // Refresh local storage silently
-                const { data } = await supabase.from('citizens').select('*').eq('auth_id', user.id).single();
+                const { data } = await supabaseClient.from('citizens').select('*').eq('auth_id', user.id).single();
                 if(data) localStorage.setItem('vanguard_citizen', JSON.stringify(data));
             }
         }
@@ -277,7 +279,7 @@
         async function loadProfileUI(user) {
             msg("Decrypting profile...", "#888");
 
-            const { data, error } = await supabase.from('citizens').select('*').eq('auth_id', user.id).single();
+            const { data, error } = await supabaseClient.from('citizens').select('*').eq('auth_id', user.id).single();
 
             if (data) {
                 localStorage.setItem('vanguard_citizen', JSON.stringify(data));
@@ -313,7 +315,7 @@
         }
 
         async function handleLogout() {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             localStorage.removeItem('vanguard_citizen');
             location.reload();
         }
