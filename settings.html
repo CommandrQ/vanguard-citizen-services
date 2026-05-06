@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fort Toward | Identity Terminal</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body, html {
+            overflow: hidden; height: 100%; display: flex; flex-direction: column;
+            background: #000; margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        .scanlines { position: fixed; inset: 0; background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(255, 255, 255, 0.02) 50%); background-size: 100% 4px; z-index: 1; pointer-events: none; }
+
+        .hud-header { flex-shrink: 0; background: #000; border-bottom: 2px solid var(--v-gold); z-index: 10; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; }
+
+        /* --- IDENTITY TERMINAL CARD --- */
+        .os-viewport {
+            flex: 1; overflow-y: auto; padding: 40px 20px;
+            display: flex; flex-direction: column; align-items: center; z-index: 5;
+        }
+
+        .identity-card {
+            background: #0a0a0a; border: 1px solid #333; border-top: 4px solid var(--v-gold);
+            width: 100%; max-width: 600px; padding: 40px;
+            box-shadow: 20px 20px 40px rgba(0,0,0,1);
+            animation: systemWake 0.6s var(--v-curve) forwards;
+        }
+
+        .status-header { margin-bottom: 30px; text-align: center; }
+        .rank-badge {
+            display: inline-block; padding: 5px 15px; border: 1px solid var(--v-gold);
+            color: var(--v-gold); font-weight: 900; font-size: 0.8rem;
+            text-transform: uppercase; letter-spacing: 2px; margin-top: 10px;
+        }
+
+        /* --- FORM STYLING --- */
+        .field-group { margin-bottom: 20px; text-align: left; }
+        label { display: block; color: var(--v-gold); font-weight: 900; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+        
+        input, select {
+            width: 100%; background: #111; border: 1px solid #333; padding: 12px;
+            color: #fff; font-size: 1rem; border-radius: 5px; box-sizing: border-box;
+        }
+        input:focus { border-color: var(--v-gold); outline: none; }
+
+        .btn-pill {
+            width: 100%; font-weight: 900; padding: 15px; font-size: 0.9rem;
+            border-radius: 50px; cursor: pointer; transition: 0.3s; border: none; margin-top: 10px;
+        }
+        .btn-active { background: var(--v-gold) !important; color: #000 !important; box-shadow: 0 4px 0 #8a6d0d; }
+        .btn-inactive { background: transparent !important; border: 1px solid #444 !important; color: #888 !important; }
+
+        .sys-msg { font-size: 0.85rem; margin-top: 15px; text-align: center; font-weight: bold; }
+
+        @media (max-width: 650px) {
+            .header-content { flex-direction: column; gap: 12px; text-align: center; }
+            .identity-card { padding: 25px; }
+        }
+    </style>
+</head>
+<body class="fixed-hud">
+
+    <div class="scanlines"></div>
+    <div class="starfield s1"></div>
+
+    <header class="hud-header">
+        <div class="header-content">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <img src="images/vanguardorglogo.png" alt="VCS" style="width:35px;">
+                <span class="gold-text-outline" style="font-size: 1.2rem;">Identity Terminal</span>
+            </div>
+            <button class="btn-pill btn-active" style="padding: 6px 18px; width: auto; font-size: 0.75rem;" onclick="location.href='directory.html'">RETURN TO FORT</button>
+        </div>
+    </header>
+
+    <main class="os-viewport">
+        <div class="identity-card">
+            <div class="status-header">
+                <h2 id="welcome-msg" class="gold-text-outline" style="font-size: 1.8rem; margin: 0;">Identity: Guest</h2>
+                <div id="rank-display" class="rank-badge">Unverified Citizen</div>
+            </div>
+
+            <div id="form-area">
+                <div class="field-group">
+                    <label>Full Name</label>
+                    <input type="text" id="full_name" placeholder="Quincy Jones">
+                </div>
+                <div class="field-group">
+                    <label>Citizen Handle (Callsign)</label>
+                    <input type="text" id="handle" placeholder="CommanderQ">
+                </div>
+                <div class="field-group">
+                    <label>Email Address (Identity Key)</label>
+                    <input type="email" id="email" placeholder="name@email.com">
+                </div>
+                <div class="field-group">
+                    <label>Discord ID</label>
+                    <input type="text" id="discord_id" placeholder="User#1234">
+                </div>
+                <div class="field-group">
+                    <label>Assigned Rank</label>
+                    <select id="rank">
+                        <option value="Citizen">Citizen</option>
+                        <option value="Student">Student</option>
+                        <option value="Volunteer">Volunteer</option>
+                        <option value="Knight Aspirant">Knight Aspirant</option>
+                    </select>
+                </div>
+
+                <button class="btn-pill btn-active" onclick="saveIdentity()">WRITE TO KERNEL</button>
+                <button class="btn-pill btn-inactive" onclick="restoreIdentity()">RESTORE FROM EMAIL</button>
+            </div>
+
+            <div id="logout-area" style="display:none; text-align: center;">
+                <p style="color: #bbb; margin-bottom: 20px;">Identity is currently saved to this browser.</p>
+                <button class="btn-pill btn-inactive" onclick="logout()">CLEAR LOCAL MEMORY</button>
+            </div>
+
+            <div id="sys-response" class="sys-msg"></div>
+        </div>
+    </main>
+
+    <footer class="vanguard-footer" style="padding: 20px; border-top: 1px solid #222; text-align: center;">
+        <p style="color: #555; font-size: 0.7rem; margin: 0;">Vanguard OS v3.0 | Secure Citizen Handshake</p>
+    </footer>
+
+    <script>
+        // --- CONFIGURATION ---
+        const SB_URL = 'YOUR_SUPABASE_URL';
+        const SB_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        const supabase = supabase.createClient(SB_URL, SB_KEY);
+
+        // --- CORE FUNCTIONS ---
+        async function saveIdentity() {
+            const data = {
+                full_name: document.getElementById('full_name').value,
+                handle: document.getElementById('handle').value,
+                email: document.getElementById('email').value,
+                discord_id: document.getElementById('discord_id').value,
+                rank: document.getElementById('rank').value
+            };
+
+            if(!data.email || !data.full_name) {
+                msg("Name and Email are required for the Kernel.", "red");
+                return;
+            }
+
+            // Upsert into Supabase (Update if email exists, otherwise Insert)
+            const { error } = await supabase.from('citizens').upsert([data], { onConflict: 'email' });
+
+            if (error) {
+                msg("Kernel Error: " + error.message, "red");
+            } else {
+                localStorage.setItem('vanguard_citizen', JSON.stringify(data));
+                msg("Identity Written Successfully.", "var(--v-gold)");
+                syncUI();
+            }
+        }
+
+        async function restoreIdentity() {
+            const email = document.getElementById('email').value;
+            if(!email) { msg("Please enter your Email Key.", "red"); return; }
+
+            msg("Searching Ledger...", "#888");
+            
+            const { data, error } = await supabase.from('citizens').select('*').eq('email', email).single();
+
+            if (data) {
+                localStorage.setItem('vanguard_citizen', JSON.stringify(data));
+                msg("Identity Restored.", "var(--v-gold)");
+                syncUI();
+            } else {
+                msg("No Identity found for this Email.", "red");
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('vanguard_citizen');
+            location.reload();
+        }
+
+        function syncUI() {
+            const citizen = JSON.parse(localStorage.getItem('vanguard_citizen'));
+            if (citizen) {
+                document.getElementById('welcome-msg').innerText = "Identity: " + citizen.full_name;
+                document.getElementById('rank-display').innerText = citizen.rank;
+                document.getElementById('logout-area').style.display = 'block';
+                
+                // Fill inputs
+                document.getElementById('full_name').value = citizen.full_name;
+                document.getElementById('handle').value = citizen.handle;
+                document.getElementById('email').value = citizen.email;
+                document.getElementById('discord_id').value = citizen.discord_id;
+                document.getElementById('rank').value = citizen.rank;
+            }
+        }
+
+        function msg(text, color) {
+            const m = document.getElementById('sys-response');
+            m.innerText = text; m.style.color = color;
+        }
+
+        window.onload = syncUI;
+    </script>
+</body>
+</html>
