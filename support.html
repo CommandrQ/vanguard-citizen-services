@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vanguard OS | Support Triage</title>
+    <title>Fort Toward | Support</title>
     <link rel="stylesheet" href="style.css">
     <style>
         /* --- OS HUD ARCHITECTURE --- */
@@ -14,101 +14,107 @@
             flex-direction: column;
             background: #000;
             margin: 0;
-            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        /* --- HEADER FIX: PINNED TO TOP RIGHT --- */
+        /* Scanlines layer behind text for accessibility */
+        .scanlines {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(255, 255, 255, 0.02) 50%);
+            background-size: 100% 4px;
+            z-index: 1; 
+            pointer-events: none;
+        }
+
+        /* --- HEADER: ALIGNED RIGHT ON DESKTOP --- */
         .hud-header {
             flex-shrink: 0;
             background: #000;
             border-bottom: 2px solid var(--v-gold);
-            z-index: 100;
-            width: 100%; /* Ensures header spans full width */
+            z-index: 10;
         }
 
         .header-content {
             display: flex;
-            justify-content: space-between; /* Pushes items to opposite ends */
+            justify-content: space-between;
             align-items: center;
             padding: 15px 30px;
             width: 100%;
-            box-sizing: border-box; /* Prevents padding from breaking width */
+            box-sizing: border-box;
         }
 
-        .hud-workspace {
+        /* --- PILL BUTTONS --- */
+        .btn-pill {
+            font-family: inherit;
+            font-weight: 900;
+            padding: 12px 24px;
+            font-size: 0.9rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s var(--v-curve);
+            border: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-active {
+            background: var(--v-gold) !important;
+            color: #000 !important;
+            box-shadow: 0 4px 0 #8a6d0d;
+        }
+
+        .btn-active:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3); 
+        }
+
+        /* --- SUPPORT VIEWPORT (Portal Cards) --- */
+        .os-viewport {
             flex: 1;
             overflow-y: auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-items: center;
-            padding: 40px;
-            gap: 40px;
-            -webkit-overflow-scrolling: touch;
+            z-index: 5;
         }
 
-        /* --- PILL-SHAPED DIRECTORY BUTTON --- */
-        .btn-pill-gold {
-            background: var(--v-gold);
-            color: #000 !important;
-            font-weight: 900;
-            padding: 10px 25px;
-            text-decoration: none;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            border: none;
-            border-radius: 50px;
-            box-shadow: 0 4px 0 #8a6d0d;
-            transition: 0.2s cubic-bezier(0.19, 1, 0.22, 1);
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        .btn-pill-gold:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 0 #8a6d0d;
-        }
-
-        .btn-pill-gold:active {
-            transform: translateY(2px);
-            box-shadow: 0 1px 0 #8a6d0d;
-        }
-
-        /* --- SOLID 3D CARDS (OPAQUE) --- */
-        .support-card {
-            background: #080808; /* Strictly Solid Opaque Black */
-            border-top: 1px solid rgba(212, 175, 55, 0.4);
-            border-left: 1px solid rgba(212, 175, 55, 0.2);
-            border-right: 1px solid #111;
-            border-bottom: 2px solid #000;
-            padding: 50px 30px;
-            max-width: 420px;
+        .portal-card {
+            background: #0a0a0a; /* Solid Opaque Black */
+            border: 1px solid #333;
+            border-left: 5px solid var(--v-gold);
             width: 100%;
-            text-align: center;
-            position: relative;
-            box-shadow: 25px 25px 60px rgba(0, 0, 0, 1);
-            border-radius: 8px;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease forwards;
+            max-width: 800px;
+            padding: 35px;
+            margin-bottom: 25px;
+            box-shadow: 20px 20px 40px rgba(0,0,0,1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 25px;
+            animation: systemWake 0.6s var(--v-curve) forwards;
         }
 
-        /* TEXT OUTLINE (BLACK) */
-        .gold-text-outline {
+        /* Help Icon Style */
+        .info-trigger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            background: transparent;
+            border: 2px solid var(--v-gold);
             color: var(--v-gold);
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-weight: 900;
-            text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+            border-radius: 50%;
+            margin-left: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
         }
+        .info-trigger:hover { background: var(--v-gold); color: #000; }
 
-        .support-desc {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: #eee;
-            margin: 20px 0 30px 0;
-        }
-
-        /* HELP MODAL (OPAQUE) */
+        /* --- MODAL (OPAQUE) --- */
         .help-modal {
             position: fixed;
             inset: 0;
@@ -126,26 +132,20 @@
             max-width: 500px;
             width: 100%;
         }
-
         .hidden { display: none !important; }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         /* --- MOBILE REFINEMENTS --- */
-        @media (max-width: 850px) {
-            .hud-workspace {
-                grid-template-columns: 1fr;
-                padding: 60px 20px;
+        @media (max-width: 650px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+                padding: 15px 10px;
             }
-            .header-content { padding: 10px 20px !important; }
-            .btn-pill-gold {
-                padding: 6px 15px;
-                font-size: 0.7rem;
-            }
-            .gold-text-outline { font-size: 0.9rem; }
+            .os-viewport { padding: 20px; }
+            .portal-card { flex-direction: column; align-items: flex-start; }
+            .card-btn { width: 100%; text-align: center; }
+            .footer-content { flex-direction: column; gap: 15px; }
         }
     </style>
 </head>
@@ -156,36 +156,36 @@
 
     <header class="hud-header">
         <div class="header-content">
-            <div style="display: flex; align-items: center;">
-                <img src="images/vanguardorglogo.png" alt="VCS" style="width:35px; margin-right:12px;">
-                <span class="gold-text-outline">VANGUARD OS</span>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <img src="images/vanguardorglogo.png" alt="VCS" style="width:35px;">
+                <span class="gold-text-outline" style="font-size: 1.2rem;">Fort Toward Support</span>
             </div>
             <nav>
-                <button class="btn-pill-gold" onclick="location.href='directory.html'">DIRECTORY</button>
+                <button class="btn-pill btn-active" style="padding: 6px 18px; font-size: 0.75rem;" onclick="location.href='directory.html'">DIRECTORY</button>
             </nav>
         </div>
     </header>
 
-    <main class="hud-workspace">
+    <main class="os-viewport">
         
-        <section class="support-card" style="animation-delay: 0.1s;">
-            <div style="font-size: 3rem; margin-bottom: 10px;">✉️</div>
-            <h2 class="gold-text-outline">Email Liaison</h2>
-            <p class="support-desc">
-                Ideal for general questions or formal reports. We will reply to your signal as soon as possible.
-            </p>
-            <a href="mailto:support@vcscitizen.org" class="btn-pill-gold" style="width: 80%; display: block; margin: 0 auto; text-align: center;">SEND EMAIL</a>
+        <section class="portal-card">
+            <div style="flex: 1;">
+                <div style="font-size: 0.85rem; color: var(--v-gold); font-weight: 700; margin-bottom: 5px;">OFFICIAL INQUIRY</div>
+                <h2 style="font-size: 1.5rem; color: #fff; margin-bottom: 12px; font-weight: 900;">Email Liaison</h2>
+                <p style="font-size: 1.15rem; color: #ddd; line-height: 1.6; margin: 0;">Best for general questions or formal project requests. Our team monitors this signal daily for new missions.</p>
+            </div>
+            <a href="mailto:support@vcscitizen.org" class="btn-pill btn-active card-btn" style="padding: 15px 30px; font-size: 0.9rem; text-decoration: none;">SEND EMAIL</a>
         </section>
 
-        <section class="support-card" style="animation-delay: 0.3s;">
-            <div style="font-size: 3rem; margin-bottom: 10px;">🛡️</div>
-            <h2 class="gold-text-outline">Live Command</h2>
-            <p class="support-desc">
-                Access our Discord for real-time talk, live help, and direct voice consultation.
-            </p>
-            <div style="display: flex; align-items: center; justify-content: center;">
-                <button class="btn-pill-gold" style="flex: 1; max-width: 250px;" onclick="window.open('https://discord.gg/YOUR_CODE', '_blank')">JOIN DISCORD</button>
-                <div style="cursor:pointer; margin-left:15px; border:1px solid var(--v-gold); color:var(--v-gold); width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;" onclick="toggleHelp()">?</div>
+        <section class="portal-card" style="animation-delay: 0.2s;">
+            <div style="flex: 1;">
+                <div style="font-size: 0.85rem; color: var(--v-gold); font-weight: 700; margin-bottom: 5px;">LIVE OPERATIONS</div>
+                <h2 style="font-size: 1.5rem; color: #fff; margin-bottom: 12px; font-weight: 900;">Direct Command</h2>
+                <p style="font-size: 1.15rem; color: #ddd; line-height: 1.6; margin: 0;">Join our Discord for instant chat, live calls, and real-time tech support within the Citizen community.</p>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center;" class="card-btn">
+                <button class="btn-pill btn-active" style="padding: 15px 30px; font-size: 0.9rem;" onclick="window.open('https://discord.gg/YOUR_CODE', '_blank')">JOIN DISCORD</button>
+                <div class="info-trigger" onclick="toggleHelp()">?</div>
             </div>
         </section>
 
@@ -193,14 +193,25 @@
 
     <div id="discord-help" class="help-modal hidden">
         <div class="help-box">
-            <h3 class="gold-text-outline">What is Discord?</h3>
-            <p style="color:#FFF;">Discord is our primary live communication hub. Think of it as a private digital office where we can chat and speak in real-time.</p>
-            <button class="btn-pill-gold" style="width: 100%; margin-top:20px;" onclick="toggleHelp()">RETURN</button>
+            <h3 class="gold-text-outline" style="font-size: 1.4rem; margin-bottom: 20px;">What is Discord?</h3>
+            <p style="color:#FFF; font-size: 1.1rem; line-height: 1.6;">Discord is our digital "Fort." It allows us to communicate via voice or text, share screens to solve technical issues, and organize our Knights.</p>
+            <div style="border-left: 3px solid var(--v-gold); padding-left: 20px; margin: 25px 0;">
+                <p style="color:#FFF; margin-bottom: 10px;"><strong>PC/Mac:</strong> Visit discord.com to download.</p>
+                <p style="color:#FFF;"><strong>Mobile:</strong> Find Discord in your App Store.</p>
+            </div>
+            <button class="btn-pill btn-active" style="width: 100%;" onclick="toggleHelp()">RETURN</button>
         </div>
     </div>
 
-    <footer class="vanguard-footer" style="border-top: 1px solid #222; padding: 20px; text-align: center;">
-        <p style="color: #FFFFFF; margin: 0; font-size: 0.65rem; letter-spacing: 1px;">&copy; 2026 VANGUARD CITIZEN SERVICES. ALL RIGHTS RESERVED.</p>
+    <footer class="vanguard-footer">
+        <div class="footer-content" style="display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; width: 100%;">
+            <p style="color: #FFFFFF; font-size: 0.75rem; margin: 0;">&copy; 2026 VANGUARD CITIZEN SERVICES</p>
+            <nav style="display: flex; gap: 15px; align-items: center;">
+                <a href="legal.html" style="color: #bbb; text-decoration: none; font-size: 0.8rem;">LEGAL</a>
+                <span style="color: #333;">|</span>
+                <a href="settings.html" style="color: #FFF; text-decoration: none; font-weight: bold; font-size: 1rem;">⚙️ SYSTEM SETTINGS</a>
+            </nav>
+        </div>
     </footer>
 
     <script>
