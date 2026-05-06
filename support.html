@@ -14,12 +14,25 @@
             flex-direction: column;
             background: #000;
             margin: 0;
+            padding: 0;
         }
 
-        .hud-header, .vanguard-footer {
+        /* --- HEADER FIX: PINNED TO TOP RIGHT --- */
+        .hud-header {
             flex-shrink: 0;
             background: #000;
+            border-bottom: 2px solid var(--v-gold);
             z-index: 100;
+            width: 100%; /* Ensures header spans full width */
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between; /* Pushes items to opposite ends */
+            align-items: center;
+            padding: 15px 30px;
+            width: 100%;
+            box-sizing: border-box; /* Prevents padding from breaking width */
         }
 
         .hud-workspace {
@@ -63,7 +76,7 @@
 
         /* --- SOLID 3D CARDS (OPAQUE) --- */
         .support-card {
-            background: #080808; 
+            background: #080808; /* Strictly Solid Opaque Black */
             border-top: 1px solid rgba(212, 175, 55, 0.4);
             border-left: 1px solid rgba(212, 175, 55, 0.2);
             border-right: 1px solid #111;
@@ -95,7 +108,7 @@
             margin: 20px 0 30px 0;
         }
 
-        /* INFO MODAL */
+        /* HELP MODAL (OPAQUE) */
         .help-modal {
             position: fixed;
             inset: 0;
@@ -141,8 +154,8 @@
     <div class="scanlines"></div>
     <div class="starfield s1"></div>
 
-    <header class="hud-header" style="border-bottom: 2px solid var(--v-gold);">
-        <div class="header-content" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 30px;">
+    <header class="hud-header">
+        <div class="header-content">
             <div style="display: flex; align-items: center;">
                 <img src="images/vanguardorglogo.png" alt="VCS" style="width:35px; margin-right:12px;">
                 <span class="gold-text-outline">VANGUARD OS</span>
@@ -186,13 +199,8 @@
         </div>
     </div>
 
-    <footer class="vanguard-footer" style="border-top: 1px solid #222; padding: 15px; text-align: center;">
-        <p style="color: #FFFFFF; margin: 0 0 5px 0; font-size: 0.65rem;">&copy; 2026 Vanguard Citizen Services. All Rights Reserved.</p>
-        <div class="footer-links">
-            <a href="#" style="color: #FFFFFF; text-decoration: none; font-size: 0.65rem; margin: 0 5px;">Privacy Policy</a>
-            <span style="color: #FFFFFF; font-size: 0.65rem;">|</span>
-            <a href="#" style="color: #FFFFFF; text-decoration: none; font-size: 0.65rem; margin: 0 5px;">Terms of Service</a>
-        </div>
+    <footer class="vanguard-footer" style="border-top: 1px solid #222; padding: 20px; text-align: center;">
+        <p style="color: #FFFFFF; margin: 0; font-size: 0.65rem; letter-spacing: 1px;">&copy; 2026 VANGUARD CITIZEN SERVICES. ALL RIGHTS RESERVED.</p>
     </footer>
 
     <script>
