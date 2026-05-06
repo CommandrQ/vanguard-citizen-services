@@ -6,54 +6,66 @@
     <title>Vanguard Support | Get in Touch</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* CSS for the "Black Outline" and "Solid Backgrounds" */
-        
+        /* Ensuring the workspace doesn't scroll the whole page */
+        .fixed-hud {
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* THE CARDS: Solid Alpha Channel */
         .support-card {
-            background: #000000; /* SOLID BLACK: No stars can shine through */
-            border: 1px solid var(--v-gold);
+            background-color: #000000; /* Opaque Solid Black */
+            border: 2px solid var(--v-gold);
             padding: 40px;
             max-width: 450px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.9);
+            z-index: 10;
         }
 
+        /* TEXT OUTLINE: Making gold text pop against any background */
         .gold-text-outline {
             color: var(--v-gold);
             text-transform: uppercase;
             letter-spacing: 2px;
-            /* The Black Outline (Text Shadow) */
+            font-weight: 900;
             text-shadow: 
-                -1px -1px 0 #000,  
-                 1px -1px 0 #000,
-                -1px  1px 0 #000,
-                 1px  1px 0 #000,
-                 2px  2px 5px rgba(0,0,0,0.8);
+                -1.5px -1.5px 0 #000,  
+                 1.5px -1.5px 0 #000,
+                -1.5px  1.5px 0 #000,
+                 1.5px  1.5px 0 #000;
         }
 
         .support-desc {
-            font-size: 1rem;
-            line-height: 1.5;
-            color: #ddd;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #ffffff;
             margin-bottom: 30px;
+            /* Subtitle outline for extra clarity */
+            text-shadow: 1px 1px 2px #000;
         }
 
-        /* Ensuring buttons are solid black */
-        .btn-gold, .btn-vanguard {
-            background-color: var(--v-gold) !important;
-            color: #000 !important;
-            opacity: 1 !important; /* Forces 100% solidness */
-        }
-
-        .btn-vanguard-outline {
-            background-color: #000 !important; /* Solid black inside */
-            border: 1px solid var(--v-gold);
-            color: var(--v-gold);
+        /* BUTTONS: Forcing them to be opaque barriers as well */
+        .btn-vanguard-solid {
+            background-color: var(--v-gold);
+            color: #000000 !important;
+            font-weight: 900;
             padding: 15px 30px;
             text-decoration: none;
             display: inline-block;
+            border: none;
+            letter-spacing: 2px;
+            transition: 0.3s;
         }
 
-        .support-icon { font-size: 3rem; margin-bottom: 10px; }
+        .btn-vanguard-solid:hover {
+            box-shadow: 0 0 20px var(--v-gold);
+            transform: scale(1.02);
+        }
+
+        .support-icon { font-size: 3.5rem; margin-bottom: 15px; }
 
         @media (max-width: 850px) {
             .hud-workspace { 
@@ -61,8 +73,11 @@
                 padding: 20px !important;
                 display: flex;
                 flex-direction: column;
+                justify-content: center;
                 gap: 20px;
+                overflow-y: auto;
             }
+            .support-card { padding: 30px 20px; }
         }
     </style>
 </head>
@@ -71,7 +86,7 @@
     <div class="scanlines"></div>
     <div class="starfield s1"></div>
 
-    <header class="hud-header" style="background: #000; border-bottom: 2px solid var(--v-gold);">
+    <header class="hud-header" style="background: #000; border-bottom: 2px solid var(--v-gold); z-index: 20;">
         <div class="logo-area">
             <img src="images/vanguardorglogo.png" alt="VCS Logo" class="hud-logo">
             <span class="gold-text-outline">SUPPORT TRIAGE</span>
@@ -82,30 +97,35 @@
         </nav>
     </header>
 
-    <main class="hud-workspace" style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; justify-items: center; height: 80vh;">
+    <main class="hud-workspace" style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; justify-items: center; flex: 1;">
         
         <section class="support-card">
             <div class="support-icon">✉️</div>
             <h2 class="gold-text-outline">Email Support</h2>
             <p class="support-desc">
-                Email is best for general questions or if you aren't in a rush. Send us a message and we'll get back to you as soon as we can.
+                Best for general questions or if you aren't in a rush. Send us a message and we'll talk soon.
             </p>
-            <a href="mailto:support@vcscitizen.org" class="btn-vanguard-outline">SEND AN EMAIL</a>
+            <a href="mailto:support@vcscitizen.org" class="btn-vanguard-solid">SEND EMAIL</a>
         </section>
 
         <section class="support-card">
             <div class="support-icon">🛡️</div>
             <h2 class="gold-text-outline">Live Chat</h2>
             <p class="support-desc">
-                Discord is our live community. Join us here if you want to chat with us directly, get quick help, or jump on a voice call.
+                Our Discord is a live community. Join here to chat with us directly or jump on a voice call.
             </p>
-            <button class="btn-gold" onclick="joinDiscord()">JOIN THE DISCORD</button>
+            <button class="btn-vanguard-solid" onclick="joinDiscord()">JOIN DISCORD</button>
         </section>
 
     </main>
 
-    <footer class="vanguard-footer" style="background: #000; border-top: 2px solid var(--v-gold);">
+    <footer class="vanguard-footer" style="background: #000; border-top: 2px solid var(--v-gold); z-index: 20;">
         <p>&copy; 2026 Vanguard Citizen Services. All Rights Reserved.</p>
+        <div class="footer-links">
+            <a href="#" style="color:white; text-decoration: none;">Privacy Policy</a>
+            <span class="divider" style="color:white;">|</span>
+            <a href="#" style="color:white; text-decoration: none;">Terms of Service</a>
+        </div>
     </footer>
 
     <script>
