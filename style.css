@@ -1,6 +1,7 @@
 /* =========================================
    VANGUARD COMMAND CORE: OPERATIONAL STYLESHEET
    Theme: Sovereign Black & Gold
+   Version: 2.1 (Optimized HUD)
    ========================================= */
 
 :root {
@@ -35,7 +36,7 @@ body, html {
    --- RETRO-FUTURE EFFECTS ---
    ========================================= */
 
-/* Scanline Overlay */
+/* Scanline Overlay (Updated: Fine/Skinny Texture) */
 .scanlines {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -44,7 +45,7 @@ body, html {
         rgba(18, 16, 16, 0) 50%,
         rgba(0, 0, 0, 0.15) 50%
     );
-    background-size: 100% 4px;
+    background-size: 100% 2px; /* Fine-tuned for higher resolution feel */
     z-index: 999;
     pointer-events: none;
 }
@@ -61,7 +62,7 @@ body, html {
         radial-gradient(circle at 300px 250px, #ffffff 1px, transparent 1px);
     background-repeat: repeat;
     background-size: 350px 350px;
-    z-index: 1; /* Floats above background, below content */
+    z-index: 1;
     pointer-events: none;
 }
 
@@ -86,7 +87,7 @@ body, html {
     justify-content: center; 
     align-items: center;
     text-align: center;
-    margin-top: -10vh; /* Shifts content slightly up to reduce top empty space */
+    margin-top: -10vh; /* Reduced top empty area */
 }
 
 .org-logo { 
@@ -122,7 +123,7 @@ body, html {
 .motto { 
     font-family: "Courier New", Courier, monospace; 
     color: var(--v-gold); 
-    font-size: 1.2rem; /* Enhanced desktop visibility */
+    font-size: 1.2rem; /* Increased size for desktop */
     margin-top: 20px; 
     letter-spacing: 3px; 
     text-transform: uppercase;
@@ -137,7 +138,7 @@ body, html {
     position: relative;
     z-index: 10;
     height: 100vh;
-    overflow: hidden; /* Disables full-page scrolling */
+    overflow: hidden; 
     display: flex;
     flex-direction: column;
 }
@@ -156,7 +157,7 @@ body, html {
 .sub-title { font-size: 0.65rem; color: #888; text-transform: uppercase; margin: 0 0 15px 0; }
 
 .hud-workspace {
-    flex: 1; /* Takes all remaining vertical space */
+    flex: 1; 
     display: grid;
     grid-template-columns: 1fr 1fr;
     overflow: hidden; 
@@ -187,11 +188,10 @@ body, html {
     margin: 0 0 15px 0;
 }
 
-/* Scrollable Inner Content for Windows */
 .window-content {
     flex: 1;
     overflow-y: auto; 
-    padding: 20px 30px 100px 30px; /* Extra bottom padding prevents footer overlap */
+    padding: 20px 30px 100px 30px;
     scrollbar-width: thin;
     scrollbar-color: var(--v-gold) #111;
 }
@@ -199,15 +199,6 @@ body, html {
 .window-content::-webkit-scrollbar { width: 6px; }
 .window-content::-webkit-scrollbar-thumb { background-color: var(--v-gold); }
 .window-content::-webkit-scrollbar-track { background: #111; }
-
-.section-divider {
-    font-size: 0.7rem; 
-    color: var(--v-gold);
-    border-bottom: 1px dashed #333;
-    padding-bottom: 5px; 
-    margin-bottom: 15px;
-    letter-spacing: 2px;
-}
 
 /* =========================================
    --- HUD TUNER & CARDS ---
@@ -231,7 +222,6 @@ body, html {
     white-space: nowrap;
     font-size: 0.75rem;
     font-weight: 700;
-    transition: 0.2s;
 }
 
 .cat-btn.active, .cat-btn:hover {
@@ -256,54 +246,12 @@ body, html {
     font-weight: bold;
     color: var(--v-gold); 
     display: inline-block; 
-    cursor: pointer; 
     text-decoration: none;
-    border-bottom: 1px solid transparent; 
-    transition: 0.2s;
 }
-
-.item-action:hover { border-color: var(--v-gold); }
 
 /* =========================================
-   --- MODALS & BUTTONS ---
+   --- MODALS & LEGAL (Mobile Centering Fix) ---
    ========================================= */
-
-.btn-gold { 
-    background: var(--v-gold); 
-    color: var(--v-black);
-    border: none; 
-    padding: 10px 20px; 
-    font-weight: bold; 
-    cursor: pointer; 
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    transition: 0.2s;
-}
-.btn-gold:hover { box-shadow: 0 0 15px var(--v-shadow); }
-
-.btn-outline {
-    background: transparent;
-    color: var(--v-white);
-    border: 1px solid #555;
-    padding: 10px 20px;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 0.8rem;
-    margin-right: 10px;
-    transition: 0.2s;
-}
-.btn-outline:hover { border-color: var(--v-white); }
-
-.btn-link { 
-    background: none; 
-    border: none; 
-    color: #888; 
-    cursor: pointer; 
-    margin-top: 15px; 
-    display: block; 
-    width: 100%; 
-    font-size: 0.8rem;
-}
 
 .modal { 
     position: fixed; 
@@ -314,32 +262,36 @@ body, html {
     align-items: center; 
     z-index: 1000; 
     backdrop-filter: blur(4px);
+    padding: 20px;
 }
 
 .modal-box { 
     background: var(--v-panel); 
     border: 1px solid var(--v-gold); 
     padding: 40px; 
-    width: 90%;
+    width: 100%;
     max-width: 400px; 
     text-align: center; 
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh; /* Prevents overflow off top/bottom */
 }
 
-/* Legal Specific Modal Additions */
 .legal-box {
     max-width: 600px !important; 
-    width: 95%;
 }
 
 .legal-content {
     text-align: left;
-    max-height: 60vh; 
+    flex: 1; /* Key for mobile visibility */
+    min-height: 0; /* Key for mobile visibility */
     overflow-y: auto; 
     padding-right: 15px;
     font-size: 0.85rem;
     color: #CCC;
     line-height: 1.6;
     margin-top: 15px;
+    margin-bottom: 20px;
     scrollbar-width: thin;
     scrollbar-color: var(--v-gold) #111;
 }
@@ -358,23 +310,9 @@ body, html {
 
 .policy-list { padding-left: 20px; margin-bottom: 20px; }
 .policy-list li { margin-bottom: 8px; }
-.policy-list strong { color: var(--v-white); }
-
-textarea { 
-    background: #111; 
-    border: 1px solid #444; 
-    color: white; 
-    width: 100%; 
-    padding: 15px; 
-    margin: 15px 0; 
-    font-family: inherit; 
-    resize: none;
-    outline: none;
-}
-textarea:focus { border-color: var(--v-gold); }
 
 /* =========================================
-   --- PERSISTENT FOOTER ---
+   --- PERSISTENT FOOTER (White Text) ---
    ========================================= */
 
 .vanguard-footer { 
@@ -384,89 +322,41 @@ textarea:focus { border-color: var(--v-gold); }
     text-align: center; 
     font-size: 0.65rem; 
     padding: 15px; 
-    background: rgba(0, 0, 0, 0.85); 
+    background: rgba(0, 0, 0, 0.9); 
     border-top: 1px solid var(--v-border);
     z-index: 100;
 }
 
 .vanguard-footer p { color: #FFFFFF; margin: 0 0 5px 0; }
-.footer-links { margin-top: 5px; }
-.footer-links .divider { color: #FFFFFF; margin: 0 5px; }
-
 .footer-links a { 
     color: #FFFFFF; 
     text-decoration: none; 
     margin: 0 5px;
-    letter-spacing: 1px;
     transition: 0.2s;
 }
+.footer-links .divider { color: #FFFFFF; margin: 0 5px; }
 .footer-links a:hover { color: var(--v-gold); }
 
 /* =========================================
    --- ADAPTIVE RESPONSIVENESS (AUTO-SCALE) ---
    ========================================= */
 
-/* TABLET & SMALL LAPTOPS (Max Width: 1024px) */
 @media (max-width: 1024px) {
     .hud-header { padding: 15px 20px; }
-    .window-pane { padding: 0; }
     .window-content { padding: 20px; }
-    .pane-title { font-size: 0.75rem; }
-    .btn-gold { padding: 10px 15px; font-size: 0.75rem; }
-    .btn-outline { padding: 10px 15px; font-size: 0.75rem; }
 }
 
-/* MOBILE PHONES (Max Width: 850px) */
 @media (max-width: 850px) {
-    /* Break Grid to Stack */
-    .hud-workspace { 
-        grid-template-columns: 1fr; 
-        overflow-y: auto; 
-    }
-    
-    /* Release Fixed Heights */
-    .fixed-hud { 
-        height: auto; 
-        min-height: 100vh;
-        overflow: auto; 
-        padding-bottom: 70px; 
-    }
-
-    /* Adjust Windows */
-    .window-pane { 
-        height: auto; 
-        border-right: none; 
-        border-bottom: 2px solid var(--v-border); 
-    }
-    .window-pane:last-child { border-bottom: none; }
-    
-    /* Disable Inner Scrolling */
-    .window-content { 
-        overflow-y: visible; 
-        padding-bottom: 30px; 
-    }
-
-    /* Header Adjustments */
-    .hud-header { flex-direction: column; gap: 15px; text-align: center; }
-    .hud-logo { margin: 0 0 10px 0; display: block; margin-left: auto; margin-right: auto; }
-    .btn-outline { display: none; } 
-    
-    /* Typography Scaling */
+    .hud-workspace { grid-template-columns: 1fr; overflow-y: auto; }
+    .fixed-hud { height: auto; min-height: 100vh; overflow: auto; padding-bottom: 70px; }
+    .window-pane { height: auto; border-right: none; border-bottom: 2px solid var(--v-border); }
+    .window-content { overflow-y: visible; padding-bottom: 30px; }
+    .hud-header { flex-direction: column; gap: 15px; }
     .motto { font-size: 1rem; } 
 }
 
-/* NARROW MOBILE (Max Width: 480px) */
 @media (max-width: 480px) {
     .org-logo { width: 80vw; } 
-    .btn-vanguard { padding: 12px 30px; font-size: 0.85rem; }
     .motto { font-size: 0.95rem; } 
-    
-    .window-header { padding: 15px 15px 5px 15px; }
-    .window-content { padding: 15px; }
-    
-    .item-card { padding: 12px; }
-    .item-card h4 { font-size: 0.85rem; }
-    .item-card p { font-size: 0.75rem; }
-    
-    .modal-box { padding: 25px 20px; width: 95%; }
+    .modal-box { padding: 25px 20px; }
 }
