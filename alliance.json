@@ -2,13 +2,21 @@
   {
     "cat": "Security",
     "name": "Hardin Cyber-Forensics",
-    "desc": "Tier 1 partners for enterprise-level recovery.",
-    "url": "https://partner-site.com"
+    "desc": "Advanced enterprise-level threat detection, data recovery, and network hardening."
   },
   {
     "cat": "Medical",
     "name": "Heartland First Response",
-    "desc": "Emergency medical and tactical training alliances.",
-    "url": "https://heartland-health.org"
+    "desc": "Emergency medical, tactical training, and trauma preparedness partnerships."
+  },
+  {
+    "cat": "Consulting",
+    "name": "Vanguard Legal Shield",
+    "desc": "Local legal resources specializing in business sovereignty and citizen rights."
+  },
+  {
+    "cat": "Tech",
+    "name": "Telecom Backbone Partners",
+    "desc": "Heavy-duty infrastructure repair and commercial fiber installation."
   }
 ]
