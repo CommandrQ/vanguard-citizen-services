@@ -1,84 +1,77 @@
-const supabaseUrl = 'https://dvyjupytbwbrcoyouxpf.supabase.co/rest/v1/';
-const supabaseKey = 'sb_publishable_wjgbPekKmodd5mSDXIeUeg_Wq73GzOk';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-// Global data stores
-let categories = [];
-let resources = [];
-let alliances = [];
+let vCats = [], vRes = [], vServ = [], vAll = [];
 
 window.onload = async () => {
     try {
-        // 1. Fetch all data simultaneously
-        const [catRes, resRes, allRes] = await Promise.all([
-            fetch('categories.json'),
-            fetch('resources.json'),
-            fetch('alliances.json')
+        // Fetch all 4 files simultaneously
+        const [cData, rData, sData, aData] = await Promise.all([
+            fetch('categories.json').then(r => r.json()),
+            fetch('resources.json').then(r => r.json()),
+            fetch('services.json').then(r => r.json()),
+            fetch('alliance.json').then(r => r.json()) // Updated filename here
         ]);
 
-        categories = await catRes.json();
-        resources = await resRes.json();
-        alliances = await allRes.json();
+        vCats = cData; vRes = rData; vServ = sData; vAll = aData;
 
-        // 2. Initialize UI
-        renderCategoryTuner();
-        renderHUD("All", document.querySelector('.cat-btn')); // Default view
-
-        // 3. Auth Check
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-            document.getElementById('lobby-view').classList.add('hidden');
-            document.getElementById('hud-view').classList.remove('hidden');
-            document.getElementById('user-display').innerText = `ID: ${session.user.user_metadata.first_name || 'CITIZEN'}`;
-        }
-    } catch (err) {
-        console.error("Vanguard Data Sync Error:", err);
+        buildTuner();
+        renderWindows("All");
+    } catch (e) {
+        console.error("Data Sync Failure:", e);
     }
 };
 
-function renderCategoryTuner() {
+function buildTuner() {
     const bar = document.getElementById('cat-bar');
-    bar.innerHTML = ""; // Clear existing
-    categories.forEach((cat, index) => {
+    vCats.forEach((cat, idx) => {
         const btn = document.createElement('button');
-        btn.className = index === 0 ? 'cat-btn active' : 'cat-btn';
+        btn.className = `cat-btn ${idx === 0 ? 'active' : ''}`;
         btn.innerText = cat.toUpperCase();
-        btn.onclick = (e) => {
+        btn.onclick = () => {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            renderHUD(cat);
+            renderWindows(cat);
         };
         bar.appendChild(btn);
     });
 }
 
-function renderHUD(filter) {
-    const resList = document.getElementById('res-list');
-    const allList = document.getElementById('all-list');
-    
-    resList.innerHTML = "";
-    allList.innerHTML = "";
-
-    // Filter Logic
+function renderWindows(filter) {
     const showAll = filter === "All";
     
-    // Fill Resources (Left Pane)
-    resources.filter(r => showAll || r.cat === filter).forEach(item => {
+    // Fill Window 1 (Resources)
+    const resList = document.getElementById('res-list');
+    resList.innerHTML = "";
+    vRes.filter(r => showAll || r.cat === filter).forEach(item => {
         resList.innerHTML += `
             <div class="item-card">
-                <h3>${item.name}</h3>
+                <h4>${item.name}</h4>
                 <p>${item.desc}</p>
-                <a href="${item.url}" class="gold-link">VIEW RESOURCE ></a>
+                <a href="${item.url}" class="item-action">ACCESS RESOURCE ></a>
             </div>`;
     });
 
-    // Fill Alliances (Right Pane)
-    alliances.filter(a => showAll || a.cat === filter).forEach(item => {
-        allList.innerHTML += `
-            <div class="item-card">
-                <h3>${item.name}</h3>
+    // Fill Window 2 (Internal Services)
+    const servList = document.getElementById('internal-list');
+    servList.innerHTML = "";
+    vServ.filter(s => showAll || s.cat === filter).forEach(item => {
+        servList.innerHTML += `
+            <div class="item-card" style="border-left-color: #555;">
+                <h4>${item.name}</h4>
                 <p>${item.desc}</p>
-                <a href="${item.url}" target="_blank" class="gold-link">VISIT ALLIANCE ></a>
+                <span class="item-action" onclick="showRequestModal()">REQUEST VANGUARD ></span>
+            </div>`;
+    });
+
+    // Fill Window 2 (External Alliance)
+    const allList = document.getElementById('alliance-list');
+    allList.innerHTML = "";
+    vAll.filter(a => showAll || a.cat === filter).forEach(item => {
+        allList.innerHTML += `
+            <div class="item-card" style="border-left-color: #007ACC;">
+                <h4>${item.name}</h4>
+                <p>${item.desc}</p>
+                <span class="item-action" onclick="showRequestModal()">REQUEST ALLIANCE ></span>
             </div>`;
     });
 }
+
+function showRequestModal() { document.getElementById('request-modal').classList.remove('hidden'); }
