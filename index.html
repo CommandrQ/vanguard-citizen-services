@@ -3,103 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vanguard Citizen Services | Access</title>
+    <title>Vanguard OS | Lobby</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <div class="scanlines"></div>
     <div class="starfield s1"></div>
-    <div class="starfield s2"></div>
 
-    <main class="intro-container" style="margin-top: -10vh;">
-        <img src="images/vanguardorglogo.png" alt="Vanguard Logo" class="org-logo">
+    <main style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center;">
+        
+        <img src="images/vanguardorglogo.png" alt="Vanguard Logo" style="width: 280px; margin-bottom: 40px; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.2));">
 
-        <div class="entry-portal">
-            <a href="uc.html" class="btn-vanguard">ENTER</a>
+        <h1 class="gold-text-outline" style="font-size: 2.5rem; margin-bottom: 10px;">Vanguard OS</h1>
+        
+        <div style="margin-bottom: 40px;">
+            <span class="status-dot"></span>
+            <span style="font-size: 0.7rem; color: #00FF00; letter-spacing: 2px; text-transform: uppercase; font-weight: 900;">System Active</span>
         </div>
 
-        <p class="motto">Empower. Educate. Elevate.</p>
+        <button class="btn-pill-gold" onclick="location.href='uc.html'" style="padding: 15px 40px; font-size: 1rem;">Enter Command Center</button>
+
+        <p style="margin-top: 30px; font-family: monospace; color: var(--v-soft-grey); font-size: 0.8rem; letter-spacing: 3px;">
+            EMPOWER // EDUCATE // ELEVATE
+        </p>
     </main>
 
-    <footer class="vanguard-footer">
-        <p>&copy; 2026 Vanguard Citizen Services. All Rights Reserved.</p>
-        <div class="footer-links">
-            <a href="#" onclick="openModal('privacy-modal')">Privacy Policy</a>
-            <span class="divider">|</span>
-            <a href="#" onclick="openModal('terms-modal')">Terms of Service</a>
-        </div>
+    <footer class="vanguard-footer" style="position: fixed; bottom: 0; width: 100%;">
+        <p style="color: #FFFFFF; font-size: 0.65rem;">&copy; 2026 VANGUARD CITIZEN SERVICES</p>
     </footer>
-
-    <div id="privacy-modal" class="modal hidden">
-        <div class="modal-box legal-box">
-            <h3 class="gold-text">PRIVACY POLICY</h3>
-            <div class="legal-content">
-                <p>At Vanguard Citizen Services (VCS), your privacy is not just a policy—it is a tactical priority. Our mission is to empower the individual, and that begins with the fortification of your personal data.</p>
-
-                <h2>1. Information We Collect</h2>
-                <p>We believe in data minimization. We only collect information that is strictly necessary for communication and service delivery:</p>
-                <ul class="policy-list">
-                    <li><strong>Identity Data:</strong> Name or alias provided during contact.</li>
-                    <li><strong>Contact Data:</strong> Email addresses used to reach our support staff and leadership.</li>
-                    <li><strong>Usage Data:</strong> Technical logs from your browser to ensure our "Command Center" (website) operates correctly on your device.</li>
-                </ul>
-
-                <h2>2. How We Use Your Data</h2>
-                <p>Your data is used solely for the following operations:</p>
-                <ul class="policy-list">
-                    <li>Direct communication regarding services and mission updates.</li>
-                    <li>Optimization of the Vanguard digital interface.</li>
-                    <li>Maintenance of security protocols and prevention of unauthorized access.</li>
-                </ul>
-
-                <h2>3. Data Fortification (Security)</h2>
-                <p>We implement elite-level administrative and technical safeguards. While no digital system is 100% impenetrable, the Vanguard Knights employ strategic measures to protect your information from unauthorized interception or disclosure.</p>
-
-                <h2>4. Your Sovereignty (Rights)</h2>
-                <p>As a citizen engaged with VCS, you retain full sovereignty over your data. You have the right to request a full report of what data we hold, or the immediate purging of your contact records from our systems.</p>
-
-                <h2>5. Strategic Alliances</h2>
-                <p>Vanguard Citizen Services does not sell, trade, or rent your personal data to third parties. Information is only shared if required by law or to protect the safety and integrity of our community.</p>
-
-                <h2>6. Contact</h2>
-                <p>For inquiries regarding this policy or to exercise your data rights, contact the Command Center via the secure comms links on our Team page.</p>
-            </div>
-            <button class="btn-outline" style="margin-top: 20px; width: 100%;" onclick="closeModal('privacy-modal')">ACKNOWLEDGE & CLOSE</button>
-        </div>
-    </div>
-
-    <div id="terms-modal" class="modal hidden">
-        <div class="modal-box legal-box">
-            <h3 class="gold-text">RULES OF ENGAGEMENT</h3>
-            <div class="legal-content">
-                <p>Welcome to the Vanguard Command Center. By accessing the systems and services of Vanguard Citizen Services (VCS), you agree to operate within the following Rules of Engagement.</p>
-
-                <h2>1. Acceptance of Terms</h2>
-                <p>Accessing this platform signifies your binding agreement to these Terms of Service. If you do not agree to these protocols, you are directed to disconnect from the Vanguard network immediately.</p>
-
-                <h2>2. Scope of Service</h2>
-                <p>Vanguard Citizen Services provides strategic education, individual advocacy, and technical fortification guidance. All content provided is for informational and educational purposes. We empower the citizen with knowledge, but the tactical execution of that knowledge remains the responsibility of the individual.</p>
-
-                <h2>3. Code of Conduct</h2>
-                <p>Citizens engaging with VCS must maintain the integrity of the community. Prohibited actions include:</p>
-                <ul class="policy-list">
-                    <li>Malicious interference with Vanguard digital infrastructure.</li>
-                    <li>Misrepresentation of identity or intent during mission requests.</li>
-                    <li>Any action that violates the legal sovereignty or security of other citizens.</li>
-                </ul>
-            </div>
-            <button class="btn-outline" style="margin-top: 20px; width: 100%;" onclick="closeModal('terms-modal')">ACKNOWLEDGE & CLOSE</button>
-        </div>
-    </div>
-
-    <script>
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-        }
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
-    </script>
 </body>
 </html>
