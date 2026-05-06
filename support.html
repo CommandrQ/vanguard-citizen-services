@@ -3,149 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fort Toward | Support</title>
+    <title>Fort Toward | Support Center</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* --- OS HUD ARCHITECTURE --- */
+        /* --- CORE OS ARCHITECTURE --- */
         body, html {
-            overflow: hidden;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            background: #000;
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden; height: 100%; display: flex; flex-direction: column;
+            background: #000; margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
         }
 
-        /* Scanlines layer behind text for accessibility */
-        .scanlines {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(255, 255, 255, 0.02) 50%);
-            background-size: 100% 4px;
-            z-index: 1; 
-            pointer-events: none;
-        }
+        .scanlines { position: fixed; inset: 0; background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(255, 255, 255, 0.02) 50%); background-size: 100% 4px; z-index: 1; pointer-events: none; }
 
-        /* --- HEADER: ALIGNED RIGHT ON DESKTOP --- */
-        .hud-header {
-            flex-shrink: 0;
-            background: #000;
-            border-bottom: 2px solid var(--v-gold);
-            z-index: 10;
-        }
+        .hud-header { flex-shrink: 0; background: #000; border-bottom: 2px solid var(--v-gold); z-index: 10; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; }
 
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 30px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        /* --- PILL BUTTONS --- */
-        .btn-pill {
-            font-family: inherit;
-            font-weight: 900;
-            padding: 12px 24px;
-            font-size: 0.9rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: 0.3s var(--v-curve);
-            border: none;
-            display: inline-block;
-            text-align: center;
-        }
-
-        .btn-active {
-            background: var(--v-gold) !important;
-            color: #000 !important;
-            box-shadow: 0 4px 0 #8a6d0d;
-        }
-
-        .btn-active:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3); 
-        }
-
-        /* --- SUPPORT VIEWPORT (Portal Cards) --- */
         .os-viewport {
-            flex: 1;
-            overflow-y: auto;
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 5;
+            flex: 1; overflow-y: auto; padding: 40px 20px;
+            display: flex; flex-direction: column; align-items: center; z-index: 5;
         }
 
-        .portal-card {
-            background: #0a0a0a; /* Solid Opaque Black */
-            border: 1px solid #333;
-            border-left: 5px solid var(--v-gold);
-            width: 100%;
-            max-width: 800px;
-            padding: 35px;
-            margin-bottom: 25px;
-            box-shadow: 20px 20px 40px rgba(0,0,0,1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 25px;
+        /* --- SUPPORT TICKET CARD --- */
+        .support-card {
+            background: #0a0a0a; border: 1px solid #333; border-top: 4px solid var(--v-gold);
+            width: 100%; max-width: 700px; padding: 40px; margin-bottom: 40px;
+            box-shadow: 20px 20px 40px rgba(0,0,0,1); transition: 0.3s ease;
+            display: none; /* HIDDEN BY DEFAULT UNTIL SECURITY CHECK PASSES */
             animation: systemWake 0.6s var(--v-curve) forwards;
         }
 
-        /* Help Icon Style */
-        .info-trigger {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 35px;
-            height: 35px;
-            background: transparent;
-            border: 2px solid var(--v-gold);
-            color: var(--v-gold);
-            border-radius: 50%;
-            margin-left: 15px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
+        .status-header { margin-bottom: 30px; text-align: center; }
+        
+        /* --- FORM STYLING --- */
+        .field-group { margin-bottom: 20px; text-align: left; }
+        label { display: block; color: var(--v-gold); font-weight: 900; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+        
+        input, select, textarea {
+            width: 100%; background: #111; border: 1px solid #333; padding: 15px;
+            color: #fff; font-size: 1rem; border-radius: 5px; box-sizing: border-box;
+            font-family: inherit; transition: 0.3s;
         }
-        .info-trigger:hover { background: var(--v-gold); color: #000; }
+        input:focus, select:focus, textarea:focus { border-color: var(--v-gold); outline: none; }
+        textarea { resize: vertical; min-height: 120px; }
 
-        /* --- MODAL (OPAQUE) --- */
-        .help-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.98);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
+        /* --- BUTTONS --- */
+        .btn-pill {
+            width: 100%; font-weight: 900; padding: 15px; font-size: 0.9rem;
+            border-radius: 50px; cursor: pointer; transition: 0.3s; border: none; margin-top: 10px;
+            text-transform: uppercase; letter-spacing: 1px;
         }
-        .help-box {
-            background: #000;
-            border: 2px solid var(--v-gold);
-            padding: 40px;
-            max-width: 500px;
-            width: 100%;
-        }
-        .hidden { display: none !important; }
+        .btn-active { background: var(--v-gold) !important; color: #000 !important; box-shadow: 0 4px 0 #8a6d0d; }
+        .btn-active:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3); }
 
-        /* --- MOBILE REFINEMENTS --- */
+        .sys-msg { font-size: 0.85rem; margin-top: 15px; text-align: center; font-weight: bold; min-height: 1.2em; }
+
+        /* Security Load Screen */
+        #security-overlay {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; text-align: center; color: var(--v-gold); font-weight: bold; letter-spacing: 2px;
+        }
+
         @media (max-width: 650px) {
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-                gap: 12px;
-                padding: 15px 10px;
-            }
-            .os-viewport { padding: 20px; }
-            .portal-card { flex-direction: column; align-items: flex-start; }
-            .card-btn { width: 100%; text-align: center; }
-            .footer-content { flex-direction: column; gap: 15px; }
+            .header-content { flex-direction: column; gap: 12px; text-align: center; }
+            .support-card { padding: 25px; }
         }
     </style>
 </head>
@@ -158,67 +79,129 @@
         <div class="header-content">
             <div style="display: flex; align-items: center; gap: 12px;">
                 <img src="images/vanguardorglogo.png" alt="VCS" style="width:35px;">
-                <span class="gold-text-outline" style="font-size: 1.2rem;">Fort Toward Support</span>
+                <span class="gold-text-outline" style="font-size: 1.2rem;">Command Support</span>
             </div>
-            <nav>
-                <button class="btn-pill btn-active" style="padding: 6px 18px; font-size: 0.75rem;" onclick="location.href='directory.html'">DIRECTORY</button>
+            <nav style="display: flex; gap: 10px;">
+                <button class="btn-pill btn-active" style="padding: 6px 18px; width: auto; font-size: 0.75rem;" onclick="location.href='directory.html'">DIRECTORY</button>
+                <button class="btn-pill btn-active" style="padding: 6px 18px; width: auto; font-size: 0.75rem;" onclick="location.href='settings.html'">SYSTEM SETTINGS</button>
             </nav>
         </div>
     </header>
 
     <main class="os-viewport">
         
-        <section class="portal-card">
-            <div style="flex: 1;">
-                <div style="font-size: 0.85rem; color: var(--v-gold); font-weight: 700; margin-bottom: 5px;">OFFICIAL INQUIRY</div>
-                <h2 style="font-size: 1.5rem; color: #fff; margin-bottom: 12px; font-weight: 900;">Email Liaison</h2>
-                <p style="font-size: 1.15rem; color: #ddd; line-height: 1.6; margin: 0;">Best for general questions or formal project requests. Our team monitors this signal daily for new missions.</p>
-            </div>
-            <a href="mailto:support@vcscitizen.org" class="btn-pill btn-active card-btn" style="padding: 15px 30px; font-size: 0.9rem; text-decoration: none;">SEND EMAIL</a>
-        </section>
+        <div id="security-overlay">
+            <p>VERIFYING CREDENTIALS...</p>
+        </div>
 
-        <section class="portal-card" style="animation-delay: 0.2s;">
-            <div style="flex: 1;">
-                <div style="font-size: 0.85rem; color: var(--v-gold); font-weight: 700; margin-bottom: 5px;">LIVE OPERATIONS</div>
-                <h2 style="font-size: 1.5rem; color: #fff; margin-bottom: 12px; font-weight: 900;">Direct Command</h2>
-                <p style="font-size: 1.15rem; color: #ddd; line-height: 1.6; margin: 0;">Join our Discord for instant chat, live calls, and real-time tech support within the Citizen community.</p>
+        <div class="support-card" id="secure-form-area">
+            
+            <div class="status-header">
+                <h2 class="gold-text-outline" style="font-size: 1.8rem; margin: 0;">Signal Command</h2>
+                <p style="color: #bbb; font-size: 0.9rem; margin-top: 10px;">Your identity is verified. How can the Knights assist you today?</p>
             </div>
-            <div style="display: flex; align-items: center; justify-content: center;" class="card-btn">
-                <button class="btn-pill btn-active" style="padding: 15px 30px; font-size: 0.9rem;" onclick="window.open('https://discord.gg/YOUR_CODE', '_blank')">JOIN DISCORD</button>
-                <div class="info-trigger" onclick="toggleHelp()">?</div>
+
+            <div class="field-group">
+                <label>Request Category</label>
+                <select id="ticket-category">
+                    <option value="Tech Repair">Device / Tech Repair</option>
+                    <option value="Community Hands">Community Hands (Physical Help)</option>
+                    <option value="Academy Help">Academy / Course Question</option>
+                    <option value="Other">General Inquiry</option>
+                </select>
             </div>
-        </section>
+
+            <div class="field-group">
+                <label>Situation Intel (Description)</label>
+                <textarea id="ticket-desc" placeholder="Please describe what you need assistance with..."></textarea>
+            </div>
+
+            <button class="btn-pill btn-active" onclick="transmitSignal()">TRANSMIT SIGNAL</button>
+            
+            <div id="sys-response" class="sys-msg"></div>
+        </div>
 
     </main>
 
-    <div id="discord-help" class="help-modal hidden">
-        <div class="help-box">
-            <h3 class="gold-text-outline" style="font-size: 1.4rem; margin-bottom: 20px;">What is Discord?</h3>
-            <p style="color:#FFF; font-size: 1.1rem; line-height: 1.6;">Discord is our digital "Fort." It allows us to communicate via voice or text, share screens to solve technical issues, and organize our Knights.</p>
-            <div style="border-left: 3px solid var(--v-gold); padding-left: 20px; margin: 25px 0;">
-                <p style="color:#FFF; margin-bottom: 10px;"><strong>PC/Mac:</strong> Visit discord.com to download.</p>
-                <p style="color:#FFF;"><strong>Mobile:</strong> Find Discord in your App Store.</p>
-            </div>
-            <button class="btn-pill btn-active" style="width: 100%;" onclick="toggleHelp()">RETURN</button>
-        </div>
-    </div>
-
-    <footer class="vanguard-footer">
-        <div class="footer-content" style="display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; width: 100%;">
-            <p style="color: #FFFFFF; font-size: 0.75rem; margin: 0;">&copy; 2026 VANGUARD CITIZEN SERVICES</p>
-            <nav style="display: flex; gap: 15px; align-items: center;">
-                <a href="legal.html" style="color: #bbb; text-decoration: none; font-size: 0.8rem;">LEGAL</a>
-                <span style="color: #333;">|</span>
-                <a href="settings.html" style="color: #FFF; text-decoration: none; font-weight: bold; font-size: 1rem;">⚙️ SYSTEM SETTINGS</a>
-            </nav>
-        </div>
+    <footer class="vanguard-footer" style="padding: 20px; text-align: center; border-top: 2px solid #222; background: #000; z-index: 10;">
+        <p style="color: #555; font-size: 0.7rem; margin: 0;">Vanguard OS v4.1 | Cryptographic Security Enabled</p>
     </footer>
 
     <script>
-        function toggleHelp() {
-            document.getElementById('discord-help').classList.toggle('hidden');
-        }
-    </script>
+        // --- CONFIGURATION ---
+        const SB_URL = 'YOUR_SUPABASE_URL';
+        const SB_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        const supabase = supabase.createClient(SB_URL, SB_KEY);
 
+        let currentUser = null;
+
+        // --- THE BOUNCER SCRIPT ---
+        async function enforceCitizenIdentity() {
+            // 1. Check if they have an active secure session
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (!session) {
+                return triggerSecurityReroute();
+            }
+
+            // 2. Double check the public ledger to ensure their profile wasn't deleted
+            const { data, error } = await supabase.from('citizens').select('email, full_name').eq('auth_id', session.user.id).single();
+
+            if (error || !data) {
+                await supabase.auth.signOut();
+                localStorage.removeItem('vanguard_citizen');
+                return triggerSecurityReroute();
+            }
+
+            // 3. Security Passed! Reveal the form.
+            currentUser = data; // Save their data to attach to the support ticket
+            document.getElementById('security-overlay').style.display = 'none';
+            document.getElementById('secure-form-area').style.display = 'block';
+        }
+
+        function triggerSecurityReroute() {
+            alert("System Error: Identity unverified. Please establish your identity to access Command Support.");
+            window.location.href = "settings.html";
+        }
+
+        // --- SUPPORT FORM LOGIC ---
+        function msg(text, color) {
+            const m = document.getElementById('sys-response');
+            m.innerText = text; m.style.color = color;
+        }
+
+        async function transmitSignal() {
+            const category = document.getElementById('ticket-category').value;
+            const description = document.getElementById('ticket-desc').value.trim();
+
+            if (!description) {
+                return msg("Please provide situation intel before transmitting.", "red");
+            }
+
+            msg("Transmitting to Vanguard Knights...", "#888");
+
+            // TODO: In the future, create a 'support_tickets' table in Supabase.
+            // For now, this acts as a placeholder to show the user it worked securely.
+            /*
+            const payload = {
+                user_email: currentUser.email,
+                user_name: currentUser.full_name,
+                category: category,
+                description: description,
+                status: 'Open'
+            };
+            const { error } = await supabase.from('support_tickets').insert([payload]);
+            */
+
+            // Simulate network delay for the OS feel
+            setTimeout(() => {
+                document.getElementById('ticket-desc').value = '';
+                msg("Signal Received. A Knight will contact you shortly.", "var(--v-gold)");
+            }, 1000);
+        }
+
+        // Run the Bouncer immediately when the page loads
+        window.onload = enforceCitizenIdentity;
+    </script>
 </body>
 </html>
