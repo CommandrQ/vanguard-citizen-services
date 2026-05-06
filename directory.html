@@ -3,7 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fort Toward | Di<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fort Toward | Directory</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* --- CORE OS ARCHITECTURE --- */
+        body, html {
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #000;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        .scanlines {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(255, 255, 255, 0.02) 50%);
+            background-size: 100% 4px;
+            z-index: 1; 
+            pointer-events: none;
+        }
+
+        /* --- HEADER: DYNAMIC GREETING --- */
+        .hud-header {
+            flex-shrink: 0;
+            background: #000;
+            border-bottom: 2px solid var(--v-gold);
+            z-index: 10;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* --- BUTTONS: UNIFIED GOLD STYLE --- */
+        .btn-pill {
+            flex: 0 0 auto;
+            font-family: inherit;
+            font-weight: 900;
+            padding: 10px 22px;
+            font-size: 0.85rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s var(--v-curve);
+            border: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-active {
+            background: var(--v-gold) !important;
+            color: #000 !important;
+            box-shadow: 0 4px 0 #8a6d0d;
+        }
+        .btn-active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-inactive {
+            background: transparent !important;
+            border: 1px solid #555 !important;
+            color: #bbb !important;
+        }
+
+        /* --- THE TUNER (CATEGORY ROW) --- */
+        .tuner-wrapper {
+            position: relative;
+            width: 100%;
+            background: #000;
+            border-bottom: 1px solid #222;
+            display: flex;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .category-nav {
+            display: flex;
+            gap: 15px;
+            padding: 15px 40px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+            width: 100%;
+            justify-content: center; 
+        }
+        .category-nav::-webkit-scrollbar { display: none; }
+
+        .scroll-arrow {
+            position: absolute;
+            right: 15px;
+            color: var(--v-gold);
+            font-size: 1.2rem;
+            pointer-events: none;
+            animation: arrowPulse 2s infinite;
+            display: none; 
+        }
+
+        @keyframes arrowPulse {
+            0%, 100% { opacity: 0.2; transform: translateX(0); }
+            50% { opacity: 1; transform: translateX(5px); }
+        }
+
+        /* --- PORTAL FEED --- */
+        .os-viewport {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 5;
+        }
+
+        .portal-card {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-left: 5px solid var(--v-gold);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 20px 20px 40px rgba(0,0,0,1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 25px;
+            animation: systemWake 0.6s var(--v-curve) forwards;
+        }
+
+        /* --- FOOTER --- */
+        .vanguard-footer {
+            border-top: 2px solid #222;
+            padding: 20px;
+            background: #000;
+            z-index: 10;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+                padding: 15px 10px;
+            }
+            .header-content nav {
+                flex-direction: row;
+                justify-content: center;
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            .category-nav { justify-content: flex-start; padding: 15px 20px; }
+            .portal-card { flex-direction: column; text-align: left; }
+            .card-btn { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body class="fixed-hud">
+
+    <div class="scanlines"></div>
+    <div class="starfield s1"></div>
+
+    <header class="hud-header">
+        <div class="header-content">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <img src="images/vanguardorglogo.png" alt="VCS" style="width:35px;">
+                <span id="os-title" class="gold-text-outline" style="font-size: 1.2rem;">Fort Toward Directory</span>
+            </div>
+            <nav style="display: flex; gap: 10px;">
+                <button class="btn-pill btn-active" style="padding: 6px 18px; font-size: 0.75rem;" onclick="location.href='vcsinfo.html'">ABOUT VANGUARD</button>
+                <button class="btn-pill btn-active" style="padding: 6px 18px; font-size: 0.75rem;" onclick="location.href='support.html'">CUSTOMER SERVICE</button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="tuner-wrapper">
+        <nav class="category-nav" id="category-row"></nav>
+        <div class="scroll-arrow" id="nav-arrow">➔</div>
+    </div>
+
+    <main class="os-viewport" id="portal-feed"></main>
+
+    <footer class="vanguard-footer">
+        <div class="footer-content" style="display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; width: 100%;">
+            <p style="color: #FFF; font-size: 0.75rem; margin: 0;">&copy; 2026 VANGUARD CITIZEN SERVICES</p>
+            <nav style="display: flex; gap: 15px; align-items: center;">
+                <a href="legal.html" style="color: #bbb; text-decoration: none; font-size: 0.8rem;">LEGAL</a>
+                <span style="color: #333;">|</span>
+                <a href="settings.html" style="color: #FFF; text-decoration: none; font-weight: bold; font-size: 1rem;">⚙️ SYSTEM SETTINGS</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script>
+        /* --- HUMAN-CENTRIC DATABASE --- */
+        const VANGUARD_DB = {
+            "Services": [
+                { title: "Vanguard Support & Repair", desc: "Friendly tech help and simple hardware repairs for your devices.", link: "support.html", btnText: "REQUEST HELP" }
+            ],
+            "Guides": [
+                { title: "Technology Guides", desc: "Easy-to-read books and videos to help you master your digital world.", link: "#", btnText: "READ NOW" }
+            ],
+            "Academy": [
+                { title: "Computer Basics 101", desc: "A simple, stress-free class to help you get the most out of your computer.", link: "#", btnText: "JOIN CLASS" }
+            ],
+            "Volunteer": [
+                { title: "Community Hands", desc: "Request help for local projects or neighborly assistance with physical tasks.", link: "support.html", btnText: "SIGNAL CREW" }
+            ]
+        };
+
+        const navRow = document.getElementById('category-row');
+        const feed = document.getElementById('portal-feed');
+        const arrow = document.getElementById('nav-arrow');
+
+        /* --- IDENTITY HANDSHAKE: GREET USER BY NAME --- */
+        function syncIdentity() {
+            const citizen = JSON.parse(localStorage.getItem('vanguard_citizen'));
+            if (citizen && citizen.full_name) {
+                // Splits full name to use just the first name for a warmer feel
+                const firstName = citizen.full_name.split(' ')[0];
+                document.getElementById('os-title').innerText = `Welcome, ${firstName}`;
+            }
+        }
+
+        // Create Navigation
+        Object.keys(VANGUARD_DB).forEach((cat, index) => {
+            const btn = document.createElement('button');
+            btn.innerText = cat;
+            btn.className = index === 0 ? 'btn-pill btn-active' : 'btn-pill btn-inactive';
+            btn.onclick = () => switchCategory(cat, btn);
+            navRow.appendChild(btn);
+            if (index === 0) renderCards(cat);
+        });
+
+        function checkOverflow() {
+            if (navRow.scrollWidth > navRow.clientWidth) {
+                arrow.style.display = 'block';
+            } else {
+                arrow.style.display = 'none';
+            }
+        }
+
+        function switchCategory(cat, targetBtn) {
+            document.querySelectorAll('#category-row button').forEach(b => b.className = 'btn-pill btn-inactive');
+            targetBtn.className = 'btn-pill btn-active';
+            renderCards(cat);
+        }
+
+        function renderCards(cat) {
+            feed.innerHTML = '';
+            VANGUARD_DB[cat].forEach(item => {
+                const card = document.createElement('section');
+                card.className = 'portal-card';
+                card.innerHTML = `
+                    <div style="flex: 1;">
+                        <h2 style="font-size: 1.5rem; color: #fff; margin-bottom: 12px; font-weight: 900;">${item.title}</h2>
+                        <p style="font-size: 1.15rem; color: #ddd; line-height: 1.6;">${item.desc}</p>
+                    </div>
+                    <a href="${item.link}" class="btn-pill btn-active card-btn" style="padding: 15px 30px; font-size: 0.9rem; text-decoration: none;">${item.btnText}</a>
+                `;
+                feed.appendChild(card);
+            });
+        }
+
+        window.onload = () => {
+            syncIdentity(); // Checks for the saved name
+            checkOverflow(); // Checks for scroll arrow
+        };
+        window.onresize = checkOverflow;
+    </script>
+</body>
+</html>
+rectory</title>
     <link rel="stylesheet" href="style.css">
     <style>
         /* --- CORE OS ARCHITECTURE --- */
