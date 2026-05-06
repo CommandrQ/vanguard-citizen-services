@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* --- CORE OS ARCHITECTURE --- */
         body, html {
             overflow: hidden; height: 100%; display: flex; flex-direction: column;
             background: #000; margin: 0;
@@ -23,6 +24,7 @@
             display: flex; flex-direction: column; align-items: center; z-index: 5;
         }
 
+        /* --- IDENTITY CARD & SUCCESS ANIMATION --- */
         .identity-card {
             background: #0a0a0a; border: 1px solid #333; border-top: 4px solid var(--v-gold);
             width: 100%; max-width: 600px; padding: 40px; margin-bottom: 40px;
@@ -45,6 +47,7 @@
             background: rgba(212, 175, 55, 0.05);
         }
 
+        /* --- FORM STYLING --- */
         .field-group { margin-bottom: 20px; text-align: left; }
         label { display: block; color: var(--v-gold); font-weight: 900; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
         
@@ -55,17 +58,23 @@
         input:focus { border-color: var(--v-gold); outline: none; }
         input:disabled { background: #050505; color: #555; border-color: #222; cursor: not-allowed; }
 
+        /* --- BUTTONS --- */
         .btn-pill {
             width: 100%; font-weight: 900; padding: 15px; font-size: 0.9rem;
             border-radius: 50px; cursor: pointer; transition: 0.3s; border: none; margin-top: 10px;
         }
         .btn-active { background: var(--v-gold) !important; color: #000 !important; box-shadow: 0 4px 0 #8a6d0d; }
+        .btn-active:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3); }
+        
         .btn-inactive { background: transparent !important; border: 1px solid #555 !important; color: #ffffff !important; }
+        .btn-inactive:hover { border-color: var(--v-gold) !important; }
+
         .btn-logout { background: transparent !important; border: 1px solid #f87171 !important; color: #f87171 !important; }
+        .btn-logout:hover { background: rgba(248, 113, 113, 0.1) !important; }
 
         .sys-msg { font-size: 0.85rem; margin-top: 15px; text-align: center; font-weight: bold; min-height: 1.2em; }
 
-        /* Hide areas by default to handle toggle */
+        /* Hide specific areas by default */
         #profile-area, #auth-area { display: none; }
 
         @media (max-width: 650px) {
@@ -91,9 +100,10 @@
 
     <main class="os-viewport">
         <div class="identity-card" id="main-card">
+            
             <div class="status-header">
                 <h2 id="welcome-msg" class="gold-text-outline" style="font-size: 1.8rem; margin: 0;">System Locked</h2>
-                <div id="rank-display" class="rank-badge">UNVERIFIED</div>
+                <div id="rank-display" class="rank-badge">AWAITING CREDENTIALS</div>
             </div>
 
             <div id="auth-area">
@@ -105,12 +115,16 @@
                     <label>Security Password</label>
                     <input type="password" id="auth-password" placeholder="••••••••">
                 </div>
+                
                 <button class="btn-pill btn-active" onclick="handleLogin()">AUTHENTICATE (LOG IN)</button>
+                
                 <div style="text-align: center; margin: 20px 0; color: #555; font-size: 0.8rem; font-weight: bold;">OR</div>
+                
                 <div class="field-group" id="signup-name-group">
                     <label>Real Name (Required for New Citizens)</label>
-                    <input type="text" id="auth-name" placeholder="John Doe">
+                    <input type="text" id="auth-name" placeholder="Citizen Name">
                 </div>
+                
                 <button class="btn-pill btn-inactive" onclick="handleRegister()">REGISTER NEW IDENTITY</button>
             </div>
 
@@ -125,10 +139,11 @@
                 </div>
                 <div class="field-group">
                     <label>Discord ID</label>
-                    <input type="text" id="profile-discord" placeholder="User#0000">
+                    <input type="text" id="profile-discord" placeholder="Username#0000">
                 </div>
 
                 <button class="btn-pill btn-active" onclick="updateProfile()">SUBMIT CHANGES</button>
+                
                 <div style="margin-top: 30px; border-top: 1px solid #222; padding-top: 20px;">
                     <button class="btn-pill btn-logout" onclick="handleLogout()">DISCONNECT (LOG OUT)</button>
                 </div>
@@ -138,24 +153,38 @@
         </div>
     </main>
 
-    <footer class="vanguard-footer" style="padding: 20px; text-align: center; border-top: 2px solid #222;">
+    <footer class="vanguard-footer" style="padding: 20px; text-align: center; border-top: 2px solid #222; background: #000; z-index: 10;">
         <p style="color: #555; font-size: 0.7rem; margin: 0;">Vanguard OS v4.0 | Cryptographic Security Enabled</p>
     </footer>
 
     <script>
+        // --- CONFIGURATION ---
         const SB_URL = 'YOUR_SUPABASE_URL';
         const SB_KEY = 'YOUR_SUPABASE_ANON_KEY';
         const supabase = supabase.createClient(SB_URL, SB_KEY);
 
-        // --- AUDIO ENGINE ---
+        // --- AUDIO & VISUAL ENGINE ---
         function playSuccessSound() {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator(); const gain = ctx.createGain();
-            osc.type = 'sine'; osc.frequency.setValueAtTime(880, ctx.currentTime);
+            const osc = ctx.createOscillator(); 
+            const gain = ctx.createGain();
+            osc.type = 'sine'; 
+            osc.frequency.setValueAtTime(880, ctx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.1);
-            gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-            osc.connect(gain); gain.connect(ctx.destination);
-            osc.start(); osc.stop(ctx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.1, ctx.currentTime); 
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+            osc.connect(gain); 
+            gain.connect(ctx.destination);
+            osc.start(); 
+            osc.stop(ctx.currentTime + 0.1);
+        }
+
+        function triggerSuccessUI() {
+            const card = document.getElementById('main-card');
+            card.classList.remove('sync-success'); 
+            void card.offsetWidth; // Force CSS reflow to restart animation
+            card.classList.add('sync-success');
+            playSuccessSound();
         }
 
         function msg(text, color) {
@@ -201,35 +230,28 @@
 
             msg("Generating encrypted credentials...", "#888");
             
-            // 1. Create the Auth User
-            const { data, error } = await supabase.auth.signUp({ email, password });
+            // Passes the full_name securely into metadata for the DB Trigger to catch
+            const { data, error } = await supabase.auth.signUp({ 
+                email, 
+                password,
+                options: {
+                    data: { full_name: fullName }
+                }
+            });
             
             if (error) {
                 return msg("Registry Error: " + error.message, "red");
             }
 
-            // 2. Create their public profile row
-            if (data.user) {
-                const newCitizen = {
-                    auth_id: data.user.id,
-                    email: email,
-                    full_name: fullName
-                };
-                
-                const { error: dbError } = await supabase.from('citizens').insert([newCitizen]);
-                
-                if (dbError) {
-                    msg("Database Error: " + dbError.message, "red");
-                } else {
-                    msg("Identity Created. Welcome to Vanguard.", "var(--v-gold)");
-                    loadProfile(data.user);
-                }
-            }
+            msg("Identity Created. Welcome to Vanguard.", "var(--v-gold)");
+            
+            // Short delay to allow the Postgres Trigger to build the profile row
+            setTimeout(() => { loadProfile(data.user); }, 1000);
         }
 
         async function handleLogout() {
             await supabase.auth.signOut();
-            localStorage.removeItem('vanguard_citizen'); // Clear local cache
+            localStorage.removeItem('vanguard_citizen'); // Clear local memory cache
             location.reload();
         }
 
@@ -240,17 +262,18 @@
             
             msg("Decrypting profile...", "#888");
 
-            // Pull profile securely using RLS
+            // Pull profile securely using RLS policies
             const { data, error } = await supabase.from('citizens').select('*').eq('auth_id', user.id).single();
 
             if (data) {
-                // Cache for Directory page to use
+                // Cache data so Directory page can read the user's name
                 localStorage.setItem('vanguard_citizen', JSON.stringify(data));
                 
-                // Update UI
+                // Update the visual UI elements
                 document.getElementById('welcome-msg').innerText = "Identity: " + data.full_name;
-                document.getElementById('rank-display').innerText = "RANK: " + (data.rank || "CITIZEN").toUpperCase();
+                document.getElementById('rank-display').innerText = "RANK: " + (data.rank || "UNDEFINED").toUpperCase();
                 
+                // Fill the input boxes
                 document.getElementById('profile-name').value = data.full_name;
                 document.getElementById('profile-handle').value = data.handle || '';
                 document.getElementById('profile-discord').value = data.discord_id || '';
@@ -265,26 +288,27 @@
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) return msg("Session expired. Please log in again.", "red");
 
+            // Only grab the allowed editable fields
             const updates = {
                 handle: document.getElementById('profile-handle').value.trim(),
                 discord_id: document.getElementById('profile-discord').value.trim()
-                // Notice: full_name and rank are INTENTIONALLY excluded here.
+                
+                // TODO: UPGRADE THIS JAVASCRIPT LATER
+                // When ready to save complex data (like game progress or settings), 
+                // you would pull the current blob_data, merge your updates, and push it here.
             };
 
             msg("Saving changes...", "#888");
 
-            // The UPDATE query. RLS prevents them from updating anyone else's row.
+            // RLS prevents users from updating anyone else's row
             const { error } = await supabase.from('citizens').update(updates).eq('auth_id', user.id);
 
             if (error) {
                 msg("Error: " + error.message, "red");
             } else {
-                // Trigger visual feedback and refresh local cache
-                const card = document.getElementById('main-card');
-                card.classList.remove('sync-success'); void card.offsetWidth; card.classList.add('sync-success');
-                playSuccessSound();
+                triggerSuccessUI();
                 
-                // Refresh local storage silently
+                // Silently refresh the local cache to ensure the Directory has the latest data
                 const { data } = await supabase.from('citizens').select('*').eq('auth_id', user.id).single();
                 if(data) localStorage.setItem('vanguard_citizen', JSON.stringify(data));
 
@@ -292,7 +316,7 @@
             }
         }
 
-        // Initialize
+        // Initialize the Terminal on page load
         window.onload = checkSession;
     </script>
 </body>
