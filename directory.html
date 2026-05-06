@@ -63,7 +63,6 @@
             scrollbar-width: none;
             scroll-behavior: smooth;
             width: 100%;
-            /* Centers buttons if few, allows scroll if many */
             justify-content: center; 
         }
         .category-nav::-webkit-scrollbar { display: none; }
@@ -79,7 +78,6 @@
             transition: 0.3s var(--v-curve);
         }
 
-        /* Forced visibility for non-selected buttons */
         .btn-inactive {
             background: transparent !important;
             border: 1px solid #555 !important;
@@ -93,7 +91,6 @@
             box-shadow: 0 4px 0 #8a6d0d;
         }
 
-        /* Pulse Arrow for scrolling awareness */
         .scroll-arrow {
             position: absolute;
             right: 15px;
@@ -177,8 +174,7 @@
     </header>
 
     <div class="tuner-wrapper">
-        <nav class="category-nav" id="category-row">
-            </nav>
+        <nav class="category-nav" id="category-row"></nav>
         <div class="scroll-arrow" id="nav-arrow">➔</div>
     </div>
 
@@ -196,7 +192,6 @@
     </footer>
 
     <script>
-        /* --- EASY ADD DATABASE --- */
         const VANGUARD_DB = {
             "Services": [
                 { title: "Vanguard Support & Repair", desc: "Simple tech help and light repair", link: "#.html", btnText: "REQUEST HELP" }
@@ -216,7 +211,6 @@
         const feed = document.getElementById('portal-feed');
         const arrow = document.getElementById('nav-arrow');
 
-        // Create Navigation
         Object.keys(VANGUARD_DB).forEach((cat, index) => {
             const btn = document.createElement('button');
             btn.innerText = cat;
@@ -226,7 +220,6 @@
             if (index === 0) renderCards(cat);
         });
 
-        // Check for scrollable overflow for the arrow
         function checkOverflow() {
             if (navRow.scrollWidth > navRow.clientWidth) {
                 arrow.style.display = 'block';
@@ -248,7 +241,6 @@
                 card.className = 'portal-card';
                 card.innerHTML = `
                     <div style="flex: 1;">
-                        <div style="font-size: 0.85rem; color: var(--v-gold); font-weight: 700; margin-bottom: 5px;">${item.tag}</div>
                         <h2 style="font-size: 1.5rem; color: #fff; margin-bottom: 12px; font-weight: 900;">${item.title}</h2>
                         <p style="font-size: 1.15rem; color: #ddd; line-height: 1.6;">${item.desc}</p>
                     </div>
