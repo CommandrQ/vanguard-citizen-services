@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fort Toward | Legal</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body, html { overflow: hidden; height: 100%; display: flex; flex-direction: column; background: #000; margin: 0; }
+        
+        .scanlines { position: fixed; inset: 0; background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(255, 255, 255, 0.02) 50%); background-size: 100% 4px; z-index: 1; pointer-events: none; }
+
+        /* --- CONTENT VIEWPORT --- */
+        .legal-viewport {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 5;
+        }
+
+        .legal-card {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-top: 4px solid var(--v-gold);
+            width: 100%;
+            max-width: 800px;
+            padding: 40px;
+            margin-bottom: 25px;
+            box-shadow: 20px 20px 40px rgba(0,0,0,1);
+            animation: systemWake 0.6s var(--v-curve) forwards;
+        }
+
+        .legal-text {
+            font-size: 1.1rem;
+            color: #ddd;
+            line-height: 1.8;
+            white-space: pre-line; /* Keeps your line breaks from the script */
+        }
+
+        /* --- BUTTONS --- */
+        .btn-pill { font-family: inherit; font-weight: 900; padding: 12px 24px; font-size: 0.9rem; border-radius: 50px; cursor: pointer; transition: 0.3s; border: none; }
+        .btn-inactive { background: transparent !important; border: 1px solid #444 !important; color: #888 !important; }
+        .btn-active { background: var(--v-gold) !important; color: #000 !important; box-shadow: 0 4px 0 #8a6d0d; }
+
+        @media (max-width: 650px) {
+            .legal-card { padding: 25px; }
+            .header-content { flex-direction: column; gap: 15px; text-align: center; }
+        }
+    </style>
+</head>
+<body class="fixed-hud">
+    <div class="scanlines"></div>
+    <div class="starfield s1"></div>
+
+    <header class="hud-header" style="border-bottom: 2px solid var(--v-gold);">
+        <div class="header-content" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 30px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <img src="images/vanguardorglogo.png" alt="VCS" style="width:35px;">
+                <span class="gold-text-outline" style="font-size: 1.2rem;">Fort Toward Legal</span>
+            </div>
+            <button class="btn-pill btn-active" style="padding: 8px 20px; font-size: 0.75rem;" onclick="location.href='directory.html'">DIRECTORY</button>
+        </div>
+    </header>
+
+    <nav style="display: flex; gap: 15px; padding: 20px; justify-content: center; border-bottom: 1px solid #222;">
+        <button id="btn-tos" class="btn-pill btn-active" onclick="switchLegal('tos')">TERMS OF SERVICE</button>
+        <button id="btn-privacy" class="btn-pill btn-inactive" onclick="switchLegal('privacy')">PRIVACY POLICY</button>
+    </nav>
+
+    <main class="legal-viewport">
+        <section class="legal-card">
+            <h2 id="legal-title" class="gold-text-outline" style="font-size: 1.8rem; margin-bottom: 20px;">Terms of Service</h2>
+            <div id="legal-content" class="legal-text">
+                </div>
+        </section>
+    </main>
+
+    <footer class="vanguard-footer" style="border-top: 1px solid #222; padding: 20px; text-align: center;">
+        <p style="color: #FFF; font-size: 0.75rem; margin: 0;">&copy; 2026 VANGUARD CITIZEN SERVICES</p>
+    </footer>
+
+    <script>
+        /* ============================================================
+           LEGAL DATABASE KERNEL
+           Update your policies by changing the text between the ` backticks.
+           ============================================================ */
+        const LEGAL_DB = {
+            tos: {
+                title: "Terms of Service",
+                text: `1. ACCEPTANCE OF TERMS
+                By accessing Fort Toward and Vanguard OS, you agree to operate with integrity and respect for the community.
+
+                2. CITIZEN CONDUCT
+                All users are expected to maintain professional conduct. Harassment or malicious exploitation of the system is grounds for immediate decommissioning of your Citizen Profile.
+
+                3. LIMITATION OF LIABILITY
+                Vanguard Citizen Services provides technical assistance "as-is." While our Knights are highly trained, we are not responsible for data loss resulting from hardware failure during repair missions.`
+            },
+            privacy: {
+                title: "Privacy Policy",
+                text: `1. DATA SOVEREIGNTY
+                Your data belongs to you. Vanguard OS does not sell Citizen information to third-party entities.
+
+                2. INFORMATION COLLECTION
+                We collect your Name, Discord Handle, and Interests solely to provide a personalized experience across our apps and coordinate volunteer efforts.
+
+                3. SECURITY
+                All profile data is stored in a secure encrypted vault. You may request the permanent deletion of your Citizen Identity at any time via Customer Service.`
+            }
+        };
+
+        function switchLegal(key) {
+            // Update Buttons
+            document.getElementById('btn-tos').className = key === 'tos' ? 'btn-pill btn-active' : 'btn-pill btn-inactive';
+            document.getElementById('btn-privacy').className = key === 'privacy' ? 'btn-pill btn-active' : 'btn-pill btn-inactive';
+
+            // Update Content
+            document.getElementById('legal-title').innerText = LEGAL_DB[key].title;
+            document.getElementById('legal-content').innerText = LEGAL_DB[key].text;
+            
+            // Scroll to top of card
+            document.querySelector('.legal-viewport').scrollTop = 0;
+        }
+
+        // Boot to TOS
+        window.onload = () => switchLegal('tos');
+    </script>
+</body>
+</html>
