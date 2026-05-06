@@ -14,22 +14,21 @@
             background: #000;
         }
 
-        /* --- ACCESSIBILITY FIX: Subtle Scanlines behind text --- */
         .scanlines {
             position: fixed;
             inset: 0;
             background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(255, 255, 255, 0.02) 50%);
             background-size: 100% 4px;
-            z-index: 1; /* Moved behind content */
+            z-index: 1; 
             pointer-events: none;
         }
 
+        /* --- HEADER: STYLED FOR FORT TOWARD --- */
         .hud-header {
             flex-shrink: 0;
             background: #000;
             border-bottom: 2px solid var(--v-gold);
             z-index: 10;
-            width: 100%;
         }
 
         .header-content {
@@ -39,31 +38,54 @@
             padding: 15px 30px;
             width: 100%;
             box-sizing: border-box;
-            z-index: 10;
         }
 
-        /* --- LARGER, LEGIBLE TEXT --- */
-        .gold-text-outline {
-            color: var(--v-gold);
-            text-transform: uppercase;
+        /* --- BUTTONS: HIGH VISIBILITY --- */
+        .btn-pill {
+            font-family: inherit;
             font-weight: 900;
-            letter-spacing: 2px;
-            font-size: 1.1rem; /* Slightly larger for clarity */
-        }
-
-        .btn-slim {
-            background: var(--v-gold);
-            color: #000 !important;
-            font-weight: 900;
-            padding: 8px 20px;
+            padding: 10px 22px;
             text-decoration: none;
-            font-size: 0.85rem; /* Larger font for easy clicking */
+            font-size: 0.85rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.2s var(--v-curve);
+            display: inline-block;
+            text-align: center;
+        }
+
+        /* The "OFF" State - Clearly Visible Outline */
+        .btn-inactive {
+            background: transparent;
+            border: 1px solid #555; /* Visible grey border */
+            color: #bbb; /* Light grey text */
+        }
+        .btn-inactive:hover {
+            border-color: var(--v-gold);
+            color: #fff;
+        }
+
+        /* The "ON" State - Solid Gold */
+        .btn-active {
+            background: var(--v-gold);
+            border: 1px solid var(--v-gold);
+            color: #000;
+            box-shadow: 0 4px 0 #8a6d0d;
+        }
+
+        /* Customer Service Slim Button */
+        .btn-customer {
+            background: var(--v-gold);
+            color: #000;
+            border: none;
+            padding: 8px 20px;
+            font-size: 0.75rem;
+            font-weight: 900;
             border-radius: 50px;
             box-shadow: 0 3px 0 #8a6d0d;
-            border: none;
-            cursor: pointer;
         }
 
+        /* --- CONTENT FEED --- */
         .os-viewport {
             flex: 1;
             overflow-y: auto;
@@ -75,7 +97,7 @@
         }
 
         .portal-card {
-            background: #0a0a0a; /* Solid black */
+            background: #0a0a0a;
             border: 1px solid #333;
             border-left: 5px solid var(--v-gold);
             width: 100%;
@@ -87,16 +109,10 @@
             justify-content: space-between;
             align-items: center;
             gap: 25px;
-            z-index: 5;
+            animation: systemWake 0.6s var(--v-curve) forwards;
         }
 
-        .card-desc {
-            font-size: 1.1rem; /* Bumping up for older eyes */
-            color: #ddd; /* Brighter grey for higher contrast */
-            line-height: 1.6;
-        }
-
-        /* --- SYSTEM SETTINGS FOOTER --- */
+        /* --- FOOTER --- */
         .vanguard-footer {
             border-top: 2px solid #222;
             padding: 20px;
@@ -107,12 +123,10 @@
         .settings-link {
             color: #FFF;
             text-decoration: none;
-            font-size: 0.9rem; /* Increased size */
+            font-size: 1rem; /* Bigger for accessibility */
             font-weight: 700;
             letter-spacing: 1px;
-            transition: 0.3s;
         }
-        .settings-link:hover { color: var(--v-gold); }
 
         /* --- MOBILE STACKING --- */
         @media (max-width: 650px) {
@@ -122,14 +136,8 @@
                 gap: 15px;
             }
             .os-viewport { padding: 20px; }
-            .portal-card { flex-direction: column; padding: 25px; }
-            .btn-action { width: 100%; text-align: center; }
-            
-            /* Keep footer items from crowding */
-            .footer-content {
-                flex-direction: column;
-                gap: 15px;
-            }
+            .portal-card { flex-direction: column; text-align: left; }
+            .card-action-btn { width: 100%; }
         }
     </style>
 </head>
@@ -142,23 +150,23 @@
         <div class="header-content">
             <div style="display: flex; align-items: center; gap: 12px;">
                 <img src="images/vanguardorglogo.png" alt="VCS" style="width:35px;">
-                <span class="gold-text-outline">Fort Toward Directory</span>
+                <span class="gold-text-outline" style="font-size: 1.2rem;">Fort Toward Directory</span>
             </div>
             <nav>
-                <button class="btn-slim" onclick="location.href='support.html'">CUSTOMER SERVICE</button>
+                <button class="btn-customer" onclick="location.href='support.html'">CUSTOMER SERVICE</button>
             </nav>
         </div>
     </header>
 
-    <nav style="display: flex; gap: 10px; padding: 15px; overflow-x: auto; border-bottom: 1px solid #222; justify-content: center;" id="category-row">
+    <nav style="display: flex; gap: 12px; padding: 20px; overflow-x: auto; border-bottom: 1px solid #222; justify-content: center;" id="category-row">
         </nav>
 
     <main class="os-viewport" id="portal-feed">
         </main>
 
     <footer class="vanguard-footer">
-        <div class="footer-content" style="display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto;">
-            <p style="color: #FFF; font-size: 0.75rem; margin: 0;">&copy; 2026 VANGUARD CITIZEN SERVICES</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; width: 100%;">
+            <p style="color: #FFF; font-size: 0.8rem; margin: 0;">&copy; 2026 VANGUARD CITIZEN SERVICES</p>
             <a href="settings.html" class="settings-link">⚙️ SYSTEM SETTINGS</a>
         </div>
     </footer>
@@ -166,51 +174,55 @@
     <script>
         const VANGUARD_DB = {
             "Services": [
-                { title: "Network Triage", tag: "Tech Help", desc: "Expert WiFi and network setup for your home or business. We ensure your digital perimeter is secure.", link: "support.html", btnText: "REQUEST HELP" }
+                { title: "Network Triage", tag: "Tech Help", desc: "Expert WiFi and network setup for your home or business. We ensure your digital perimeter is secure.", link: "support.html", btnText: "REQUEST HELP" },
+                { title: "Hardware Repair", tag: "Maintenance", desc: "Diagnostic services for failing computers or smart devices. Get a clear fix from a Knight.", link: "support.html", btnText: "GET DIAGNOSIS" }
             ],
             "Partner Alliances": [
                 { title: "Hardin Tech Solutions", tag: "Certified Partner", desc: "Local commercial IT specialists authorized for enterprise-level Vanguard deployments.", link: "https://hardintech.com", btnText: "VISIT SITE" }
+            ],
+            "Academy": [
+                { title: "Digital Safety 101", tag: "Education", desc: "Learn how to protect your identity and avoid modern scams with simple, clear steps.", link: "https://git.vanguard.org/academy", btnText: "START LEARNING" }
             ]
         };
 
         const navRow = document.getElementById('category-row');
         const feed = document.getElementById('portal-feed');
 
+        // Create the buttons initially
         Object.keys(VANGUARD_DB).forEach((cat, index) => {
             const btn = document.createElement('button');
-            btn.className = 'btn-slim';
-            btn.style.background = index === 0 ? 'var(--v-gold)' : '#111';
-            btn.style.color = index === 0 ? '#000' : '#888';
             btn.innerText = cat;
-            btn.onclick = (e) => switchCategory(cat, e.target);
+            btn.onclick = (e) => switchCategory(cat, btn);
             navRow.appendChild(btn);
+            
+            // Default first category to active
+            if (index === 0) switchCategory(cat, btn);
         });
 
         function switchCategory(cat, targetBtn) {
+            // Update all buttons in the row
             document.querySelectorAll('#category-row button').forEach(b => {
-                b.style.background = '#111';
-                b.style.color = '#888';
+                b.className = 'btn-pill btn-inactive';
             });
-            targetBtn.style.background = 'var(--v-gold)';
-            targetBtn.style.color = '#000';
+            // Highlight the clicked one
+            targetBtn.className = 'btn-pill btn-active';
 
+            // Clear and reload the feed
             feed.innerHTML = '';
             VANGUARD_DB[cat].forEach(item => {
                 const card = document.createElement('section');
                 card.className = 'portal-card';
                 card.innerHTML = `
-                    <div class="card-info">
-                        <div style="font-size: 0.8rem; color: var(--v-gold); font-weight: 700; margin-bottom: 5px;">${item.tag}</div>
-                        <h2 style="font-size: 1.4rem; color: #fff; margin-bottom: 10px;">${item.title}</h2>
-                        <p class="card-desc">${item.desc}</p>
+                    <div style="flex: 1;">
+                        <div style="font-size: 0.85rem; color: var(--v-gold); font-weight: 700; margin-bottom: 5px; letter-spacing: 1px;">${item.tag}</div>
+                        <h2 style="font-size: 1.5rem; color: #fff; margin-bottom: 12px; font-weight: 900;">${item.title}</h2>
+                        <p style="font-size: 1.15rem; color: #ddd; line-height: 1.6; margin: 0;">${item.desc}</p>
                     </div>
-                    <a href="${item.link}" class="btn-slim" style="padding: 15px 30px; font-size: 0.9rem;">${item.btnText}</a>
+                    <a href="${item.link}" class="btn-pill btn-active card-action-btn" style="padding: 15px 30px; font-size: 0.9rem; text-decoration: none;">${item.btnText}</a>
                 `;
                 feed.appendChild(card);
             });
         }
-
-        window.onload = () => switchCategory(Object.keys(VANGUARD_DB)[0], navRow.firstChild);
     </script>
 </body>
 </html>
