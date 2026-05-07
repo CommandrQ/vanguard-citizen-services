@@ -4,6 +4,7 @@
     --card-bg: #0a0a0a;
     --bg-black: #000;
     --text-main: #ffffff;
+    --text-dim: #a1a1a6;
     --font-ui: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
     --v-curve: cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -14,8 +15,12 @@ body, html {
     background: var(--bg-black);
     color: var(--text-main);
     font-family: var(--font-ui);
+    
+    /* THE MOBILE FIX: Fallback for old browsers, dvh for modern mobile */
     height: 100vh;
+    height: 100dvh; 
     overflow: hidden;
+    
     display: flex;
     flex-direction: column;
 }
@@ -43,6 +48,7 @@ body, html {
 
 /* --- PERSISTENT SCROLLABLE HEADER --- */
 .vanguard-header {
+    flex-shrink: 0; /* Prevents header from being squished */
     padding: 20px;
     display: flex;
     align-items: center;
@@ -58,7 +64,7 @@ body, html {
     display: flex;
     gap: 15px;
     padding: 5px 20px;
-    scrollbar-width: none; /* Hide scrollbar */
+    scrollbar-width: none;
 }
 .nav-container::-webkit-scrollbar { display: none; }
 
@@ -67,7 +73,7 @@ body, html {
     right: 20px;
     color: var(--gold);
     font-size: 1.2rem;
-    display: none; /* Shown by JS if scrollable */
+    display: none;
     animation: bounceRight 1s infinite;
 }
 
@@ -75,11 +81,15 @@ body, html {
 
 /* --- CARDS & CENTERING --- */
 main {
-    flex: 1;
+    flex: 1; /* Takes up remaining space */
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
+    
+    /* CRITICAL FLEXBOX FIX: Forces main to respect boundaries and not push footer away */
+    min-height: 0; 
+    overflow: hidden; 
 }
 
 .glass-card {
@@ -89,14 +99,23 @@ main {
     padding: 35px;
     width: 100%;
     max-width: 500px;
-    max-height: 80vh;
+    
+    /* Ensures the card scrolls internally if it gets taller than the screen */
+    max-height: 100%; 
     overflow-y: auto;
+    
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 20px;
 }
+
+/* Custom Scrollbar for the Card */
+.glass-card::-webkit-scrollbar { width: 4px; }
+.glass-card::-webkit-scrollbar-track { background: transparent; }
+.glass-card::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
+.glass-card::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
 .glass-card:hover { border-color: var(--gold); box-shadow: 0 0 20px var(--gold-glow); }
 
@@ -122,6 +141,7 @@ main {
 
 /* --- FOOTER ANIMATION --- */
 .vanguard-footer {
+    flex-shrink: 0; /* Prevents footer from being squished */
     padding: 20px;
     text-align: center;
     border-top: 1px solid rgba(255,255,255,0.1);
@@ -129,6 +149,8 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
+    background: var(--bg-black); /* Solid background to prevent overlap issues */
+    z-index: 10;
 }
 
 #footer-text {
@@ -140,3 +162,10 @@ main {
 }
 
 .footer-glow { text-shadow: 0 0 10px var(--gold); color: var(--gold) !important; }
+
+/* --- MOBILE SPECIFIC PADDING --- */
+@media (max-width: 480px) {
+    .glass-card { padding: 25px 20px; gap: 15px; }
+    .vanguard-header { padding: 15px; }
+    .vanguard-footer { padding: 15px; height: 50px; }
+}
