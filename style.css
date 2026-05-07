@@ -1,63 +1,244 @@
+/* --- VANGUARD OS CORE VARIABLES --- */
 :root {
-    --v-gold: #d4af37;
-    --v-gold-glow: rgba(212, 175, 55, 0.3);
+    --gold: #d4af37;
+    --gold-glow: rgba(212, 175, 55, 0.3);
+    --glass-bg: rgba(15, 15, 15, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --bg-black: #000000;
+    --text-main: #ffffff;
+    --text-dim: #a1a1a6;
+    --error-red: #f87171;
+    --font-ui: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    --font-mono: "SF Mono", "Fira Code", monospace;
     --v-curve: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* --- SYSTEM RESET --- */
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
-body {
-    background-color: #000;
-    color: #fff;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.6;
-    /* Accessibility: Smoother text rendering */
+body, html {
+    background-color: var(--bg-black);
+    color: var(--text-main);
+    font-family: var(--font-ui);
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
 }
 
-/* --- THE BACKGROUND ENGINE --- */
-.starfield {
+/* --- THE UNIVERSE (GLOBAL BACKGROUND) --- */
+.universe {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 0;
-    background: radial-gradient(circle at center, #111 0%, #000 100%);
+    inset: 0;
+    z-index: -2;
+    background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%);
+    overflow: hidden;
 }
 
-.s1 {
+.star-layer {
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    will-change: transform;
     background-image: 
-        radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
-        radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
-        radial-gradient(2px 2px at 50px 160px, var(--v-gold), rgba(0,0,0,0));
-    background-size: 200px 200px;
-    opacity: 0.3;
+        radial-gradient(1px 1px at 10% 10%, #fff 100%, transparent),
+        radial-gradient(1.5px 1.5px at 20% 50%, var(--gold) 100%, transparent),
+        radial-gradient(1px 1px at 90% 90%, #fff 100%, transparent);
+    background-size: 350px 350px;
+    pointer-events: none;
 }
 
-/* --- ACCESSIBILITY FOCUS --- */
-button:focus, a:focus {
-    outline: 3px solid #fff;
-    outline-offset: 3px;
+.layer-distant { animation: drift 180s linear infinite; opacity: 0.3; }
+.layer-mid { animation: drift 110s linear infinite reverse; opacity: 0.2; background-size: 250px 250px; }
+.layer-near { animation: drift 60s linear infinite; opacity: 0.1; background-size: 500px 500px; }
+
+@keyframes drift {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(200px, 200px, 0); }
 }
 
-/* --- REUSABLE HUD CLASSES --- */
+.scanlines {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(255, 255, 255, 0.02) 50%);
+    background-size: 100% 4px;
+    pointer-events: none;
+}
+
+/* --- REUSABLE GLASS COMPONENTS --- */
+.glass-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 30px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: transform 0.4s var(--v-curve), border-color 0.4s;
+}
+
+.glass-card:hover {
+    border-color: var(--gold);
+}
+
+.glass-card.interactive:hover {
+    transform: translateY(-5px);
+}
+
+/* --- NAVIGATION & HEADERS --- */
+.vanguard-header {
+    padding: 40px 20px;
+    text-align: center;
+    z-index: 10;
+}
+
 .gold-text-outline {
-    color: var(--v-gold);
-    font-weight: 900;
+    color: var(--gold);
+    text-shadow: 0 0 10px var(--gold-glow);
+    font-weight: 700;
+}
+
+/* --- TACTICAL FORM ELEMENTS --- */
+.field-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    color: var(--gold);
+    font-size: 0.75rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+input, select, textarea {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 12px 15px;
+    color: white;
+    font-family: var(--font-ui);
+    transition: 0.3s;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+input:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* --- BUTTONS --- */
+.gold-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    color: var(--gold);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.3s var(--v-curve);
+    text-align: center;
+}
+
+.gold-btn:hover {
+    background: var(--gold);
+    color: #000;
+    box-shadow: 0 0 20px var(--gold-glow);
+    transform: scale(1.02);
+}
+
+.btn-pill {
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+}
+
+.btn-danger {
+    border-color: var(--error-red);
+    color: var(--error-red);
+}
+
+.btn-danger:hover {
+    background: var(--error-red);
+    color: white;
+}
+
+/* --- DIRECTORY & TABLES --- */
+.tactical-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tactical-table th {
+    text-align: left;
+    color: var(--gold);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 15px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.tactical-table td {
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.9rem;
+}
+
+.rank-pill {
+    padding: 3px 10px;
+    border: 1px solid var(--gold);
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 900;
+    color: var(--gold);
+}
+
+/* --- FOOTER --- */
+.vanguard-footer {
+    margin-top: auto;
+    padding: 40px 20px;
+    text-align: center;
+    border-top: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+}
+
+.vanguard-footer p {
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
 }
 
 /* --- ANIMATIONS --- */
 @keyframes systemWake {
-    from { opacity: 0; transform: translateY(10px); filter: blur(5px); }
-    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes arrowPulse {
-    0%, 100% { opacity: 0.2; transform: translateX(0); }
-    50% { opacity: 1; transform: translateX(5px); }
+.animate-wake {
+    animation: systemWake 0.6s var(--v-curve) forwards;
+}
+
+/* --- MOBILE OPTIMIZATION --- */
+@media (max-width: 768px) {
+    .glass-card { padding: 20px; }
+    .vanguard-header { padding: 40px 15px; }
 }
