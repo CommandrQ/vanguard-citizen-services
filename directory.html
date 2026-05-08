@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vanguard | Citizen Directory</title>
+    <title>Fort Toward | Community Directory</title>
     
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -12,325 +12,223 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* --- LOCKED VIEWPORT ENGINE --- */
+        /* --- DESIGN VARIABLES --- */
+        :root { 
+            --gold: #d4af37; 
+            --v-curve: cubic-bezier(0.4, 0, 0.2, 1); 
+            --bg-deep: #0a0a0a;
+        }
+
+        /* --- LAYOUT ENGINE --- */
         html, body {
             margin: 0; padding: 0;
-            height: 100dvh; 
-            width: 100vw;
+            height: 100dvh; width: 100vw;
             overflow: hidden; 
             background: #000; color: #fff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex; flex-direction: column;
         }
 
-        /* --- ANIMATED STARFIELD --- */
+        /* --- SANCTUARY BACKGROUND --- */
         .universe-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%); }
         .star-layer { position: absolute; inset: -500px; background-repeat: repeat; animation: starDrift linear infinite; }
-        .stars-1 { background-image: radial-gradient(3.5px 3.5px at 25px 50px, #fff, transparent), radial-gradient(2.5px 2.5px at 150px 150px, #fff, transparent); background-size: 400px 400px; animation-duration: 160s; opacity: 0.4; }
-        .stars-2 { background-image: radial-gradient(5px 5px at 200px 100px, var(--gold), transparent), radial-gradient(3px 3px at 350px 350px, var(--gold), transparent); background-size: 600px 600px; animation-duration: 110s; opacity: 0.25; }
+        .stars-1 { background-image: radial-gradient(3.5px 3.5px at 25px 50px, #fff, transparent), radial-gradient(2.5px 2.5px at 150px 150px, #fff, transparent); background-size: 400px 400px; animation-duration: 160s; opacity: 0.3; }
         @keyframes starDrift { from { transform: translateY(0); } to { transform: translateY(500px); } }
 
-        /* --- FLEXBOX CENTERING & MOBILE SAFE-ZONE --- */
         .viewport-wrapper {
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
             height: 100%; width: 100%;
-            padding: 15px 15px 55px 15px; 
-            box-sizing: border-box;
+            padding: 15px 15px 55px 15px; box-sizing: border-box;
         }
 
-        /* --- SLOW ANNOUNCEMENT TICKER (1s Pause) --- */
+        /* --- THE SANCTUARY TICKER --- */
         .announcement-ticker {
             width: 100%; max-width: 850px;
-            flex: 0 0 auto; 
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
             border: 1px solid rgba(255,255,255,0.1);
             border-bottom: 2px solid var(--gold);
             border-radius: 12px 12px 0 0;
-            padding: 10px 15px; box-sizing: border-box;
-            overflow: hidden; white-space: nowrap;
-            margin-bottom: -1px; z-index: 2;
+            padding: 10px 15px; overflow: hidden; white-space: nowrap;
+            z-index: 2;
         }
         .ticker-content {
             display: inline-block;
             color: #fff; font-size: 0.8rem; font-weight: bold;
             text-transform: uppercase; letter-spacing: 1.5px;
-            padding-left: 100%; 
-            animation: tickerScroll 30s linear infinite;
+            padding-left: 100%; animation: tickerScroll 35s linear infinite;
         }
-        @keyframes tickerScroll { 
-            0% { transform: translateX(0); } 
-            96.6% { transform: translateX(-100%); } 
-            100% { transform: translateX(-100%); } 
-        }
+        @keyframes tickerScroll { 0% { transform: translateX(0); } 95% { transform: translateX(-100%); } 100% { transform: translateX(-100%); } }
 
-        /* --- BIG DIRECTORY CARD --- */
+        /* --- THE MAIN DIRECTORY --- */
         .directory-terminal {
             width: 100%; max-width: 850px;
-            flex: 1 1 auto; 
-            min-height: 0; 
+            flex: 1 1 auto; min-height: 0; 
             display: flex; flex-direction: column;
             padding: 25px 25px 15px; gap: 20px;
-            box-sizing: border-box; position: relative;
-            background: rgba(15, 15, 15, 0.7);
-            backdrop-filter: blur(15px);
+            background: rgba(15, 15, 15, 0.8);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 0 0 24px 24px;
         }
 
-        /* --- DYNAMIC POPULATION COUNTER --- */
-        .pop-container { flex: 0 0 auto; text-align: center; width: 100%; }
+        .pop-container { text-align: center; }
         .pop-label { color: var(--gold); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; }
-        .pop-count { font-size: min(4rem, 12vw); font-weight: 900; color: #fff; margin: 5px 0 0; line-height: 1; transition: 0.5s; word-wrap: break-word; }
-        .loading-count { opacity: 0.5; font-size: 2rem; }
+        .pop-count { font-size: min(3.5rem, 10vw); font-weight: 900; margin: 5px 0 0; letter-spacing: -1px; }
 
-        .white-divider { flex: 0 0 auto; width: 100%; height: 1px; background: #fff; border: none; box-shadow: 0 0 10px #fff; margin: 0; }
+        .white-divider { width: 100%; height: 1px; background: #fff; border: none; box-shadow: 0 0 8px rgba(255,255,255,0.3); opacity: 0.5; }
 
         /* --- CATEGORY SELECTOR --- */
         .category-menu {
-            flex: 0 0 auto; width: 100%; display: flex; gap: 10px;
-            overflow-x: auto; padding-bottom: 5px;
+            display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px;
             -webkit-overflow-scrolling: touch;
-            justify-content: flex-start;
         }
-        @media (min-width: 750px) { .category-menu { justify-content: center; } }
-        .category-menu::-webkit-scrollbar { height: 3px; }
-        .category-menu::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
-
         .cat-btn {
-            flex: 0 0 auto; background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255,255,255,0.1); color: #fff;
-            padding: 10px 20px; border-radius: 50px;
-            font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 1px; cursor: pointer; transition: 0.3s;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; padding: 10px 22px; border-radius: 50px;
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.2s;
+            white-space: nowrap;
         }
-        .cat-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: #fff; }
-        .cat-btn.active { background: var(--gold); color: #000; border-color: var(--gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
+        .cat-btn:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
+        .cat-btn.active { background: var(--gold); color: #000; border-color: var(--gold); box-shadow: 0 0 15px rgba(212,175,55,0.2); }
 
-        /* --- MINI CARDS CONTAINER --- */
+        /* --- LINK CARDS --- */
         .directory-content {
-            flex: 1 1 auto; 
-            min-height: 0; 
-            overflow-y: auto;
-            width: 100%; padding-right: 5px;
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
-            gap: 15px; align-content: start;
+            flex: 1; overflow-y: auto;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+            gap: 15px; padding-right: 5px;
         }
         .directory-content::-webkit-scrollbar { width: 4px; }
         .directory-content::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
 
-        /* --- MINI CARDS --- */
         .link-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 16px; padding: 25px 20px;
-            transition: 0.3s;
-            display: flex; flex-direction: column; 
-            align-items: center; 
-            text-align: center; 
-            gap: 12px;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px; padding: 25px 20px; display: flex; flex-direction: column; 
+            align-items: center; text-align: center; transition: 0.3s;
         }
-        .link-card:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255,255,255,0.3); transform: translateY(-3px); }
+        .link-card:hover { transform: translateY(-3px); background: rgba(255,255,255,0.06); border-color: var(--gold); }
+        .card-title { font-size: 1.15rem; margin-bottom: 10px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; }
+        .card-desc { font-size: 0.85rem; color: #ccc; line-height: 1.5; margin-bottom: 20px; flex-grow: 1; }
         
-        .card-title { color: #fff; font-size: 1.1rem; font-weight: 800; margin: 0; text-transform: uppercase; letter-spacing: 1px;}
-        .card-desc { color: #fff; font-size: 0.8rem; margin: 0; line-height: 1.5; flex-grow: 1; } 
-        
-        .card-btn {
-            margin-top: auto; 
-            padding: 10px 35px; font-size: 0.75rem; width: auto; font-weight: 800;
+        .card-link {
+            color: var(--gold); font-weight: bold; text-decoration: none; 
+            border: 1px solid var(--gold); padding: 8px 30px; border-radius: 20px; 
+            font-size: 0.8rem; text-transform: uppercase; transition: 0.3s;
         }
+        .card-link:hover { background: var(--gold); color: #000; }
 
-        /* --- ANIMATED FOOTER ENGINE --- */
+        /* --- FOOTER --- */
         .vanguard-footer {
-            position: fixed; bottom: 0; width: 100%;
-            height: 40px; background: #000;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            position: fixed; bottom: 0; width: 100%; height: 40px;
+            background: #000; border-top: 1px solid rgba(255,255,255,0.1);
             display: flex; align-items: center; justify-content: center;
-            z-index: 100; overflow: hidden; pointer-events: none;
         }
-        
-        .footer-text-container { position: relative; width: 100%; text-align: center; }
-
-        .footer-text {
-            position: absolute; width: 100%; left: 0; top: 50%;
-            transform: translateY(-50%);
-            margin: 0; font-size: 0.75rem; font-weight: 700;
-            letter-spacing: 1.5px; text-transform: uppercase; color: #fff;
-            transition: opacity 1s, filter 1s;
-        }
-
-        .motto-text {
-            clip-path: inset(0 100% 0 0);
-            transition: clip-path 1.5s var(--v-curve), opacity 1s;
-            color: var(--gold);
-        }
-
-        .state-copyright .copyright-text { opacity: 1; filter: blur(0); }
-        .state-copyright .motto-text { opacity: 0; filter: blur(5px); clip-path: inset(0 100% 0 0); }
-
-        .state-motto .copyright-text { opacity: 0; filter: blur(5px); }
-        .state-motto .motto-text { opacity: 1; filter: blur(0); clip-path: inset(0 0 0 0); }
+        .footer-text { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; color: rgba(255,255,255,0.6); }
     </style>
 </head>
-<body class="state-copyright">
+<body>
 
     <div class="universe-bg">
         <div class="star-layer stars-1"></div>
-        <div class="star-layer stars-2"></div>
     </div>
 
     <div class="viewport-wrapper">
-        
         <div class="announcement-ticker">
             <div class="ticker-content">
-                ::: SYSTEM NOTICE: NETWORK UPGRADE PENDING ::: MONITOR TERMINAL FOR UPDATES ::: END NOTICE :::
+                ::: WELCOME TO THE SANCTUARY ::: LOCAL TECH COACHING AND SUPPORT FOR HARDIN & JEFFERSON COUNTIES ::: BUILDING CONFIDENCE THROUGH EDUCATION :::
             </div>
         </div>
 
-        <article class="directory-terminal animate-wake" id="main-terminal">
-            
+        <article class="directory-terminal">
             <div class="pop-container">
-                <div class="pop-label">Fort Toward Population</div>
-                <h1 id="population-count" class="pop-count loading-count">Syncing...</h1>
+                <div class="pop-label">Community Population</div>
+                <h1 id="population-count" class="pop-count">Connecting...</h1>
             </div>
 
             <hr class="white-divider">
 
-            <nav class="category-menu" id="category-bar">
-                </nav>
+            <nav class="category-menu" id="category-bar"></nav>
 
-            <div class="directory-content" id="directory-list">
-                </div>
-            
+            <div class="directory-content" id="directory-list"></div>
         </article>
     </div>
 
     <footer class="vanguard-footer">
-        <div class="footer-text-container">
-            <p class="footer-text copyright-text">Powered by Vanguard Citizen Services &copy; <span id="current-year"></span></p>
-            <p class="footer-text motto-text">Empower . Educate . Elevate</p>
-        </div>
+        <p class="footer-text">Empower • Educate • Elevate</p>
     </footer>
 
     <script>
-        // ==========================================
-        // DIRECTORY CONFIGURATION
-        // ==========================================
+        // Supabase configuration
         const SB_URL = 'https://dvyjupytbwbrcoyouxpf.supabase.co';
         const SB_KEY = 'sb_publishable_wjgbPekKmodd5mSDXIeUeg_Wq73GzOk';
         const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 
-        // Easily update categories, titles, descriptions, and URLs here
+        // GROUNDED, SIMPLE CATEGORIES
         const directoryData = {
-            "Services": [
-                { title: "Vanguard Support & Repair", desc: "Simple tech help and support.", url: "/vsr/techhelp.html" }
+            "Support & Repair": [
+                { title: "Tech Coaching", desc: "Patient, one-on-one help to make your technology work for you.", url: "vsr/techhelp.html" },
+                { title: "Device Repair", desc: "Reliable in-person fixes for phones, tablets, and computers.", url: "#" }
             ],
-            "System Menu": [
-                { title: "Settings", desc: "Access your verified citizen profile and preferences.", url: "settings.html" },
-                { title: "Legal", desc: "Documentation on Vanguard OS privacy and terms of use.", url: "legal.html" },
-                { title: "Customer Service", desc: "Contact customer service.", url: "support.html" }
+            "Movies & Games": [
+                { title: "Vanguard Movies", desc: "Original comedies and shorts produced by our local team.", url: "#" },
+                { title: "Game Arena", desc: "Experience our original fighting and card game projects.", url: "#" }
+            ],
+            "Learning Center": [
+                { title: "The Basics", desc: "Simple guides for security and staying connected. Coming soon.", url: "#" }
+            ],
+            "Sanctuary Info": [
+                { title: "Customer Service", desc: "Need a hand? Contact our support team directly.", url: "support.html" },
+                { title: "Our Mission", desc: "Learn about the values and vision behind Fort Toward.", url: "legal.html" }
             ]
         };
 
         const ui = {
             popCount: document.getElementById('population-count'),
             catBar: document.getElementById('category-bar'),
-            dirList: document.getElementById('directory-list'),
-            body: document.body
+            dirList: document.getElementById('directory-list')
         };
 
         async function initSystem() {
-            document.getElementById('current-year').innerText = new Date().getFullYear();
             fetchPopulation();
-            setInterval(fetchPopulation, 15000); 
+            setInterval(fetchPopulation, 30000); // Sync every 30 seconds
             renderCategories();
-            startFooterLoop();
         }
 
-        // ==========================================
-        // AUTO-ADJUSTING POPULATION SYNC
-        // ==========================================
         async function fetchPopulation() {
             try {
                 const { count, error } = await supabaseClient.from('citizens').select('*', { count: 'exact', head: true });
                 if (error) throw error;
-                
                 ui.popCount.innerText = count.toLocaleString();
-                ui.popCount.classList.remove('loading-count');
             } catch (err) {
-                console.error("Ledger Sync Error:", err);
-                ui.popCount.innerText = "OFFLINE";
-                ui.popCount.style.color = "#f87171";
+                ui.popCount.innerText = "Online";
             }
         }
 
-        // ==========================================
-        // MINI CARDS ENGINE
-        // ==========================================
         function renderCategories() {
-            ui.catBar.innerHTML = '';
             const categories = Object.keys(directoryData);
-
-            categories.forEach((cat, index) => {
-                const btn = document.createElement('button');
-                btn.className = `cat-btn ${index === 0 ? 'active' : ''}`;
-                btn.innerText = cat;
-                btn.onclick = () => selectCategory(cat, btn);
-                ui.catBar.appendChild(btn);
-            });
-
-            if (categories.length > 0) renderCards(categories[0]);
+            ui.catBar.innerHTML = categories.map((cat, index) => `
+                <button class="cat-btn ${index === 0 ? 'active' : ''}" onclick="selectCategory('${cat}', this)">
+                    ${cat}
+                </button>
+            `).join('');
+            
+            renderCards(categories[0]);
         }
 
-        function selectCategory(catName, btnEl) {
+        window.selectCategory = function(catName, btn) {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            btnEl.classList.add('active');
-
-            if(window.innerWidth < 750) {
-                btnEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-            }
+            btn.classList.add('active');
             renderCards(catName);
         }
 
         function renderCards(catName) {
-            ui.dirList.style.opacity = 0;
-            
-            setTimeout(() => {
-                ui.dirList.innerHTML = '';
-                const resources = directoryData[catName];
-
-                if (!resources || resources.length === 0) {
-                    ui.dirList.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#fff; padding: 20px;">Node empty.</p>';
-                } else {
-                    resources.forEach(res => {
-                        const card = document.createElement('div');
-                        card.className = 'link-card';
-                        card.innerHTML = `
-                            <h3 class="card-title">${res.title}</h3>
-                            <p class="card-desc">${res.desc}</p>
-                            <a href="${res.url}" class="gold-pill card-btn">Go</a>
-                        `;
-                        ui.dirList.appendChild(card);
-                    });
-                }
-                ui.dirList.style.opacity = 1;
-            }, 200); 
-        }
-
-        // ==========================================
-        // ANIMATED FOOTER LOOP
-        // ==========================================
-        function startFooterLoop() {
-            setInterval(() => {
-                if (ui.body.classList.contains('state-copyright')) {
-                    ui.body.classList.remove('state-copyright');
-                    ui.body.classList.add('state-motto');
-                } else {
-                    ui.body.classList.remove('state-motto');
-                    ui.body.classList.add('state-copyright');
-                }
-            }, 6000); 
+            ui.dirList.innerHTML = directoryData[catName].map(res => `
+                <div class="link-card">
+                    <h3 class="card-title">${res.title}</h3>
+                    <p class="card-desc">${res.desc}</p>
+                    <a href="${res.url}" class="card-link">Open</a>
+                </div>
+            `).join('');
         }
 
         window.onload = initSystem;
