@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Fort Toward | Citizen Records</title>
     
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { 
-            --gold: #d4af37; 
-            --v-curve: cubic-bezier(0.4, 0, 0.2, 1); 
-        }
+        :root { --gold: #d4af37; --v-curve: cubic-bezier(0.4, 0, 0.2, 1); }
 
         html, body {
-            margin: 0; padding: 0;
-            height: 100dvh; width: 100vw;
+            margin: 0; padding: 0; height: 100dvh; width: 100vw;
             overflow: hidden; background: #000; color: #fff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex; flex-direction: column;
@@ -24,63 +25,39 @@
         .star-layer { position: absolute; inset: -500px; background-image: radial-gradient(2px 2px at 20px 30px, #fff, transparent); background-size: 300px 300px; animation: drift 180s linear infinite; opacity: 0.2; }
         @keyframes drift { from { transform: translateY(0); } to { transform: translateY(500px); } }
 
-        .viewport-wrapper {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100%; width: 100%; padding: 15px; box-sizing: border-box;
-        }
+        .viewport-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; padding: 15px; box-sizing: border-box; }
 
-        /* --- THE TERMINAL --- */
         .settings-terminal {
-            width: 100%; max-width: 550px;
-            max-height: 90vh; display: flex; flex-direction: column;
+            width: 100%; max-width: 550px; max-height: 90vh; display: flex; flex-direction: column;
             background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 24px;
-            overflow: hidden; box-shadow: 0 0 50px rgba(0,0,0,1);
+            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 24px; overflow: hidden; box-shadow: 0 0 50px rgba(0,0,0,1);
         }
 
         .terminal-header { padding: 30px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .greeting-text { color: var(--gold); font-size: 1.6rem; font-weight: 800; text-transform: uppercase; margin: 0; }
         .sub-label { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.6; margin-top: 5px; }
+        .citizen-id-badge { display: none; background: rgba(212, 175, 55, 0.15); color: var(--gold); padding: 4px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; border: 1px solid var(--gold); }
 
         .settings-content { padding: 30px; overflow-y: auto; }
         
-        /* --- FORM ELEMENTS --- */
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; color: #fff; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; font-weight: 900; }
-        
-        .form-input {
-            width: 100%; background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px;
-            padding: 14px; color: #fff; font-size: 1rem; box-sizing: border-box; transition: 0.3s;
-        }
+        .form-input { width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; padding: 14px; color: #fff; font-size: 1rem; box-sizing: border-box; transition: 0.3s; }
         .form-input:focus { outline: none; border-color: var(--gold); background: rgba(255, 255, 255, 0.1); }
 
-        .btn-gold {
-            width: 100%; background: var(--gold); color: #000; border: none; padding: 16px; border-radius: 50px;
-            font-weight: 900; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; margin-top: 10px;
-        }
+        .btn-gold { width: 100%; background: var(--gold); color: #000; border: none; padding: 16px; border-radius: 50px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
         .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3); }
 
         .restore-link { display: block; text-align: center; margin-top: 20px; color: var(--gold); font-size: 0.8rem; cursor: pointer; text-decoration: underline; font-weight: bold; }
         
-        .btn-outline {
-            width: 100%; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3);
-            padding: 14px; border-radius: 50px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
-            cursor: pointer; transition: 0.3s; font-size: 0.8rem; text-decoration: none; display: block; text-align: center; margin-top: 10px;
-        }
+        .btn-outline { width: 100%; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 14px; border-radius: 50px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; font-size: 0.8rem; text-decoration: none; display: block; text-align: center; margin-top: 10px; }
 
-        /* --- MODAL ENGINE --- */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
-            display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
-        }
+        /* MODAL */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
         .modal-overlay.active { display: flex; }
-        .modal-box { 
-            background: #111; border: 1px solid var(--gold); border-radius: 20px; 
-            padding: 30px; width: 100%; max-width: 400px; text-align: center;
-        }
+        .modal-box { background: #111; border: 1px solid var(--gold); border-radius: 20px; padding: 30px; width: 100%; max-width: 400px; text-align: center; }
 
-        .status-msg { margin-top: 15px; font-size: 0.85rem; text-align: center; min-height: 1.2rem; }
+        .status-msg { margin-top: 15px; font-size: 0.85rem; text-align: center; min-height: 1.2rem; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -92,6 +69,7 @@
             <header class="terminal-header">
                 <h1 id="header-title" class="greeting-text">Sanctuary Records</h1>
                 <div id="sub-title" class="sub-label">Verify Your Residency</div>
+                <div id="citizen-tag" class="citizen-id-badge">Citizen #----</div>
             </header>
 
             <div class="settings-content">
@@ -129,10 +107,10 @@
 
     <div id="restore-modal" class="modal-overlay">
         <div class="modal-box">
-            <h2 style="color: var(--gold); margin-top: 0;">Restore Access</h2>
-            <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 20px;">Enter the email you used to register. We will send you a Magic Link to sign back in.</p>
-            <input type="email" id="restore-email" class="form-input" placeholder="Enter your email">
-            <button class="btn-gold" onclick="sendMagicLink()">Send Magic Link</button>
+            <h2 style="color: var(--gold); margin-top: 0; text-transform: uppercase;">Restore Access</h2>
+            <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 20px;">Enter the email you used to register. We will send you a Magic Link to sign back in securely.</p>
+            <input type="email" id="restore-email" class="form-input" placeholder="Enter your email" style="margin-bottom: 15px;">
+            <button class="btn-gold" onclick="sendMagicLink()" style="margin-top: 0;">Send Magic Link</button>
             <button class="btn-outline" onclick="toggleModal(false)">Cancel</button>
             <div id="modal-status" class="status-msg"></div>
         </div>
@@ -153,14 +131,27 @@
             logout: document.getElementById('btn-logout'),
             status: document.getElementById('status-msg'),
             header: document.getElementById('header-title'),
-            sub: document.getElementById('sub-title')
+            sub: document.getElementById('sub-title'),
+            citizenTag: document.getElementById('citizen-tag')
         };
 
+        // Cache helpers
+        function setCache(data) { localStorage.setItem('vanguard_profile', JSON.stringify(data)); }
+        function getCache() { return JSON.parse(localStorage.getItem('vanguard_profile')); }
+
         async function init() {
+            // Instant Cache Load
+            const cached = getCache();
+            if (cached) {
+                ui.name.value = cached.name || "";
+                ui.email.value = cached.email || "";
+                ui.handle.value = cached.handle || "";
+            }
+
             const { data: { user } } = await supabaseClient.auth.getUser();
 
             if (user) {
-                // SIGNED IN STATE
+                // LOGGED IN STATE
                 ui.header.innerText = "Citizen Profile";
                 ui.sub.innerText = "Update Sanctuary Records";
                 ui.btn.innerText = "Apply Changes";
@@ -168,11 +159,21 @@
                 ui.email.style.opacity = "0.5";
                 ui.guestOpts.style.display = "none";
                 ui.logout.style.display = "block";
+                ui.citizenTag.style.display = "inline-block";
 
-                // Load Metadata
+                // Fetch database specific row (if table is built, else fallback to Auth Meta)
+                const { data: dbProfile } = await supabaseClient.from('citizens').select('citizen_number, role').eq('user_id', user.id).single();
+
+                const role = dbProfile?.role || user.user_metadata?.role || "Citizen";
+                const num = dbProfile?.citizen_number || "Verified";
+                
+                ui.citizenTag.innerText = `Status: ${role} (#${num})`;
                 ui.name.value = user.user_metadata?.full_name || "";
                 ui.email.value = user.email;
                 ui.handle.value = user.user_metadata?.handle || "";
+
+                // Update Cache silently
+                setCache({ name: ui.name.value, email: ui.email.value, handle: ui.handle.value });
             }
         }
 
@@ -184,50 +185,46 @@
             ui.status.style.color = "#fff";
 
             if (!user) {
-                // REGISTER LOGIC
+                // REGISTER LOGIC (Guest)
                 const { error } = await supabaseClient.auth.signUp({
                     email: ui.email.value,
-                    password: 'vanguard-placeholder-1234',
-                    options: {
-                        data: {
-                            full_name: ui.name.value,
-                            handle: ui.handle.value,
-                            role: 'Citizen'
-                        }
-                    }
+                    password: 'vanguard-placeholder-1234', // Dummy pass for Magic Link setup
+                    options: { data: { full_name: ui.name.value, handle: ui.handle.value, role: 'Citizen' } }
                 });
+
                 if (error) { ui.status.innerText = error.message; ui.status.style.color = "#f87171"; }
                 else { ui.status.innerText = "Registration Sent! Check your email to verify."; ui.status.style.color = "#4ade80"; }
             } else {
-                // UPDATE LOGIC
-                const { error } = await supabaseClient.auth.updateUser({
+                // UPDATE LOGIC (Citizen)
+                const { error: authError } = await supabaseClient.auth.updateUser({
                     data: { full_name: ui.name.value, handle: ui.handle.value }
                 });
-                if (error) { ui.status.innerText = error.message; ui.status.style.color = "#f87171"; }
-                else { ui.status.innerText = "Records Updated."; ui.status.style.color = "#4ade80"; }
+
+                // Also attempt to sync to Citizens table
+                const { error: dbError } = await supabaseClient.from('citizens').update({ full_name: ui.name.value }).eq('user_id', user.id);
+
+                if (authError) { ui.status.innerText = authError.message; ui.status.style.color = "#f87171"; }
+                else { 
+                    ui.status.innerText = "Records Updated."; ui.status.style.color = "#4ade80";
+                    setCache({ name: ui.name.value, email: ui.email.value, handle: ui.handle.value });
+                }
             }
         });
 
-        // --- RESTORE / MAGIC LINK LOGIC ---
-        function toggleModal(show) {
-            document.getElementById('restore-modal').classList.toggle('active', show);
-        }
+        // --- RESTORE LOGIC ---
+        window.toggleModal = function(show) { document.getElementById('restore-modal').classList.toggle('active', show); }
 
-        async function sendMagicLink() {
+        window.sendMagicLink = async function() {
             const email = document.getElementById('restore-email').value;
             const mStatus = document.getElementById('modal-status');
             
             if (!email) { mStatus.innerText = "Enter an email first."; return; }
+            mStatus.innerText = "Requesting link..."; mStatus.style.color = "#fff";
 
             const { error } = await supabaseClient.auth.signInWithOtp({ email });
 
-            if (error) {
-                mStatus.innerText = error.message;
-                mStatus.style.color = "#f87171";
-            } else {
-                mStatus.innerText = "Magic Link Sent. Check your inbox.";
-                mStatus.style.color = "#4ade80";
-            }
+            if (error) { mStatus.innerText = error.message; mStatus.style.color = "#f87171"; } 
+            else { mStatus.innerText = "Magic Link Sent. Check your inbox."; mStatus.style.color = "#4ade80"; }
         }
 
         ui.logout.addEventListener('click', async () => {
