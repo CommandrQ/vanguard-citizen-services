@@ -187,7 +187,7 @@
                 // REGISTER LOGIC
                 const { error } = await supabaseClient.auth.signUp({
                     email: ui.email.value,
-                    password: 'vanguard-placeholder-1234', // We use Magic Links for restore, but Supabase requires a pass for signUp
+                    password: 'vanguard-placeholder-1234',
                     options: {
                         data: {
                             full_name: ui.name.value,
