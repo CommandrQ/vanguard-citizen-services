@@ -9,30 +9,16 @@
     <link rel="stylesheet" href="techhelp.css"> 
     
     <style>
-        /* Specific tweaks to ensure the support card is centered and solid */
-        .viewport-wrapper {
-            justify-content: center; /* Center the card vertically */
-        }
-
         .support-card {
             background: var(--solid-bg);
             border: 1px solid var(--v-gold);
-            border-radius: 24px;
+            border-radius: 20px;
             padding: clamp(25px, 5vw, 40px);
             width: 100%;
             max-width: 550px;
             box-sizing: border-box;
             text-align: center;
-        }
-
-        /* Ensure form labels and inputs are centered to match the modal style */
-        .form-group label {
-            text-align: center;
-        }
-
-        .form-input {
-            text-align: center;
-            background: #0a0a0a;
+            margin: 0 auto;
         }
 
         .instruction-text {
@@ -46,20 +32,11 @@
             text-align: center;
             color: #fff;
         }
-
-        /* Ensure the Review Draft button is a perfect pill and matches exactly */
-        .btn-full-width {
-            width: 100%;
-            margin-top: 15px;
-            padding: 14px;
-            font-size: 0.85rem;
-        }
     </style>
 </head>
 <body>
     <div class="universe-bg">
         <div class="star-layer stars-1"></div>
-        <div class="star-layer stars-2"></div>
     </div>
 
     <div class="viewport-wrapper">
@@ -96,10 +73,10 @@
 
             <div class="form-group">
                 <label>Message</label>
-                <textarea id="s-msg" class="form-input" placeholder="How can we assist you today?"></textarea>
+                <textarea id="s-msg" class="form-input" style="min-height: 100px; resize: vertical;" placeholder="How can we assist you today?"></textarea>
             </div>
 
-            <button class="btn-request btn-full-width" onclick="compileSupportDraft()">Review Draft</button>
+            <button class="btn-request" onclick="compileSupportDraft()" style="margin-top: 15px;">Review Draft</button>
             
             <div id="support-status" style="text-align: center; margin-top: 15px; font-size: 0.8rem; font-weight: bold; min-height: 1.2em;"></div>
         </article>
@@ -110,7 +87,6 @@
     </footer>
 
     <script>
-        // Set copyright year
         document.getElementById('current-year').innerText = new Date().getFullYear();
 
         function compileSupportDraft() {
@@ -122,12 +98,12 @@
 
             if (!name || !message) {
                 status.innerText = "Error: Name and Message are required.";
-                status.style.color = "#f87171"; // Red
+                status.style.color = "#f87171";
                 return;
             }
 
             status.innerText = "Opening mail client...";
-            status.style.color = "#D4AF37"; // Gold
+            status.style.color = "#D4AF37";
 
             const subject = `VSR Support Request: ${category}`;
             const body = `--- VANGUARD CUSTOMER SERVICE DISPATCH ---
@@ -142,11 +118,10 @@ ${message}
 
             const mailto = `mailto:commandrq@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
             
-            // Execute mailto
             setTimeout(() => {
                 window.location.href = mailto;
                 status.innerText = "Draft compiled successfully.";
-                status.style.color = "#4ade80"; // Green
+                status.style.color = "#4ade80"; 
             }, 500);
         }
     </script>
