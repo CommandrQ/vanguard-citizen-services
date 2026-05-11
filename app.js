@@ -1,4 +1,13 @@
-// --- THE DIRECTORY ENGINE ---
+// ==========================================
+// VANGUARD MASTER LOGIC ENGINE
+// ==========================================
+
+// 1. INITIALIZE SUPABASE (Ensure your keys are here!)
+const supabaseUrl = 'YOUR_SUPABASE_URL';
+const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+// 2. THE DIRECTORY DATA
 const directoryDataRaw = {
     "Vanguard Tech Lab": [
         { 
@@ -15,39 +24,61 @@ const directoryDataRaw = {
         },
         { 
             title: "Legal Documents", 
-            desc: "Review the Citizen Agreement, Privacy Protocols, and Terms of Service.", 
+            desc: "Review the Citizen Agreement and Privacy Protocols.", 
             url: "legal.html" 
         }
     ]
 };
 
-// --- PROFILE RESET FIX ---
-async function updateHubGreeting() {
-    const greetingElement = document.getElementById('user-greeting');
-    
-    // 1. Check Supabase Session
-    const { data: { user } } = await supabaseClient.auth.getUser();
-    
-    // 2. Check Local Cache
-    const cachedProfile = JSON.parse(localStorage.getItem('vanguard_profile'));
+// 3. RENDER THE HUB
+function renderHub(category = Object.keys(directoryDataRaw)[0]) {
+    const nav = document.getElementById('category-bar');
+    const list = document.getElementById('directory-list');
 
-    if (user && cachedProfile && cachedProfile.name) {
-        // User is logged in and has a name set
-        greetingElement.innerText = `Welcome, ${cachedProfile.name}`;
+    // Safety check: if these don't exist (like on the settings page), stop.
+    if (!nav || !list) return;
+
+    // Render Category Buttons
+    nav.innerHTML = Object.keys(directoryDataRaw).map(cat => `
+        <button class="cat-btn ${cat === category ? 'active' : ''}" 
+                onclick="renderHub('${cat}')">${cat}</button>
+    `).join('');
+
+    // Render Cards
+    const items = directoryDataRaw[category];
+    list.innerHTML = items.map(item => `
+        <div class="link-card">
+            <h3 class="card-title">${item.title}</h3>
+            <p class="card-desc">${item.desc}</p>
+            <a href="${item.url}" class="card-btn">Open Link</a>
+        </div>
+    `).join('');
+}
+
+// 4. AUTH & GREETING LOGIC
+async function updateUI() {
+    const greeting = document.getElementById('user-greeting');
+    if (!greeting) return;
+
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    const cached = JSON.parse(localStorage.getItem('vanguard_profile'));
+
+    if (user && cached && cached.name) {
+        greeting.innerText = `Welcome, ${cached.name}`;
     } else if (user) {
-        // User is logged in but no name set yet
-        greetingElement.innerText = "Welcome, Citizen";
+        greeting.innerText = "Welcome, Citizen";
     } else {
-        // NO USER DETECTED - Reset to default
-        greetingElement.innerText = "Welcome";
-        
-        // Safety: Ensure local storage is actually empty if no session exists
-        localStorage.removeItem('vanguard_profile');
+        greeting.innerText = "Welcome";
     }
 }
 
-// Call this on page load
+// 5. BOOTSTRAP SYSTEM
 document.addEventListener('DOMContentLoaded', () => {
-    updateHubGreeting();
-    // ... existing render logic ...
+    // Fill in current year in footer
+    const yearSpan = document.getElementById('current-year');
+    if (yearSpan) yearSpan.innerText = new Date().getFullYear();
+
+    // Start UI
+    updateUI();
+    renderHub();
 });
