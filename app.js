@@ -36,9 +36,7 @@ function initHub() {
 
     const directoryDataRaw = {
         "Vanguard Tech Lab": [
-            { title: "Tech Consulting", desc: "Digital or in-person help understanding and connecting with technology.", url: "vsr/techhelp.html" },
-            { title: "Web & Platform Development", desc: "Guidance on building digital platforms, utilizing GitHub, and understanding the user journey.", url: "vsr/webdev.html" },
-            { title: "Artificial Intelligence Tools", desc: "Consultation on integrating AI systems for research, creation, and workflow automation.", url: "vsr/ai.html" }
+            { title: "Tech Consulting", desc: "Digital or in-person help understanding and connecting with technology.", url: "vsr/techhelp.html" }
         ],
         "System Settings": [
             { title: "Citizen Profile", desc: "Manage your connection and digital sanctuary preferences here.", url: "settings.html" },
