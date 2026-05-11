@@ -3,116 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Project V | Support</title>
-    
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>Vanguard | Support</title>
     <link rel="stylesheet" href="style.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-
-    <!-- LAYER 1: Deep Canvas -->
-    <div id="vanguard-universe" aria-hidden="true">
-        <div class="gold-star-layer"></div>
-    </div>
-
-    <!-- LAYER 2: App Wrapper -->
+    <div id="vanguard-universe" aria-hidden="true"><div class="gold-star-layer"></div></div>
     <main id="app-wrapper">
-
-        <!-- HEADER -->
-        <header id="top-glass-panel" class="glass-module">
-            <div class="citizen-status">
-                <a href="hub.html" class="back-btn">← GO BACK</a>
-                <h1 id="user-greeting">Support</h1>
+        <header id="top-glass-panel" class="glass-module" style="padding: 30px;">
+            <div class="citizen-status" style="display: flex; justify-content: space-between; align-items: center;">
+                <a href="hub.html" class="back-btn">← HUB</a>
+                <h1 style="font-size: 1.4rem; color: var(--gold); margin: 0;">Support</h1>
             </div>
         </header>
 
-        <!-- SCROLLABLE CORE -->
         <section id="directory-core">
             <div id="directory-list">
-                
-                <!-- THE UPLINK CARD -->
                 <div class="link-card">
-                    <h3 class="card-title">Talk to us</h3>
-                    <p class="card-desc">Need help with tech or the sanctuary? Send a message and we'll get back to you.</p>
+                    <h3 class="card-title">Talk to Us</h3>
                     
-                    <!-- CATEGORY -->
-                    <div class="form-group" style="width: 100%; text-align: left; margin-bottom: 20px;">
-                        <label style="font-size: 0.8rem; color: var(--gold); font-weight: 800; letter-spacing: 2px; margin-left: 5px;">TOPIC</label>
-                        <select id="f-category" class="settings-input" style="margin-top: 8px;">
+                    <div style="width: 100%; text-align: left; margin-bottom: 20px;">
+                        <label style="font-size: 0.7rem; color: var(--gold); font-weight: 800;">TOPIC</label>
+                        <select id="f-category" class="form-input" style="margin-top: 8px;">
                             <option value="Tech Support">Tech Help</option>
-                            <option value="General">General Question</option>
-                            <option value="Guild">Joining the Guild</option>
+                            <option value="General">General Inquiry</option>
                         </select>
                     </div>
 
-                    <!-- NAME -->
-                    <div class="form-group" style="width: 100%; text-align: left; margin-bottom: 20px;">
-                        <label style="font-size: 0.8rem; color: var(--gold); font-weight: 800; letter-spacing: 2px; margin-left: 5px;">YOUR NAME</label>
-                        <input type="text" id="f-name" placeholder="Name Loading..." class="settings-input" style="margin-top: 8px;">
+                    <div style="width: 100%; text-align: left; margin-bottom: 20px;">
+                        <label style="font-size: 0.7rem; color: var(--gold); font-weight: 800;">YOUR NAME</label>
+                        <input type="text" id="f-name" class="form-input" style="margin-top: 8px;" placeholder="Full Name">
                     </div>
 
-                    <!-- MESSAGE -->
-                    <div class="form-group" style="width: 100%; text-align: left; margin-bottom: 25px;">
-                        <label style="font-size: 0.8rem; color: var(--gold); font-weight: 800; letter-spacing: 2px; margin-left: 5px;">MESSAGE</label>
-                        <textarea id="f-msg" placeholder="What's on your mind?" class="settings-input" style="margin-top: 8px; height: 180px; text-align: left;"></textarea>
+                    <div style="width: 100%; text-align: left; margin-bottom: 20px;">
+                        <label style="font-size: 0.7rem; color: var(--gold); font-weight: 800;">MESSAGE</label>
+                        <textarea id="f-msg" class="form-input" style="margin-top: 8px; height: 150px;" placeholder="Describe your issue..."></textarea>
                     </div>
 
-                    <!-- ACTION BUTTON -->
-                    <button onclick="compileDraft()" class="gate-button" style="width: 100%; padding: 20px; font-size: 1.1rem;">
-                        Initialize Uplink
-                    </button>
-                    
-                    <div id="sys-msg" style="margin-top: 25px; font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;"></div>
+                    <button onclick="compileDraft()" class="gate-button" style="width: 100%;">Initialize Uplink</button>
+                    <div id="sys-msg" style="margin-top: 20px; font-size: 0.8rem; font-weight: 700;"></div>
                 </div>
-
             </div>
         </section>
-
-        <!-- FOOTER -->
-        <footer id="bottom-glass-panel" class="glass-module">
-            <div class="footer-container">
-                <p class="footer-msg active">Direct Uplink Active</p>
-            </div>
-        </footer>
-
     </main>
-
     <script src="app.js"></script>
     <script>
-        // Auto-fill from identity on load
-        document.addEventListener('DOMContentLoaded', () => {
-            const cached = JSON.parse(localStorage.getItem('vanguard_profile'));
-            if (cached && cached.name) {
-                document.getElementById('f-name').value = cached.name;
-            }
-        });
-
         function compileDraft() {
-            const cat = document.getElementById('f-category').value;
-            const name = document.getElementById('f-name').value.trim();
-            const msgBody = document.getElementById('f-msg').value.trim();
-            const sys = document.getElementById('sys-msg');
-
-            if (!name || !msgBody) {
-                sys.innerText = "Error: Provide name and message.";
-                sys.style.color = "#ff4d4d";
-                return;
-            }
-
-            sys.innerText = "Opening your email app...";
-            sys.style.color = "var(--gold)";
-
-            const destination = "support@vcscitizen.org";
-            const subject = encodeURIComponent(`[${cat}] Uplink from ${name}`);
-            const body = encodeURIComponent(`CITIZEN: ${name}\n\nMESSAGE:\n${msgBody}\n\n-- TRANSMITTED VIA VANGUARD TERMINAL --`);
-
-            setTimeout(() => {
-                window.location.href = `mailto:${destination}?subject=${subject}&body=${body}`;
-                sys.innerText = "Uplink Established.";
-                sys.style.color = "#4ade80";
-            }, 600);
+            const name = document.getElementById('f-name').value;
+            const msg = document.getElementById('f-msg').value;
+            if(!name || !msg) return alert("Identify yourself and provide a message.");
+            window.location.href = `mailto:support@vcscitizen.org?subject=Support&body=${msg}`;
         }
     </script>
 </body>
