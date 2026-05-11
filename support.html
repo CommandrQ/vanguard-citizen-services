@@ -7,6 +7,9 @@
     
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Supabase Core included for Auto-Fill capability -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -17,7 +20,7 @@
 
     <main id="app-wrapper">
 
-        <!-- HEADER (Hub Button Top Right) -->
+        <!-- HEADER -->
         <header id="top-glass-panel" class="glass-module">
             <div class="citizen-status" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                 <h1 id="support-title">Support</h1>
@@ -25,7 +28,7 @@
             </div>
         </header>
 
-        <!-- CORE CONTENT (No Footer Below) -->
+        <!-- CORE CONTENT -->
         <section id="directory-core" style="flex-grow: 1; overflow-y: auto;">
             <div id="directory-list" style="padding: 20px;">
                 
@@ -34,9 +37,23 @@
                     <h3 class="card-title">Direct Uplink</h3>
                     <p class="card-desc">Submit a secure request to the Vanguard Support Core. We will respond via your registered email.</p>
                     
+                    <!-- New Identity Fields -->
+                    <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                        <div class="form-group" style="flex: 1; text-align: left;">
+                            <label style="font-size: 0.7rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">FULL NAME</label>
+                            <input type="text" id="support-name" class="settings-input" style="margin-top: 10px;" placeholder="Identify yourself...">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="text-align: left; margin-bottom: 20px;">
+                        <label style="font-size: 0.7rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">EMAIL ADDRESS</label>
+                        <input type="email" id="support-email" class="settings-input" style="margin-top: 10px;" placeholder="Where should we reply?">
+                    </div>
+                    
+                    <!-- Message Field -->
                     <div class="form-group" style="text-align: left; margin-bottom: 20px;">
                         <label style="font-size: 0.7rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">YOUR MESSAGE</label>
-                        <textarea id="support-msg" class="settings-input" style="height: 180px; margin-top: 10px;" placeholder="Describe the issue, ask a question, or request assistance..."></textarea>
+                        <textarea id="support-msg" class="settings-input" style="height: 140px; margin-top: 10px;" placeholder="Describe the issue, ask a question, or request assistance..."></textarea>
                     </div>
                     
                     <button onclick="transmitRequest()" class="gate-button" style="width: 100%; padding: 15px !important; font-size: 1rem !important;">
@@ -57,25 +74,44 @@
 
     </main>
 
+    <!-- Load the main app logic so Supabase is connected -->
+    <script src="app.js"></script>
     <script>
+        // --- AUTO-FILL LOGIC ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check local storage for name
+            const cached = JSON.parse(localStorage.getItem('vanguard_profile')) || {};
+            if (cached.name) {
+                document.getElementById('support-name').value = cached.name;
+            }
+
+            // Check Supabase for verified email
+            if (typeof supabaseClient !== 'undefined') {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (user && user.email) {
+                    document.getElementById('support-email').value = user.email;
+                }
+            }
+        });
+
+        // --- TRANSMISSION LOGIC ---
         function transmitRequest() {
+            const name = document.getElementById('support-name').value.trim();
+            const email = document.getElementById('support-email').value.trim();
             const msg = document.getElementById('support-msg').value.trim();
-            if (!msg) {
-                return alert("Please enter a message before transmitting.");
+            
+            if (!name || !email || !msg) {
+                return alert("Identification (Name and Email) and a message are required before transmitting.");
             }
             
-            // Pull the user's name from local storage if they are registered/logged in
-            const cached = JSON.parse(localStorage.getItem('vanguard_profile')) || {};
-            const citizenName = cached.name ? cached.name : 'Unidentified Citizen';
-            
             // Format the email
-            const subject = `[Vanguard Support] Uplink from ${citizenName}`;
-            const body = `CITIZEN LOG: ${citizenName}\n\nTRANSMISSION:\n${msg}`;
+            const subject = `[Vanguard Support] Uplink from ${name}`;
+            const body = `CITIZEN LOG: ${name}\nRETURN COMM: ${email}\n\nTRANSMISSION:\n${msg}`;
             
             // Open the user's email client
             window.location.href = `mailto:support@vcscitizen.org?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
             
-            // Clear the box after clicking
+            // Clear the message box after clicking (leave name/email filled)
             document.getElementById('support-msg').value = '';
         }
     </script>
