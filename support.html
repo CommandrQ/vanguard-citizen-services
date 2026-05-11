@@ -3,55 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vanguard | Support</title>
+    <title>Project V | Support</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <div id="vanguard-universe" aria-hidden="true"><div class="gold-star-layer"></div></div>
+
+    <div id="vanguard-universe" aria-hidden="true">
+        <div class="gold-star-layer"></div>
+    </div>
+
     <main id="app-wrapper">
-        <header id="top-glass-panel" class="glass-module" style="padding: 30px;">
-            <div class="citizen-status" style="display: flex; justify-content: space-between; align-items: center;">
+        <header id="top-glass-panel" class="glass-module">
+            <div class="citizen-status">
                 <a href="hub.html" class="back-btn">← HUB</a>
-                <h1 style="font-size: 1.4rem; color: var(--gold); margin: 0;">Support</h1>
+                <h1>Support</h1>
             </div>
         </header>
 
         <section id="directory-core">
             <div id="directory-list">
+                
                 <div class="link-card">
-                    <h3 class="card-title">Talk to Us</h3>
+                    <h3 class="card-title">Talk to us</h3>
+                    <p class="card-desc">Need help? Send a message and we'll get back to you at your frequency.</p>
                     
-                    <div style="width: 100%; text-align: left; margin-bottom: 20px;">
-                        <label style="font-size: 0.7rem; color: var(--gold); font-weight: 800;">TOPIC</label>
-                        <select id="f-category" class="form-input" style="margin-top: 8px;">
+                    <!-- TOPIC -->
+                    <div class="form-group" style="width: 100%; text-align: left; margin-bottom: 20px;">
+                        <label style="font-size: 0.8rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">TOPIC</label>
+                        <select id="f-category" class="settings-input" style="margin-top: 8px;">
                             <option value="Tech Support">Tech Help</option>
                             <option value="General">General Inquiry</option>
+                            <option value="Guild">Joining the Guild</option>
                         </select>
                     </div>
 
-                    <div style="width: 100%; text-align: left; margin-bottom: 20px;">
-                        <label style="font-size: 0.7rem; color: var(--gold); font-weight: 800;">YOUR NAME</label>
-                        <input type="text" id="f-name" class="form-input" style="margin-top: 8px;" placeholder="Full Name">
+                    <!-- NAME -->
+                    <div class="form-group" style="width: 100%; text-align: left; margin-bottom: 20px;">
+                        <label style="font-size: 0.8rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">YOUR NAME</label>
+                        <input type="text" id="f-name" class="settings-input" style="margin-top: 8px;" placeholder="Identify yourself...">
                     </div>
 
-                    <div style="width: 100%; text-align: left; margin-bottom: 20px;">
-                        <label style="font-size: 0.7rem; color: var(--gold); font-weight: 800;">MESSAGE</label>
-                        <textarea id="f-msg" class="form-input" style="margin-top: 8px; height: 150px;" placeholder="Describe your issue..."></textarea>
+                    <!-- EMAIL CAPTURE -->
+                    <div class="form-group" style="width: 100%; text-align: left; margin-bottom: 20px;">
+                        <label style="font-size: 0.8rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">RETURN EMAIL</label>
+                        <input type="email" id="f-email" class="settings-input" style="margin-top: 8px;" placeholder="Where can we reach you?">
                     </div>
 
-                    <button onclick="compileDraft()" class="gate-button" style="width: 100%;">Initialize Uplink</button>
-                    <div id="sys-msg" style="margin-top: 20px; font-size: 0.8rem; font-weight: 700;"></div>
+                    <!-- MESSAGE -->
+                    <div class="form-group" style="width: 100%; text-align: left; margin-bottom: 25px;">
+                        <label style="font-size: 0.8rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">MESSAGE</label>
+                        <textarea id="f-msg" class="settings-input" style="margin-top: 8px; height: 180px; text-align: left;" placeholder="What's happening?"></textarea>
+                    </div>
+
+                    <button onclick="compileDraft()" class="gate-button" style="width: 100%;">
+                        Initialize Uplink
+                    </button>
+                    
+                    <div id="sys-msg" style="margin-top: 25px; font-size: 0.9rem; font-weight: 700; text-transform: uppercase;"></div>
                 </div>
+
             </div>
         </section>
+
+        <footer id="bottom-glass-panel" class="glass-module">
+            <div class="footer-container">
+                <p class="footer-msg active">Direct Uplink Active</p>
+            </div>
+        </footer>
     </main>
+
     <script src="app.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cached = JSON.parse(localStorage.getItem('vanguard_profile'));
+            if (cached) {
+                if (cached.name) document.getElementById('f-name').value = cached.name;
+                if (cached.email) document.getElementById('f-email').value = cached.email;
+            }
+        });
+
         function compileDraft() {
-            const name = document.getElementById('f-name').value;
-            const msg = document.getElementById('f-msg').value;
-            if(!name || !msg) return alert("Identify yourself and provide a message.");
-            window.location.href = `mailto:support@vcscitizen.org?subject=Support&body=${msg}`;
+            const cat = document.getElementById('f-category').value;
+            const name = document.getElementById('f-name').value.trim();
+            const email = document.getElementById('f-email').value.trim();
+            const msgBody = document.getElementById('f-msg').value.trim();
+            const sys = document.getElementById('sys-msg');
+
+            if (!name || !email || !msgBody) {
+                sys.innerText = "Error: Complete all fields.";
+                sys.style.color = "#ff4d4d";
+                return;
+            }
+
+            sys.innerText = "Uplink Established...";
+            sys.style.color = "var(--gold)";
+
+            const destination = "support@vcscitizen.org";
+            const subject = encodeURIComponent(`[${cat}] Uplink from ${name}`);
+            
+            // Format the body to clearly show the email for the business owner
+            const body = encodeURIComponent(
+`CITIZEN ID: ${name}
+RETURN FREQUENCY: ${email}
+CATEGORY: ${cat}
+
+TRANSCRIPTION:
+-------------------------
+${msgBody}
+-------------------------
+END TRANSMISSION`
+            );
+
+            setTimeout(() => {
+                window.location.href = `mailto:${destination}?subject=${subject}&body=${body}`;
+                sys.innerText = "Transmission Ready.";
+            }, 600);
         }
     </script>
 </body>
