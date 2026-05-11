@@ -3,8 +3,8 @@
 // ==========================================
 
 // 1. INITIALIZE SUPABASE (Ensure your keys are here!)
-const supabaseUrl = 'YOUR_SUPABASE_URL';
-const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+const supabaseUrl = 'https://dvyjupytbwbrcoyouxpf.supabase.co';
+const supabaseKey = 'sb_publishable_wjgbPekKmodd5mSDXIeUeg_Wq73GzOk';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 // 2. THE DIRECTORY DATA
