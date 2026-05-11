@@ -3,77 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vanguard | Technology Consulting</title>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="techhelp.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Vanguard | Tech Consulting</title>
+    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <link rel="stylesheet" href="../style.css"> <!-- Path adjusted for /vsr/ folder -->
 </head>
 <body>
-    <div class="universe-bg"><div class="star-layer stars-1"></div></div>
 
-    <div class="announcement-ticker">
-        <div class="ticker-content">
-            ::: SERVICE NOTICE: IN-PERSON CONSULTING CURRENTLY AVAILABLE FOR HARDIN AND JEFFERSON COUNTIES, KY ::: OUTSIDE REGIONS REQUIRE A REMOTE STRATEGY SESSION :::
-        </div>
+    <!-- LAYER 1: Deep Canvas -->
+    <div id="vanguard-universe" aria-hidden="true">
+        <div class="gold-star-layer"></div>
     </div>
 
-    <div class="viewport-wrapper">
-        <header class="page-header">
-            <h1>Technology Consulting</h1>
-            <div class="header-actions">
-                <a href="../directory.html" class="btn-return">Return Home</a>
-                <a href="vsrsupport.html" class="btn-return">Client Services</a>
+    <!-- LAYER 2: App Wrapper -->
+    <main id="app-wrapper">
+
+        <!-- HEADER -->
+        <header id="top-glass-panel" class="glass-module">
+            <div class="citizen-status">
+                <h1>Tech Help</h1>
+                <a href="../hub.html" class="back-btn">HUB →</a>
             </div>
         </header>
 
-        <section class="intro-section">
-            <h2>Master your digital ecosystem.</h2>
-            <p>From strategic hardware acquisition to comprehensive network optimization, the Vanguard Knights provide the personalized expertise required to seamlessly integrate technology into your life and business.</p>
+        <!-- SCROLLABLE CORE -->
+        <section id="directory-core">
+            <div id="directory-list">
+                
+                <!-- INTRO -->
+                <div class="link-card" style="border: none; background: transparent; padding-bottom: 0;">
+                    <h3 class="card-title" style="color: var(--gold);">Choose Your Path</h3>
+                    <p class="card-desc">Technology should serve you, not confuse you. Select the package that matches your mission below.</p>
+                </div>
+
+                <!-- PACKAGE 1: SENIORS -->
+                <div class="link-card">
+                    <h3 class="card-title">The Legacy Connection</h3>
+                    <p class="card-desc">Designed for ease of use and staying connected with family without the headache.</p>
+                    <ul style="text-align: left; color: rgba(255,255,255,0.8); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.8;">
+                        *   **Simple Setup:** Large-text interfaces and easy-to-use video calling.
+                        *   **Scam Protection:** Hardening your devices against digital intruders.
+                        *   **Patient Guidance:** One-on-one sessions at your own speed.
+                    </ul>
+                    <a href="../support.html" class="card-btn">Select This Path</a>
+                </div>
+
+                <!-- PACKAGE 2: PARENTS -->
+                <div class="link-card">
+                    <h3 class="card-title">The Digital Shield</h3>
+                    <p class="card-desc">Protect your household and manage your family's digital footprint with confidence.</p>
+                    <ul style="text-align: left; color: rgba(255,255,255,0.8); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.8;">
+                        *   **Safety Guards:** Setting up effective parental controls and screen limits.
+                        *   **Education Tech:** Optimizing devices for learning and growth.
+                        *   **Privacy Audit:** Ensuring your family’s data stays private and secure.
+                    </ul>
+                    <a href="../support.html" class="card-btn">Select This Path</a>
+                </div>
+
+                <!-- PACKAGE 3: OTHERS / PRO -->
+                <div class="link-card">
+                    <h3 class="card-title">The Tech Uplink</h3>
+                    <p class="card-desc">For creators, small business owners, or anyone needing a custom technical solution.</p>
+                    <ul style="text-align: left; color: rgba(255,255,255,0.8); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.8;">
+                        *   **Performance Tuning:** Speeding up slow systems and clearing bloatware.
+                        *   **Custom Projects:** Support for website building, databases, or smart homes.
+                        *   **Emergency Repair:** Direct troubleshooting for sudden tech failures.
+                    </ul>
+                    <a href="../support.html" class="card-btn">Select This Path</a>
+                </div>
+
+            </div>
         </section>
 
-        <section class="services-container" id="tiers-container"></section>
-    </div>
-
-    <footer class="vanguard-footer">Powered by Vanguard Citizen Services &copy; <span id="current-year"></span></footer>
-
-    <div class="modal-overlay" id="request-modal">
-        <div class="modal-content">
-            <div class="modal-body">
-                <h2 id="modal-tier-title" style="color: var(--v-gold); margin-top: 0; text-transform: uppercase;">Selected Tier</h2>
-                <p style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 20px;">Initiating a secure dispatch to a Vanguard Consultant.</p>
-
-                <div class="form-group"><label>Full Name</label><input type="text" id="f-name" class="form-input"></div>
-                <div class="form-group"><label>Email Address</label><input type="email" id="f-email" class="form-input"></div>
-                <div class="form-group"><label>Phone Number</label><input type="tel" id="f-phone" class="form-input" placeholder="(555) 000-0000"></div>
-                
-                <div id="auth-address-field" style="display:none;" class="form-group">
-                    <label>Consultation Address</label>
-                    <input type="text" id="f-address" class="form-input">
-                </div>
-
-                <div class="form-group" id="student-check-container" style="display:none;">
-                    <label style="display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; color: #fff; font-size: 0.85rem; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; border: 1px solid #333;">
-                        <input type="checkbox" id="f-student" style="width: 18px; height: 18px; accent-color: var(--v-gold);"> 
-                        <strong>Apply Student Special ($50)</strong>
-                    </label>
-                </div>
-
-                <div class="form-group"><label>Project Scope / Objectives</label><textarea id="f-issue" class="form-input" style="min-height: 100px; resize: vertical;" placeholder="Describe your technological goals or challenges..."></textarea></div>
-
-                <div id="auth-section" style="display:none;">
-                    <div class="form-group"><label>Adult Present? (Type YES)</label><input type="text" id="f-adult" class="form-input"></div>
-                    <div style="background: rgba(212, 175, 55, 0.05); padding: 12px; border-radius: 12px; border: 1px dashed var(--v-gold); margin-top: 15px;">
-                        <p style="font-size: 0.75rem; margin: 0; color: #fff; opacity: 0.9;">30 min late = cancellation. 3 hrs notice required for schedule adjustments.</p>
-                    </div>
-                </div>
+        <!-- FOOTER -->
+        <footer id="bottom-glass-panel" class="glass-module">
+            <div class="footer-container">
+                <p class="footer-msg active">Vanguard Consulting Core</p>
             </div>
-            <div class="modal-footer">
-                <button class="btn-modal-cancel" onclick="closeModal()">Cancel</button>
-                <button class="btn-modal-submit" onclick="submitRequest()">Review Draft</button>
-            </div>
-        </div>
-    </div>
+        </footer>
 
-    <script src="techhelp.js"></script>
+    </main>
+
 </body>
 </html>
