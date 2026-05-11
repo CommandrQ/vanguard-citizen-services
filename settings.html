@@ -13,10 +13,12 @@
 </head>
 <body>
 
+    <!-- LAYER 1: Deep Canvas -->
     <div id="vanguard-universe" aria-hidden="true">
         <div class="gold-star-layer"></div>
     </div>
 
+    <!-- LAYER 2: App Wrapper -->
     <main id="app-wrapper">
 
         <!-- HEADER -->
@@ -31,19 +33,21 @@
         <section id="directory-core">
             <div id="directory-list">
                 
-                <!-- 1. REGISTRATION / LOGIN (The Smart Gate) -->
+                <!-- 1. ENTRANCE PROTOCOL (Join / Login) -->
                 <div id="auth-card" class="link-card">
                     <h3 class="card-title" id="auth-header">Join the Sanctuary</h3>
                     <p class="card-desc" id="auth-desc">Enter your email to receive a secure login link. No passwords required.</p>
                     
+                    <!-- Guest Interface -->
                     <div id="guest-view" style="width: 100%;">
                         <div class="form-group" style="text-align: left; margin-bottom: 20px;">
-                            <label style="font-size: 0.8rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">YOUR EMAIL</label>
+                            <label style="font-size: 0.8rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">YOUR FREQUENCY (EMAIL)</label>
                             <input type="email" id="auth-email" class="settings-input" style="margin-top: 10px;" placeholder="name@email.com">
                         </div>
                         <button onclick="handleAuth()" class="gate-button">Send Access Link</button>
                     </div>
 
+                    <!-- Citizen Interface -->
                     <div id="citizen-view" style="width: 100%; display: none;">
                         <button onclick="signOut()" class="gate-button" style="border-color: var(--danger); color: var(--danger);">Disconnect / Logout</button>
                     </div>
@@ -51,10 +55,10 @@
                     <div id="auth-msg" style="margin-top: 20px; font-size: 0.9rem; font-weight: 700;"></div>
                 </div>
 
-                <!-- 2. IDENTITY (Hero Name) -->
+                <!-- 2. IDENTITY SYSTEM (Hero Name) -->
                 <div id="identity-card" class="link-card" style="display: none;">
                     <h3 class="card-title">Who are you?</h3>
-                    <p class="card-desc">Your Hero Name is how you are known within the Vanguard network.</p>
+                    <p class="card-desc">Your Hero Name is how you are recognized within the hub and consulting channels.</p>
                     
                     <div class="form-group" style="width: 100%; text-align: left; margin-bottom: 20px;">
                         <label style="font-size: 0.8rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">HERO NAME</label>
@@ -62,15 +66,15 @@
                     </div>
 
                     <div class="button-group">
-                        <button onclick="updateName()" class="card-btn">Save Name</button>
+                        <button onclick="updateName()" class="card-btn">Save Identity</button>
                         <button onclick="sendRestoreLink()" class="card-btn secondary">Email Restore Link</button>
                     </div>
                 </div>
 
-                <!-- 3. MAINTENANCE (Repair Tools) -->
+                <!-- 3. SYSTEM REPAIR (Maintenance) -->
                 <div class="link-card">
                     <h3 class="card-title">Is it broken?</h3>
-                    <p class="card-desc">If things look weird, use these protocols to refresh the interface.</p>
+                    <p class="card-desc">Use these protocols if the interface feels unstable or elements are missing.</p>
                     
                     <div class="button-group">
                         <button onclick="clearCache()" class="card-btn">Fix My App</button>
@@ -84,7 +88,7 @@
         <!-- FOOTER -->
         <footer id="bottom-glass-panel" class="glass-module">
             <div class="footer-container">
-                <p class="footer-msg active">Vanguard Security Core Active</p>
+                <p class="footer-msg active">Vanguard Command Core Active</p>
             </div>
         </footer>
 
@@ -92,44 +96,49 @@
 
     <script src="app.js"></script>
     <script>
-        // --- PAGE LOGIC ---
-        async function checkStatus() {
+        // --- PAGE LOGIC & STATE ---
+        async function syncState() {
             const { data: { user } } = await supabaseClient.auth.getUser();
             const guestView = document.getElementById('guest-view');
             const citizenView = document.getElementById('citizen-view');
             const idCard = document.getElementById('identity-card');
             const header = document.getElementById('auth-header');
             const desc = document.getElementById('auth-desc');
+            const title = document.getElementById('settings-title');
 
             if (user) {
-                // LOGGED IN
+                // Citizen Mode
                 guestView.style.display = 'none';
                 citizenView.style.display = 'block';
                 idCard.style.display = 'flex';
                 header.innerText = "Connected";
-                desc.innerText = `You are logged in as ${user.email}`;
+                desc.innerText = `Secured session: ${user.email}`;
+                title.innerText = "Command Center";
                 
                 const cached = JSON.parse(localStorage.getItem('vanguard_profile')) || {};
                 if(cached.name) document.getElementById('new-name').value = cached.name;
             } else {
-                // NOT LOGGED IN
+                // Guest Mode
                 guestView.style.display = 'block';
                 citizenView.style.display = 'none';
                 idCard.style.display = 'none';
                 header.innerText = "Join the Sanctuary";
                 desc.innerText = "Enter your email to receive a secure login link. No passwords required.";
+                title.innerText = "Connect";
             }
         }
 
-        document.addEventListener('DOMContentLoaded', checkStatus);
+        document.addEventListener('DOMContentLoaded', syncState);
 
-        // --- HANDLERS ---
+        // --- ACTION HANDLERS ---
         async function handleAuth() {
             const email = document.getElementById('auth-email').value;
             const msg = document.getElementById('auth-msg');
-            if(!email) return alert("Email required.");
+            if(!email) return alert("Email required for uplink.");
             
-            msg.innerText = "Initializing uplink...";
+            msg.innerText = "Initializing link...";
+            msg.style.color = "var(--gold)";
+
             const { error } = await supabaseClient.auth.signInWithOtp({
                 email: email,
                 options: { emailRedirectTo: window.location.origin + '/hub.html' }
@@ -139,36 +148,38 @@
                 msg.innerText = "Error: " + error.message;
                 msg.style.color = "var(--danger)";
             } else {
-                msg.innerText = "Access link sent. Check your email!";
+                msg.innerText = "Check your email for the access link!";
                 msg.style.color = "#4ade80";
             }
         }
 
         async function updateName() {
-            const name = document.getElementById('new-name').value;
+            const name = document.getElementById('new-name').value.trim();
+            if(!name) return alert("Please provide a name.");
+            
             const cached = JSON.parse(localStorage.getItem('vanguard_profile')) || {};
             cached.name = name;
             localStorage.setItem('vanguard_profile', JSON.stringify(cached));
-            alert("Identity Saved.");
+            alert("Identity Synchronized.");
             location.reload();
         }
 
         async function sendRestoreLink() {
             const { data: { user } } = await supabaseClient.auth.getUser();
             const { error } = await supabaseClient.auth.resetPasswordForEmail(user.email);
-            alert(error ? error.message : "Restore link sent to your inbox.");
+            alert(error ? error.message : "Restore protocols dispatched to your email.");
         }
 
         function clearCache() {
             const prof = localStorage.getItem('vanguard_profile');
             localStorage.clear();
             if(prof) localStorage.setItem('vanguard_profile', prof);
-            alert("App repaired. Refreshing...");
+            alert("App cache purged. Interface refreshed.");
             location.reload();
         }
 
         function fullReset() {
-            if(confirm("DANGER: This logs you out and wipes everything. Ready?")) {
+            if(confirm("DANGER: This will log you out and wipe all local identity data. Continue?")) {
                 localStorage.clear();
                 signOut();
             }
