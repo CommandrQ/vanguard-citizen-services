@@ -31,27 +31,21 @@ html, body {
     to { transform: translateY(500px); } 
 }
 
-/* --- GATE LAYOUT (index.html) --- */
-.gate-body {
-    display: flex; justify-content: center; align-items: center;
-}
-#gate-interface {
-    text-align: center; z-index: 10;
-    animation: simpleFadeIn 1.5s ease-out;
-}
+/* --- GATE LAYOUT --- */
+.gate-body { display: flex; justify-content: center; align-items: center; }
+#gate-interface { text-align: center; z-index: 10; animation: simpleFadeIn 1.5s ease-out; }
 .vanguard-logo {
-    width: 180px; height: auto;
+    width: 220px; height: auto;
     filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.6));
-    animation: logoPulse 4s infinite ease-in-out;
-    margin-bottom: 50px;
+    animation: logoPulse 4s infinite ease-in-out; margin-bottom: 50px;
 }
 @keyframes logoPulse {
     0%, 100% { filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4)); transform: scale(1); }
     50% { filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.8)); transform: scale(1.02); }
 }
 .gate-button {
-    position: relative; display: inline-block; padding: 18px 40px;
-    font-size: 0.9rem; font-weight: 800; text-transform: uppercase;
+    position: relative; display: inline-block; padding: 22px 50px;
+    font-size: 1.1rem; font-weight: 800; text-transform: uppercase;
     letter-spacing: 3px; color: var(--gold); text-decoration: none;
     border: 1px solid var(--gold); border-radius: 4px;
     background: transparent; overflow: hidden; transition: color 0.8s ease; z-index: 1;
@@ -72,12 +66,13 @@ html, body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- APP LAYOUT (hub.html) --- */
+/* --- APP LAYOUT (Wider & Larger Text) --- */
 #app-wrapper {
     display: flex; flex-direction: column;
-    height: 100dvh; width: 100%; max-width: 460px;
+    height: 100dvh; width: 100%; 
+    max-width: 650px; /* INCREASED WIDTH */
     margin: 0 auto; position: relative;
-    box-shadow: 0 0 50px rgba(0,0,0,0.9);
+    box-shadow: 0 0 60px rgba(0,0,0,0.9);
     background: rgba(0,0,0,0.2);
 }
 .glass-module {
@@ -86,59 +81,61 @@ html, body {
     border-bottom: 1px solid var(--glass-border);
     border-top: 1px solid var(--glass-border); z-index: 10;
 }
-#top-glass-panel { padding: 20px 20px 15px; flex-shrink: 0; }
-.citizen-status { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; }
-#user-greeting { font-size: 1.2rem; font-weight: 700; color: var(--gold); margin: 0; letter-spacing: 0.5px; text-align: left; }
+#top-glass-panel { padding: 30px 30px 20px; flex-shrink: 0; }
+.citizen-status { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; }
+#user-greeting { font-size: 1.6rem; font-weight: 700; color: var(--gold); margin: 0; letter-spacing: 0.5px; text-align: left; }
 .population-tracker { text-align: right; }
-.population-tracker .label { font-size: 0.6rem; letter-spacing: 2px; opacity: 0.6; display: block; }
-#population-count { font-size: 1.1rem; font-weight: 800; }
+.population-tracker .label { font-size: 0.7rem; letter-spacing: 2px; opacity: 0.6; display: block; }
+#population-count { font-size: 1.4rem; font-weight: 800; }
+
 .search-module input {
     width: 100%; box-sizing: border-box; background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(212, 175, 55, 0.3); padding: 12px 16px; text-align: center;
-    border-radius: 12px; color: #fff; font-size: 0.95rem; outline: none; transition: 0.3s ease;
+    border: 1px solid rgba(212, 175, 55, 0.3); padding: 16px 20px; text-align: center;
+    border-radius: 12px; color: #fff; font-size: 1.1rem; outline: none; transition: 0.3s ease;
 }
 .search-module input:focus { border-color: var(--gold); background: rgba(0,0,0,0.5); }
+
 #directory-core {
     flex-grow: 1; overflow-y: auto; overflow-x: hidden;
-    padding-bottom: 80px; -webkit-overflow-scrolling: touch;
+    padding-bottom: 100px; -webkit-overflow-scrolling: touch;
 }
 #category-bar {
-    display: flex; gap: 10px; padding: 15px 20px; overflow-x: auto; justify-content: center;
+    display: flex; gap: 15px; padding: 20px 30px; overflow-x: auto; justify-content: center;
     white-space: nowrap; -webkit-overflow-scrolling: touch; border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 #category-bar::-webkit-scrollbar { display: none; }
 .cat-btn {
     background: rgba(255,255,255,0.05); border: 1px solid transparent;
-    color: #fff; padding: 8px 18px; border-radius: 20px;
-    font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.3s;
+    color: #fff; padding: 10px 22px; border-radius: 25px;
+    font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.3s;
 }
 .cat-btn.active { background: rgba(212, 175, 55, 0.15); color: var(--gold); border: 1px solid var(--gold); }
-#directory-list { display: flex; flex-direction: column; gap: 15px; padding: 20px; }
 
-/* CENTERED CARDS */
+#directory-list { display: flex; flex-direction: column; gap: 20px; padding: 30px; }
 .link-card {
     background: rgba(20, 20, 20, 0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border); border-radius: 16px;
-    padding: 20px; display: flex; flex-direction: column;
-    align-items: center; text-align: center; /* CENTERED CONTENT */
+    border: 1px solid var(--glass-border); border-radius: 20px;
+    padding: 30px; display: flex; flex-direction: column;
+    align-items: center; text-align: center;
     animation: terminalFade 0.4s var(--v-curve) forwards;
 }
 .link-card:active { transform: scale(0.98); }
-.card-title { font-size: 1.05rem; font-weight: 800; color: #fff; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-.card-desc { font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.5; margin: 0 0 16px; flex-grow: 1; }
+.card-title { font-size: 1.3rem; font-weight: 800; color: #fff; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+.card-desc { font-size: 1.05rem; color: rgba(255,255,255,0.7); line-height: 1.6; margin: 0 0 20px; flex-grow: 1; }
 .card-btn {
-    align-self: center; /* CENTERED BUTTON */
-    color: var(--gold); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; text-decoration: none;
-    background: rgba(212, 175, 55, 0.1); padding: 8px 20px; border-radius: 8px; border: 1px solid var(--gold); transition: 0.2s;
+    align-self: center;
+    color: var(--gold); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; text-decoration: none;
+    background: rgba(212, 175, 55, 0.1); padding: 10px 30px; border-radius: 10px; border: 1px solid var(--gold); transition: 0.2s;
 }
 @keyframes terminalFade {
     0% { opacity: 0; transform: translateY(15px); }
     100% { opacity: 1; transform: translateY(0); }
 }
-#bottom-glass-panel { position: absolute; bottom: 0; width: 100%; height: 50px; }
+
+#bottom-glass-panel { position: absolute; bottom: 0; width: 100%; height: 60px; }
 .footer-container { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
 .footer-msg {
-    position: absolute; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
+    position: absolute; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;
     color: var(--gold); font-weight: bold; opacity: 0; transition: opacity 0.8s ease; text-align: center;
 }
 .footer-msg.active { opacity: 1; }
