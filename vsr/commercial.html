@@ -1,23 +1,164 @@
-<!-- Replace the JS and Modal section in commercial.html with this logic -->
-<script>
-    let selectedItem = "";
-    function openModal(item) { selectedItem = item; document.getElementById('service-modal').style.display = 'flex'; showStep1(); }
-    function closeModal() { document.getElementById('service-modal').style.display = 'none'; }
-    function showStep1() { document.getElementById('step-agreement').style.display = 'block'; document.getElementById('step-details').style.display = 'none'; }
-    function showStep2() { document.getElementById('step-agreement').style.display = 'none'; document.getElementById('step-details').style.display = 'block'; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vanguard | Commercial Businesses</title>
+    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <link rel="stylesheet" href="../style.css">
+    
+    <style>
+        .commercial-header {
+            text-align: left; margin-bottom: 40px; padding-bottom: 25px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .tier-label {
+            display: inline-block; background: rgba(212, 175, 55, 0.15);
+            color: var(--gold); padding: 6px 14px; border-radius: 20px;
+            font-size: 0.7rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px;
+        }
 
-    function generateDraft() {
-        const name = document.getElementById('req-name').value;
-        const email = document.getElementById('req-email').value;
-        const phone = document.getElementById('req-phone').value;
-        const addr = document.getElementById('req-address').value;
-        const msg = document.getElementById('req-message').value;
+        .comm-price { font-size: 1.8rem; color: #fff; font-weight: 900; margin: 10px 0 20px; }
 
-        if(!name || !email || !phone || !addr) return alert("All fields are required for commercial requests.");
+        /* Advantage Section */
+        .advantage-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 30px 0;
+        }
+        .advantage-item {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+            padding: 15px; border-radius: 12px; text-align: left;
+        }
+        .advantage-item h4 { color: var(--gold); font-size: 0.75rem; margin: 0 0 5px; letter-spacing: 1px; }
+        .advantage-item p { font-size: 0.7rem; margin: 0; opacity: 0.7; }
 
-        const subject = `[COMMERCIAL UPLINK] ${selectedItem} - ${name}`;
-        const body = `COMMERCIAL IDENTITY:\nOrganization/Name: ${name}\nEmail: ${email}\nPhone: ${phone}\n\nSERVICE ADDRESS:\n${addr}\n\nPACKAGE REQUESTED:\n${selectedItem}\n\nMESSAGE:\n${msg}`;
+        /* Modal Overlay */
+        .tos-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.96);
+            backdrop-filter: blur(15px); display: none; align-items: center; justify-content: center;
+            z-index: 1000; padding: 20px;
+        }
+    </style>
+</head>
+<body>
 
-        window.location.href = `mailto:commandrq@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    }
-</script>
+    <div id="vanguard-universe" aria-hidden="true">
+        <div class="gold-star-layer"></div>
+    </div>
+
+    <main id="app-wrapper">
+
+        <header id="top-glass-panel" class="glass-module">
+            <div class="citizen-status" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <h1>Commercial</h1>
+                <a href="techhelp.html" class="back-btn">← BACK</a>
+            </div>
+        </header>
+
+        <section id="directory-core" style="flex-grow: 1; overflow-y: auto;">
+            <div id="directory-list" style="padding: 20px;">
+                
+                <div class="commercial-header">
+                    <h2 style="color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-size: 1.3rem; margin: 0 0 10px;">Operational Fortification</h2>
+                    <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; line-height: 1.6; margin: 0;">
+                        Professional-grade infrastructure audits and educational workshops for the Hardin County business corridor. We provide local accountability that national service providers cannot match.
+                    </p>
+                </div>
+
+                <!-- Advantage Grid -->
+                <div class="advantage-grid">
+                    <div class="advantage-item">
+                        <h4>Local On-Site</h4>
+                        <p>Rapid physical response for Radcliff, E-town, and Ft. Knox.</p>
+                    </div>
+                    <div class="advantage-item">
+                        <h4>14-Day Shield</h4>
+                        <p>Full workmanship guarantee on all audits and configurations.</p>
+                    </div>
+                </div>
+
+                <!-- Tier 1: Workshop -->
+                <div class="link-card" style="text-align: left; border-left: 4px solid var(--gold);">
+                    <span class="tier-label">ONE-TO-MANY</span>
+                    <h3 class="card-title" style="color: #fff;">Community Workshop</h3>
+                    <p class="card-desc">Educational, high-impact presentations designed for groups at the YMCA, schools, or community centers.</p>
+                    <div class="comm-price">$150 <span style="font-size: 0.8rem; opacity: 0.5;">/ EVENT</span></div>
+                    <ul style="color: rgba(255,255,255,0.7); font-size: 0.85rem; padding-left: 15px; line-height: 1.6; margin-bottom: 25px;">
+                        <li>Identity Protection & Scam Defense for Seniors</li>
+                        <li>Digital Safety & Boundaries for Teens/Parents</li>
+                        <li>Includes live Q&A and printed resource guides</li>
+                    </ul>
+                    <button onclick="openTOS('Commercial Workshop')" class="gate-button" style="width: 100%; padding: 15px !important;">Request Workshop</button>
+                </div>
+
+                <!-- Tier 2: Audit -->
+                <div class="link-card" style="text-align: left; border-left: 4px solid var(--gold);">
+                    <span class="tier-label">AUDIT & SECURE</span>
+                    <h3 class="card-title" style="color: #fff;">Micro-Business Audit</h3>
+                    <p class="card-desc">A deep-dive efficiency and security sweep for local retail, office, or small-scale service sites.</p>
+                    <div class="comm-price">$95 <span style="font-size: 0.8rem; opacity: 0.5;">/ SITE</span></div>
+                    <ul style="color: rgba(255,255,255,0.7); font-size: 0.85rem; padding-left: 15px; line-height: 1.6; margin-bottom: 25px;">
+                        <li>Network hardening & Router security review</li>
+                        <li>Data backup protocol & Disaster recovery audit</li>
+                        <li>Hardware lifecycle & Operational efficiency report</li>
+                    </ul>
+                    <button onclick="openTOS('Micro-Business Audit')" class="gate-button" style="width: 100%; padding: 15px !important;">Request Audit</button>
+                </div>
+
+                <!-- Tier 3: Retainer -->
+                <div class="link-card" style="text-align: left; border-left: 4px solid #fff;">
+                    <span class="tier-label">STRATEGIC</span>
+                    <h3 class="card-title" style="color: #fff;">Strategic Retainer</h3>
+                    <p class="card-desc">Ongoing system administration, digital journey mapping, and customized infrastructure for growing organizations.</p>
+                    <div class="comm-price">Custom Quote</div>
+                    <button onclick="openTOS('Strategic Retainer')" class="card-btn" style="width: 100%; margin-top: 10px;">Initiate Consultation</button>
+                </div>
+
+                <!-- Footer Hook -->
+                <div style="margin-top: 40px; text-align: center; padding-bottom: 40px;">
+                    <p style="color: var(--gold); font-size: 0.75rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px;">SECURE YOUR OPERATIONS</p>
+                    <p style="font-size: 0.85rem; opacity: 0.6; margin-bottom: 20px;">Questions about specific organizational needs?</p>
+                    <a href="../support.html" class="card-btn secondary" style="text-decoration: none;">Contact Support →</a>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- COMMERCIAL AGREEMENT MODAL -->
+    <div class="tos-overlay" id="tos-modal">
+        <div style="background: #0a0a0a; border: 1px solid var(--glass-border); border-radius: 24px; width: 100%; max-width: 500px; padding: 35px;">
+            <h2 style="color: var(--gold); margin: 0; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 2px;">Commercial Agreement</h2>
+            <div style="font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.6; padding: 20px 0; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); margin: 20px 0; text-align: left;">
+                <strong>Liability Disclaimer:</strong> Vanguard provides technical consulting and audits. We are not responsible for pre-existing system vulnerabilities, hardware failure, or external data breaches. Organizations must maintain their own primary data backups.
+                <br><br>
+                <strong>Guarantee:</strong> Our 14-day workmanship warranty applies to the specific scope of the audit or configuration performed during the session.
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="closeTOS()" class="card-btn secondary" style="flex: 1;">Cancel</button>
+                <button onclick="acceptAndGo()" class="gate-button" style="flex: 2; padding: 12px !important; font-size: 1rem !important;">Confirm Uplink</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedPackage = "";
+
+        function openTOS(pkg) {
+            selectedPackage = pkg;
+            document.getElementById('tos-modal').style.display = 'flex';
+        }
+
+        function closeTOS() {
+            document.getElementById('tos-modal').style.display = 'none';
+        }
+
+        function acceptAndGo() {
+            // Routes to support with the specific commercial package in the URL
+            window.location.href = `../support.html?package=${encodeURIComponent(selectedPackage)}`;
+        }
+    </script>
+</body>
+</html>
