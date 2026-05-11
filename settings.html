@@ -19,7 +19,7 @@
 
     <main id="app-wrapper">
 
-        <!-- HEADER: Title on Left, Big Button on Right -->
+        <!-- HEADER -->
         <header id="top-glass-panel" class="glass-module">
             <div class="citizen-status">
                 <h1 id="settings-title">Settings</h1>
@@ -31,21 +31,19 @@
         <section id="directory-core">
             <div id="directory-list">
                 
-                <!-- 1. AUTHENTICATION (The Entrance) -->
-                <div id="auth-section" class="link-card">
-                    <h3 class="card-title">Sanctuary Access</h3>
-                    <p class="card-desc" id="auth-status">Enter your frequency to connect to the network.</p>
+                <!-- 1. REGISTRATION / LOGIN (The Smart Gate) -->
+                <div id="auth-card" class="link-card">
+                    <h3 class="card-title" id="auth-header">Join the Sanctuary</h3>
+                    <p class="card-desc" id="auth-desc">Enter your email to receive a secure login link. No passwords required.</p>
                     
-                    <!-- Guest View -->
                     <div id="guest-view" style="width: 100%;">
                         <div class="form-group" style="text-align: left; margin-bottom: 20px;">
-                            <label style="font-size: 0.8rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">EMAIL ADDRESS</label>
-                            <input type="email" id="auth-email" class="settings-input" style="margin-top: 10px;" placeholder="citizen@example.com">
+                            <label style="font-size: 0.8rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">YOUR EMAIL</label>
+                            <input type="email" id="auth-email" class="settings-input" style="margin-top: 10px;" placeholder="name@email.com">
                         </div>
                         <button onclick="handleAuth()" class="gate-button">Send Access Link</button>
                     </div>
 
-                    <!-- Citizen View -->
                     <div id="citizen-view" style="width: 100%; display: none;">
                         <button onclick="signOut()" class="gate-button" style="border-color: var(--danger); color: var(--danger);">Disconnect / Logout</button>
                     </div>
@@ -53,10 +51,10 @@
                     <div id="auth-msg" style="margin-top: 20px; font-size: 0.9rem; font-weight: 700;"></div>
                 </div>
 
-                <!-- 2. IDENTITY (Who Are You?) -->
-                <div id="identity-section" class="link-card" style="display: none;">
+                <!-- 2. IDENTITY (Hero Name) -->
+                <div id="identity-card" class="link-card" style="display: none;">
                     <h3 class="card-title">Who are you?</h3>
-                    <p class="card-desc">Your Hero Name is how you are known in the sanctuary.</p>
+                    <p class="card-desc">Your Hero Name is how you are known within the Vanguard network.</p>
                     
                     <div class="form-group" style="width: 100%; text-align: left; margin-bottom: 20px;">
                         <label style="font-size: 0.8rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">HERO NAME</label>
@@ -64,15 +62,15 @@
                     </div>
 
                     <div class="button-group">
-                        <button onclick="updateName()" class="card-btn">Save Identity</button>
+                        <button onclick="updateName()" class="card-btn">Save Name</button>
                         <button onclick="sendRestoreLink()" class="card-btn secondary">Email Restore Link</button>
                     </div>
                 </div>
 
-                <!-- 3. MAINTENANCE (Is It Broken?) -->
+                <!-- 3. MAINTENANCE (Repair Tools) -->
                 <div class="link-card">
                     <h3 class="card-title">Is it broken?</h3>
-                    <p class="card-desc">If the interface feels unstable, use these protocols to refresh your connection.</p>
+                    <p class="card-desc">If things look weird, use these protocols to refresh the interface.</p>
                     
                     <div class="button-group">
                         <button onclick="clearCache()" class="card-btn">Fix My App</button>
@@ -94,41 +92,44 @@
 
     <script src="app.js"></script>
     <script>
-        // --- AUTH & STATE MANAGEMENT ---
-        async function checkSession() {
+        // --- PAGE LOGIC ---
+        async function checkStatus() {
             const { data: { user } } = await supabaseClient.auth.getUser();
             const guestView = document.getElementById('guest-view');
             const citizenView = document.getElementById('citizen-view');
-            const identitySection = document.getElementById('identity-section');
-            const statusLabel = document.getElementById('auth-status');
-            const title = document.getElementById('settings-title');
+            const idCard = document.getElementById('identity-card');
+            const header = document.getElementById('auth-header');
+            const desc = document.getElementById('auth-desc');
 
             if (user) {
+                // LOGGED IN
                 guestView.style.display = 'none';
                 citizenView.style.display = 'block';
-                identitySection.style.display = 'flex';
-                title.innerText = "Command Center";
-                statusLabel.innerText = `Connected: ${user.email}`;
+                idCard.style.display = 'flex';
+                header.innerText = "Connected";
+                desc.innerText = `You are logged in as ${user.email}`;
                 
                 const cached = JSON.parse(localStorage.getItem('vanguard_profile')) || {};
                 if(cached.name) document.getElementById('new-name').value = cached.name;
             } else {
+                // NOT LOGGED IN
                 guestView.style.display = 'block';
                 citizenView.style.display = 'none';
-                identitySection.style.display = 'none';
-                title.innerText = "Connect";
+                idCard.style.display = 'none';
+                header.innerText = "Join the Sanctuary";
+                desc.innerText = "Enter your email to receive a secure login link. No passwords required.";
             }
         }
 
-        document.addEventListener('DOMContentLoaded', checkSession);
+        document.addEventListener('DOMContentLoaded', checkStatus);
 
         // --- HANDLERS ---
         async function handleAuth() {
             const email = document.getElementById('auth-email').value;
             const msg = document.getElementById('auth-msg');
-            if(!email) return alert("Frequency (Email) required.");
+            if(!email) return alert("Email required.");
             
-            msg.innerText = "Initializing link...";
+            msg.innerText = "Initializing uplink...";
             const { error } = await supabaseClient.auth.signInWithOtp({
                 email: email,
                 options: { emailRedirectTo: window.location.origin + '/hub.html' }
@@ -138,7 +139,7 @@
                 msg.innerText = "Error: " + error.message;
                 msg.style.color = "var(--danger)";
             } else {
-                msg.innerText = "Link sent. Check your inbox.";
+                msg.innerText = "Access link sent. Check your email!";
                 msg.style.color = "#4ade80";
             }
         }
@@ -148,26 +149,26 @@
             const cached = JSON.parse(localStorage.getItem('vanguard_profile')) || {};
             cached.name = name;
             localStorage.setItem('vanguard_profile', JSON.stringify(cached));
-            alert("Identity synchronized.");
+            alert("Identity Saved.");
             location.reload();
         }
 
         async function sendRestoreLink() {
             const { data: { user } } = await supabaseClient.auth.getUser();
             const { error } = await supabaseClient.auth.resetPasswordForEmail(user.email);
-            alert(error ? error.message : "Restore link dispatched to your email.");
+            alert(error ? error.message : "Restore link sent to your inbox.");
         }
 
         function clearCache() {
             const prof = localStorage.getItem('vanguard_profile');
             localStorage.clear();
             if(prof) localStorage.setItem('vanguard_profile', prof);
-            alert("Interface repaired. Refreshing...");
+            alert("App repaired. Refreshing...");
             location.reload();
         }
 
         function fullReset() {
-            if(confirm("DANGER: This will wipe all local data and logout. Proceed?")) {
+            if(confirm("DANGER: This logs you out and wipes everything. Ready?")) {
                 localStorage.clear();
                 signOut();
             }
