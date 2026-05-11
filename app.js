@@ -25,12 +25,7 @@ const directoryDataRaw = {
         { 
             title: "Legal Documents", 
             desc: "Review our Citizen Agreements, Privacy Protocols, and Service Terms.", 
-            url: "legal.html" 
-        },
-        {
-            title: "Terminal Settings",
-            desc: "Manage your local cache, request access, or perform a factory reset.",
-            url: "settings.html"
+            url: "legal.html"
         }
     ]
 };
