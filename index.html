@@ -2,36 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vanguard Citizen Services</title>
-    <style>
-        :root { --v-gold: #d4af37; --v-curve: cubic-bezier(0.4, 0, 0.2, 1); }
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; color: #fff; font-family: -apple-system, sans-serif; display: flex; flex-direction: column; }
-        .starfield { position: fixed; inset: 0; z-index: 0; background: radial-gradient(circle at center, #111 0%, #000 100%); }
-        .s1 { background-image: radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)), radial-gradient(2px 2px at 50px 160px, var(--v-gold), rgba(0,0,0,0)); background-size: 250px 250px; opacity: 0.3; }
-        .scanlines { position: fixed; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(to bottom, rgba(18,16,16,0) 50%, rgba(255,255,255,0.02) 50%); background-size: 100% 4px; }
-        .lobby-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 5; text-align: center; padding: 20px; animation: systemWake 1s var(--v-curve) forwards; }
-        @keyframes systemWake { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        .vcs-logo { width: 140px; margin-bottom: 25px; filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.2)); }
-        .main-title { font-size: 2.5rem; font-weight: 900; color: var(--v-gold); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; }
-        .motto { font-size: 1.2rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 50px; color: #fff; }
-        .btn-pill { font-family: inherit; font-weight: 900; padding: 18px 45px; font-size: 1rem; border-radius: 50px; cursor: pointer; transition: 0.3s; border: none; text-transform: uppercase; letter-spacing: 2px; background: var(--v-gold); color: #000; box-shadow: 0 5px 0 #8a6d0d; text-decoration: none; display: inline-block; }
-        .btn-pill:hover { transform: translateY(-2px); box-shadow: 0 7px 0 #8a6d0d, 0 15px 25px rgba(212, 175, 55, 0.3); }
-        .vanguard-footer { border-top: 2px solid #222; padding: 25px 20px; text-align: center; z-index: 10; }
-        .vanguard-footer p { color: #FFF; font-size: 0.95rem; font-weight: bold; letter-spacing: 1.5px; margin: 0; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Project V | The Awakening</title>
+    <!-- CSS will be linked here -->
 </head>
 <body>
-    <div class="scanlines"></div>
-    <div class="starfield s1"></div>
-    <main class="lobby-container">
-        <img src="images/vanguardorglogo.png" alt="VCS Logo" class="vcs-logo">
-        <h1 class="main-title">Vanguard Citizen Services</h1>
-        <p class="motto">Empower. Elevate. Educate.</p>
-        <a href="directory.html" class="btn-pill">ENTER COMMAND CENTER</a>
+
+    <!-- LAYER 1: The Persistent Starfield -->
+    <div id="vanguard-universe" aria-hidden="true">
+        <div class="gold-star-layer"></div>
+    </div>
+
+    <!-- LAYER 2: The Cinematic Story Container -->
+    <main id="intro-sequence">
+
+        <!-- SECTION 1: The Hook -->
+        <section class="story-block terminal-boot">
+            <h1 class="hero-headline">The System is Squeezing You.</h1>
+            <p class="hero-subtext">Hardin County is losing a million dollars a year to an invisible tax. It's time to reclaim your mastery.</p>
+            <div class="scroll-indicator">Scroll to Initialize</div>
+        </section>
+
+        <!-- SECTION 2: The Problem (Glass Panel) -->
+        <section class="story-block">
+            <div class="glass-manifesto">
+                <h2 class="gold-accent">The 21st Century Glitch</h2>
+                <p>We are told to produce more with less. The result? A workforce of passive bystanders drained by chronic stress, complex local laws, and a lack of support.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 3: The Solution (Glass Panel) -->
+        <section class="story-block">
+            <div class="glass-manifesto">
+                <h2 class="gold-accent">The Vanguard Blueprint</h2>
+                <p>We are connecting a guild of local experts to build the manual for a self-sufficient life. From mastering the "Legal 30" to eliminating burnout, we turn passive residents into community heroes.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 4: The Threshold (Call to Action) -->
+        <section class="story-block final-threshold">
+            <div class="launch-console glass-module">
+                <h3>Your Sanctuary is Ready.</h3>
+                <!-- This link takes them to your directory app -->
+                <a href="hub.html" class="action-button primary-gold">Enter Project V</a>
+            </div>
+        </section>
+
     </main>
-    <footer class="vanguard-footer">
-        <p>&copy; 2026 VANGUARD CITIZEN SERVICES</p>
-    </footer>
+
 </body>
 </html>
