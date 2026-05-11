@@ -17,7 +17,6 @@
             width: 180px;
             height: auto;
             margin-bottom: 20px;
-            /* Creates the golden glow radiating from the PNG outline */
             filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)) 
                     drop-shadow(0 0 30px rgba(212, 175, 55, 0.2));
             animation: pulseGlow 4s ease-in-out infinite;
@@ -26,6 +25,19 @@
         @keyframes pulseGlow {
             0%, 100% { filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5)); }
             50% { filter: drop-shadow(0 0 25px rgba(212, 175, 55, 0.8)); }
+        }
+
+        /* FORCE ONYX BUTTON (Fix for White Background) */
+        .gate-button {
+            background-color: #0a0a0a !important; /* Forces Onyx Shield */
+            background: #0a0a0a !important;
+            color: var(--gold) !important;
+            border: 1px solid var(--gold) !important;
+            cursor: pointer;
+        }
+
+        .gate-button::before {
+            background: var(--gold) !important; /* The Slow-Fill color */
         }
 
         /* Transition Overlay */
@@ -38,6 +50,16 @@
             transition: opacity 1s ease;
         }
         #fade-overlay.active { opacity: 1; }
+
+        /* Footer Styling */
+        .gate-footer {
+            margin-top: 60px;
+            font-size: 0.7rem;
+            color: var(--gold);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.6;
+        }
     </style>
 </head>
 <body class="gate-body">
@@ -51,23 +73,24 @@
     <main id="app-wrapper" style="justify-content: center; align-items: center; background: transparent; box-shadow: none;">
         
         <div id="gate-interface" style="text-align: center; padding: 40px; width: 100%;">
-            <!-- BRANDING WITH RADIANT LOGO -->
+            <!-- BRANDING -->
             <div class="vanguard-branding" style="margin-bottom: 50px;">
                 <img src="images/vanguardorglogo.png" alt="Vanguard Logo" class="vanguard-logo">
                 <h1 style="font-size: 2.2rem; letter-spacing: 10px; color: var(--gold); margin: 0; font-weight: 900; text-transform: uppercase;">Vanguard</h1>
                 <p style="font-size: 0.75rem; letter-spacing: 4px; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-top: 5px;">Citizen Services</p>
             </div>
 
-            <!-- FIXED GATE BUTTON -->
+            <!-- THE BUTTON -->
             <div style="width: 100%; max-width: 320px; margin: 0 auto;">
                 <button onclick="initiateUplink()" class="gate-button">
                     Initialize Uplink
                 </button>
             </div>
 
-            <p style="margin-top: 40px; font-size: 0.65rem; color: var(--gold); opacity: 0.5; letter-spacing: 2px; text-transform: uppercase;">
-                Authorized Personnel Only
-            </p>
+            <!-- REVISED FOOTER -->
+            <footer class="gate-footer">
+                Vanguard Citizen Services &copy; 2026
+            </footer>
         </div>
 
     </main>
@@ -78,19 +101,16 @@
             const overlay = document.getElementById('fade-overlay');
             const gate = document.getElementById('gate-interface');
             
-            // Activate transition
             overlay.classList.add('active');
             gate.style.opacity = '0';
             gate.style.transform = 'scale(0.98)';
             gate.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
 
-            // Navigate to Hub
             setTimeout(() => {
                 window.location.href = 'hub.html';
             }, 1000);
         }
 
-        // Fix for back-button caching
         window.onpageshow = function(event) {
             if (event.persisted) {
                 document.getElementById('fade-overlay').classList.remove('active');
