@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vanguard | Need Help?</title>
+    <title>Vanguard | Talk to Us</title>
     
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <link rel="stylesheet" href="style.css">
@@ -13,58 +13,59 @@
 </head>
 <body>
 
-    <!-- LAYER 1: The Starfield -->
+    <!-- LAYER 1: The Persistent Starfield -->
     <div id="vanguard-universe" aria-hidden="true">
         <div class="gold-star-layer"></div>
     </div>
 
-    <!-- LAYER 2: The App Wrapper (Fixes Scrolling) -->
+    <!-- LAYER 2: The Unified App Wrapper -->
     <main id="app-wrapper">
 
         <!-- HEADER -->
         <header id="top-glass-panel" class="glass-module">
             <div class="citizen-status">
                 <a href="hub.html" class="back-btn">← GO BACK</a>
-                <h1>Support</h1>
+                <h1 id="user-greeting">Support</h1>
             </div>
         </header>
 
-        <!-- SCROLLABLE CONTENT AREA -->
+        <!-- SCROLLABLE CORE -->
         <section id="directory-core">
             <div id="directory-list">
                 
-                <!-- THE FORM CARD -->
+                <!-- THE UPLINK CARD -->
                 <div class="link-card">
                     <h3 class="card-title">Talk to us</h3>
                     <p class="card-desc">Need help with tech or the sanctuary? Send a message and we will get back to you.</p>
                     
                     <!-- CATEGORY -->
-                    <div class="form-group" style="width: 100%; text-align: left; margin-bottom: 15px;">
-                        <label style="font-size: 0.7rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">WHAT DO YOU NEED?</label>
-                        <select id="f-category" class="settings-input" style="width: 100%; max-width: none; margin-top: 5px;">
+                    <div class="form-group" style="width: 100; text-align: left; margin-bottom: 20px;">
+                        <label style="font-size: 0.8rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">WHAT DO YOU NEED?</label>
+                        <select id="f-category" class="settings-input" style="width: 100%; max-width: none; margin-top: 10px;">
                             <option value="Tech Support">Tech Help</option>
                             <option value="General">General Question</option>
                             <option value="Guild">Joining the Guild</option>
                         </select>
                     </div>
 
-                    <!-- IDENTITY -->
-                    <div class="form-group" style="width: 100%; text-align: left; margin-bottom: 15px;">
-                        <label style="font-size: 0.7rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">YOUR NAME</label>
-                        <input type="text" id="f-name" placeholder="Loading name..." class="settings-input" style="width: 100%; max-width: none; margin-top: 5px;">
+                    <!-- NAME -->
+                    <div class="form-group" style="width: 100; text-align: left; margin-bottom: 20px;">
+                        <label style="font-size: 0.8rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">YOUR NAME</label>
+                        <input type="text" id="f-name" placeholder="Name Loading..." class="settings-input" style="width: 100%; max-width: none; margin-top: 10px;">
                     </div>
 
                     <!-- MESSAGE -->
-                    <div class="form-group" style="width: 100%; text-align: left; margin-bottom: 20px;">
-                        <label style="font-size: 0.7rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">MESSAGE</label>
-                        <textarea id="f-msg" placeholder="Tell us what's happening..." class="settings-input" style="width: 100%; max-width: none; height: 150px; margin-top: 5px; text-align: left;"></textarea>
+                    <div class="form-group" style="width: 100%; text-align: left; margin-bottom: 25px;">
+                        <label style="font-size: 0.8rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">MESSAGE</label>
+                        <textarea id="f-msg" placeholder="Tell us what's happening..." class="settings-input" style="width: 100%; max-width: none; height: 180px; margin-top: 10px; text-align: left;"></textarea>
                     </div>
 
-                    <button onclick="compileDraft()" class="gate-button" style="width: 100%; padding: 18px; font-size: 1rem;">
+                    <!-- SLOW FILL BUTTON -->
+                    <button onclick="compileDraft()" class="gate-button" style="width: 100%; padding: 20px; font-size: 1.1rem;">
                         Send Message
                     </button>
                     
-                    <div id="sys-msg" style="margin-top: 20px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;"></div>
+                    <div id="sys-msg" style="margin-top: 25px; font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;"></div>
                 </div>
 
             </div>
@@ -96,22 +97,32 @@
             const sys = document.getElementById('sys-msg');
 
             if (!name || !msgBody) {
-                sys.innerText = "Please provide your name and a message.";
+                sys.innerText = "Error: Provide name and message.";
                 sys.style.color = "#ff4d4d";
                 return;
             }
 
-            sys.innerText = "Opening your email...";
+            sys.innerText = "Initializing Uplink...";
             sys.style.color = "var(--gold)";
 
             const destination = "support@vcscitizen.org";
-            const subject = encodeURIComponent(`[${cat}] Support from ${name}`);
-            const body = encodeURIComponent(`CITIZEN: ${name}\nCATEGORY: ${cat}\n\nMESSAGE:\n${msgBody}`);
+            const subject = encodeURIComponent(`[${cat}] Uplink from ${name}`);
+            const body = encodeURIComponent(
+`CITIZEN IDENTIFICATION: ${name}
+CATEGORY: ${cat}
+
+MESSAGE:
+-------------------------
+${msgBody}
+-------------------------
+END TRANSMISSION`
+            );
 
             setTimeout(() => {
                 window.location.href = `mailto:${destination}?subject=${subject}&body=${body}`;
-                sys.innerText = "Draft created.";
-            }, 600);
+                sys.innerText = "Uplink Established.";
+                sys.style.color = "#4ade80";
+            }, 800);
         }
     </script>
 </body>
