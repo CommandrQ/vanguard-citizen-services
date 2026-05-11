@@ -1,84 +1,77 @@
-// ==========================================
-// VANGUARD MASTER LOGIC ENGINE
-// ==========================================
-
-// 1. INITIALIZE SUPABASE (Ensure your keys are here!)
-const supabaseUrl = 'https://dvyjupytbwbrcoyouxpf.supabase.co';
-const supabaseKey = 'sb_publishable_wjgbPekKmodd5mSDXIeUeg_Wq73GzOk';
+// --- INITIALIZE SUPABASE ---
+const supabaseUrl = 'YOUR_URL_HERE';
+const supabaseKey = 'YOUR_KEY_HERE';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-// 2. THE DIRECTORY DATA
+// --- RESOURCE DATA ---
 const directoryDataRaw = {
     "Vanguard Tech Lab": [
-        { 
-            title: "Tech Consulting", 
-            desc: "Personalized strategy for seniors, parents, and high-performance individuals.", 
-            url: "vsr/techhelp.html" 
-        }
+        { title: "Tech Consulting", desc: "Support for seniors, parents, and high-performance individuals.", url: "vsr/techhelp.html" }
     ],
     "System Settings": [
-        { 
-            title: "Support Terminal", 
-            desc: "Establish a direct uplink for technical help or general inquiries.", 
-            url: "support.html" 
-        },
-        { 
-            title: "Legal Documents", 
-            desc: "Review the Citizen Agreement and Privacy Protocols.", 
-            url: "legal.html" 
-        }
+        { title: "Support Terminal", desc: "Open a direct uplink for technical inquiries.", url: "support.html" },
+        { title: "Legal Documents", desc: "Agreement protocols and privacy standards.", url: "legal.html" }
     ]
 };
 
-// 3. RENDER THE HUB
+// --- RENDER HUB ---
 function renderHub(category = Object.keys(directoryDataRaw)[0]) {
     const nav = document.getElementById('category-bar');
     const list = document.getElementById('directory-list');
-
-    // Safety check: if these don't exist (like on the settings page), stop.
     if (!nav || !list) return;
 
-    // Render Category Buttons
     nav.innerHTML = Object.keys(directoryDataRaw).map(cat => `
-        <button class="cat-btn ${cat === category ? 'active' : ''}" 
-                onclick="renderHub('${cat}')">${cat}</button>
+        <button class="cat-btn ${cat === category ? 'active' : ''}" onclick="renderHub('${cat}')">${cat}</button>
     `).join('');
 
-    // Render Cards
-    const items = directoryDataRaw[category];
-    list.innerHTML = items.map(item => `
+    list.innerHTML = directoryDataRaw[category].map(item => `
         <div class="link-card">
-            <h3 class="card-title">${item.title}</h3>
-            <p class="card-desc">${item.desc}</p>
-            <a href="${item.url}" class="card-btn">Open Link</a>
+            <h3 style="color: var(--gold); margin: 0 0 10px;">${item.title}</h3>
+            <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 20px;">${item.desc}</p>
+            <a href="${item.url}" class="card-btn">Initialize</a>
         </div>
     `).join('');
 }
 
-// 4. AUTH & GREETING LOGIC
+// --- AUTH & UI LOGIC ---
 async function updateUI() {
     const greeting = document.getElementById('user-greeting');
+    const toast = document.getElementById('login-toast');
     if (!greeting) return;
 
     const { data: { user } } = await supabaseClient.auth.getUser();
     const cached = JSON.parse(localStorage.getItem('vanguard_profile'));
 
-    if (user && cached && cached.name) {
-        greeting.innerText = `Welcome, ${cached.name}`;
-    } else if (user) {
-        greeting.innerText = "Welcome, Citizen";
+    if (user) {
+        const name = (cached && cached.name) ? cached.name : "Citizen";
+        greeting.innerText = `Welcome, ${name}`;
+
+        if (sessionStorage.getItem('just_logged_in') === 'true') {
+            if (toast) {
+                toast.innerText = "Uplink Established: Signed In";
+                toast.classList.add('active');
+                setTimeout(() => toast.classList.remove('active'), 5000);
+            }
+            sessionStorage.removeItem('just_logged_in');
+        }
     } else {
         greeting.innerText = "Welcome";
+        localStorage.removeItem('vanguard_profile');
     }
 }
 
-// 5. BOOTSTRAP SYSTEM
+// --- SYSTEM BOOT ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Fill in current year in footer
-    const yearSpan = document.getElementById('current-year');
-    if (yearSpan) yearSpan.innerText = new Date().getFullYear();
+    // 1. Check for Magic Link redirect
+    if (window.location.hash.includes('access_token')) {
+        sessionStorage.setItem('just_logged_in', 'true');
+    }
 
-    // Start UI
+    // 2. Set Year
+    const year = document.getElementById('current-year');
+    if (year) year.innerText = new Date().getFullYear();
+
+    // 3. Start Interface
     updateUI();
     renderHub();
 });
