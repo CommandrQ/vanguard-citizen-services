@@ -9,8 +9,37 @@
     <link rel="stylesheet" href="../style.css">
     
     <style>
+        /* Synced Persona Grid from Tech Lab */
+        .persona-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .persona-btn {
+            background: rgba(15,15,15,0.9);
+            border: 1px solid var(--glass-border);
+            color: rgba(255,255,255,0.6);
+            padding: 15px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s var(--v-curve);
+        }
+
+        .persona-btn.active {
+            border-color: #4ade80; /* Commercial Green Highlight */
+            color: #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+        }
+
         .commercial-header {
-            text-align: left; margin-bottom: 40px; padding-bottom: 25px;
+            text-align: left; margin-bottom: 30px; padding-bottom: 25px;
             border-bottom: 1px solid var(--glass-border);
         }
         
@@ -22,7 +51,6 @@
 
         .comm-price { font-size: 1.8rem; color: #fff; font-weight: 900; margin: 10px 0 20px; }
 
-        /* Advantage Section */
         .advantage-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 30px 0;
         }
@@ -33,11 +61,36 @@
         .advantage-item h4 { color: var(--gold); font-size: 0.75rem; margin: 0 0 5px; letter-spacing: 1px; }
         .advantage-item p { font-size: 0.7rem; margin: 0; opacity: 0.7; }
 
-        /* Modal Overlay */
-        .tos-overlay {
+        /* Intake Modal UI */
+        .intake-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.96);
             backdrop-filter: blur(15px); display: none; align-items: center; justify-content: center;
             z-index: 1000; padding: 20px;
+        }
+
+        .intake-content {
+            background: #0a0a0a; border: 1px solid var(--glass-border);
+            border-radius: 24px; width: 100%; max-width: 600px;
+            padding: 35px; max-height: 85vh; overflow-y: auto; text-align: left;
+        }
+
+        .intake-group { margin-bottom: 15px; }
+        .intake-group label {
+            display: block; font-size: 0.7rem; color: var(--gold);
+            font-weight: 800; letter-spacing: 2px; margin-bottom: 8px;
+        }
+        
+        .intake-input, .intake-select {
+            width: 100%; background: var(--onyx); border: 1px solid var(--glass-border);
+            border-radius: 10px; padding: 12px; color: #fff; font-size: 0.9rem;
+            outline: none; box-sizing: border-box; font-family: inherit;
+        }
+        .intake-input:focus, .intake-select:focus { border-color: var(--gold); }
+
+        .tos-text {
+            font-size: 0.8rem; color: rgba(255,255,255,0.7); line-height: 1.5;
+            border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border);
+            padding: 15px 0; margin: 20px 0;
         }
     </style>
 </head>
@@ -51,14 +104,23 @@
 
         <header id="top-glass-panel" class="glass-module">
             <div class="citizen-status" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                <h1>Commercial</h1>
-                <a href="techhelp.html" class="back-btn">← BACK</a>
+                <h1>Tech Lab</h1>
+                <a href="../hub.html" class="back-btn">HUB →</a>
             </div>
         </header>
 
         <section id="directory-core" style="flex-grow: 1; overflow-y: auto;">
             <div id="directory-list" style="padding: 20px;">
                 
+                <!-- Unified Navigation Bar -->
+                <div class="persona-grid">
+                    <button class="persona-btn" onclick="window.location.href='techhelp.html'">Seniors</button>
+                    <button class="persona-btn" onclick="window.location.href='techhelp.html'">Parents</button>
+                    <button class="persona-btn" onclick="window.location.href='techhelp.html'">Students</button>
+                    <button class="persona-btn" onclick="window.location.href='techhelp.html'">Gamers</button>
+                    <button class="persona-btn active">Commercial Businesses</button>
+                </div>
+
                 <div class="commercial-header">
                     <h2 style="color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-size: 1.3rem; margin: 0 0 10px;">Operational Fortification</h2>
                     <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; line-height: 1.6; margin: 0;">
@@ -89,7 +151,7 @@
                         <li>Digital Safety & Boundaries for Teens/Parents</li>
                         <li>Includes live Q&A and printed resource guides</li>
                     </ul>
-                    <button onclick="openTOS('Commercial Workshop')" class="gate-button" style="width: 100%; padding: 15px !important;">Request Workshop</button>
+                    <button onclick="openIntake('Community Workshop')" class="gate-button" style="width: 100%; padding: 15px !important;">Request Workshop</button>
                 </div>
 
                 <!-- Tier 2: Audit -->
@@ -103,7 +165,7 @@
                         <li>Data backup protocol & Disaster recovery audit</li>
                         <li>Hardware lifecycle & Operational efficiency report</li>
                     </ul>
-                    <button onclick="openTOS('Micro-Business Audit')" class="gate-button" style="width: 100%; padding: 15px !important;">Request Audit</button>
+                    <button onclick="openIntake('Micro-Business Audit')" class="gate-button" style="width: 100%; padding: 15px !important;">Request Audit</button>
                 </div>
 
                 <!-- Tier 3: Retainer -->
@@ -112,14 +174,7 @@
                     <h3 class="card-title" style="color: #fff;">Strategic Retainer</h3>
                     <p class="card-desc">Ongoing system administration, digital journey mapping, and customized infrastructure for growing organizations.</p>
                     <div class="comm-price">Custom Quote</div>
-                    <button onclick="openTOS('Strategic Retainer')" class="card-btn" style="width: 100%; margin-top: 10px;">Initiate Consultation</button>
-                </div>
-
-                <!-- Footer Hook -->
-                <div style="margin-top: 40px; text-align: center; padding-bottom: 40px;">
-                    <p style="color: var(--gold); font-size: 0.75rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px;">SECURE YOUR OPERATIONS</p>
-                    <p style="font-size: 0.85rem; opacity: 0.6; margin-bottom: 20px;">Questions about specific organizational needs?</p>
-                    <a href="../support.html" class="card-btn secondary" style="text-decoration: none;">Contact Support →</a>
+                    <button onclick="openIntake('Strategic Retainer')" class="card-btn" style="width: 100%; margin-top: 10px;">Initiate Consultation</button>
                 </div>
 
             </div>
@@ -127,37 +182,117 @@
 
     </main>
 
-    <!-- COMMERCIAL AGREEMENT MODAL -->
-    <div class="tos-overlay" id="tos-modal">
-        <div style="background: #0a0a0a; border: 1px solid var(--glass-border); border-radius: 24px; width: 100%; max-width: 500px; padding: 35px;">
-            <h2 style="color: var(--gold); margin: 0; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 2px;">Commercial Agreement</h2>
-            <div style="font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.6; padding: 20px 0; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); margin: 20px 0; text-align: left;">
-                <strong>Liability Disclaimer:</strong> Vanguard provides technical consulting and audits. We are not responsible for pre-existing system vulnerabilities, hardware failure, or external data breaches. Organizations must maintain their own primary data backups.
-                <br><br>
-                <strong>Guarantee:</strong> Our 14-day workmanship warranty applies to the specific scope of the audit or configuration performed during the session.
+    <!-- COMMERCIAL INTAKE WINDOW -->
+    <div class="intake-overlay" id="intake-modal">
+        <div class="intake-content">
+            <h2 id="intake-title" style="color: var(--gold); margin: 0 0 20px; text-transform: uppercase; font-size: 1.2rem; letter-spacing: 2px;">Commercial Intake</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="intake-group" style="grid-column: 1 / -1;">
+                    <label>ORGANIZATION / BUSINESS NAME</label>
+                    <input type="text" id="biz-name" class="intake-input" placeholder="Enter business name...">
+                </div>
+                
+                <div class="intake-group">
+                    <label>POINT OF CONTACT</label>
+                    <input type="text" id="biz-poc" class="intake-input" placeholder="Full Name">
+                </div>
+
+                <div class="intake-group">
+                    <label>BUSINESS PHONE</label>
+                    <input type="tel" id="biz-phone" class="intake-input" placeholder="(502) 555-0199">
+                </div>
             </div>
+
+            <div class="intake-group">
+                <label>BUSINESS EMAIL</label>
+                <input type="email" id="biz-email" class="intake-input" placeholder="contact@organization.com">
+            </div>
+
+            <div class="intake-group">
+                <label>PHYSICAL ADDRESS (FOR ON-SITE)</label>
+                <input type="text" id="biz-address" class="intake-input" placeholder="Street Address, City, Zip">
+            </div>
+
+            <div class="intake-group">
+                <label>SCALE & SCOPE</label>
+                <select id="biz-size" class="intake-select">
+                    <option value="1-5">1 - 5 Devices/Employees</option>
+                    <option value="6-15">6 - 15 Devices/Employees</option>
+                    <option value="16+">16+ Devices/Employees</option>
+                    <option value="Workshop Audience">Workshop: Group Presentation</option>
+                </select>
+            </div>
+
+            <div class="intake-group">
+                <label>PRIMARY OBJECTIVE</label>
+                <textarea id="biz-notes" class="intake-input" style="height: 80px; resize: none;" placeholder="Briefly describe what you are looking to secure or improve..."></textarea>
+            </div>
+
+            <div class="tos-text">
+                <strong>Commercial Agreement:</strong> Vanguard Citizen Services provides professional consulting. We are not liable for pre-existing vulnerabilities, hardware failure, or external breaches. Organizations must maintain independent data backups. Our 14-day warranty covers the specific configuration performed during the session.
+            </div>
+
             <div style="display: flex; gap: 10px;">
-                <button onclick="closeTOS()" class="card-btn secondary" style="flex: 1;">Cancel</button>
-                <button onclick="acceptAndGo()" class="gate-button" style="flex: 2; padding: 12px !important; font-size: 1rem !important;">Confirm Uplink</button>
+                <button onclick="closeIntake()" class="card-btn secondary" style="flex: 1;">Cancel</button>
+                <button onclick="transmitCommercial()" class="gate-button" style="flex: 2; padding: 12px !important; font-size: 1rem !important;">Agree & Transmit</button>
             </div>
         </div>
     </div>
 
     <script>
-        let selectedPackage = "";
+        let selectedService = "";
 
-        function openTOS(pkg) {
-            selectedPackage = pkg;
-            document.getElementById('tos-modal').style.display = 'flex';
+        // Open the window and set the dynamic title
+        function openIntake(serviceName) {
+            selectedService = serviceName;
+            document.getElementById('intake-title').innerText = `Request: ${serviceName}`;
+            document.getElementById('intake-modal').style.display = 'flex';
         }
 
-        function closeTOS() {
-            document.getElementById('tos-modal').style.display = 'none';
+        function closeIntake() {
+            document.getElementById('intake-modal').style.display = 'none';
         }
 
-        function acceptAndGo() {
-            // Routes to support with the specific commercial package in the URL
-            window.location.href = `../support.html?package=${encodeURIComponent(selectedPackage)}`;
+        // Gather form data and send directly to commandrq@gmail.com
+        function transmitCommercial() {
+            const bizName = document.getElementById('biz-name').value.trim();
+            const poc = document.getElementById('biz-poc').value.trim();
+            const phone = document.getElementById('biz-phone').value.trim();
+            const email = document.getElementById('biz-email').value.trim();
+            const address = document.getElementById('biz-address').value.trim();
+            const size = document.getElementById('biz-size').value;
+            const notes = document.getElementById('biz-notes').value.trim();
+
+            if(!bizName || !poc || !email) {
+                return alert("Business Name, Point of Contact, and Email are required to proceed.");
+            }
+
+            const subject = `[Vanguard B2B] Request: ${selectedService} - ${bizName}`;
+            
+            const body = 
+`--- COMMERCIAL INTAKE FORM ---
+SERVICE REQUESTED: ${selectedService}
+
+ORGANIZATION INFO:
+Business Name: ${bizName}
+Point of Contact: ${poc}
+Email: ${email}
+Phone: ${phone || "Not Provided"}
+Address: ${address || "Not Provided"}
+Scale: ${size}
+
+PRIMARY OBJECTIVE:
+${notes || "No specific details provided."}
+
+---------------------------------
+System: Vanguard Authorized Transmission`;
+
+            // Open Mail Client
+            window.location.href = `mailto:commandrq@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            
+            // Close Modal
+            closeIntake();
         }
     </script>
 </body>
