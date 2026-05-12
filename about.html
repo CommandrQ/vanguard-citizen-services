@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vanguard | About Us</title>
+    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .about-section {
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .about-section h2 {
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 10px;
+        }
+
+        .about-section p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 15px;
+        }
+
+        .identity-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .identity-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-radius: 16px;
+        }
+
+        .identity-card h3 {
+            color: var(--gold);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .identity-card p {
+            font-size: 0.85rem;
+            margin: 0;
+            opacity: 0.7;
+        }
+
+        .founder-tag {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="vanguard-universe" aria-hidden="true">
+        <div class="gold-star-layer"></div>
+    </div>
+
+    <main id="app-wrapper">
+        <header id="top-glass-panel" class="glass-module">
+            <div class="citizen-status" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <h1>Our Mission</h1>
+                <a href="hub.html" class="back-btn">HUB →</a>
+            </div>
+        </header>
+
+        <section id="directory-core" style="flex-grow: 1; overflow-y: auto;">
+            <div id="directory-list" style="padding: 25px;">
+                
+                <div class="about-section">
+                    <h2>Our Origin</h2>
+                    <p>
+                        Vanguard Citizen Services was founded by two friends who share a deep background in both the military and the technology sector. During our time in service, we learned the importance of discipline, technical precision, and looking out for those beside us. 
+                    </p>
+                    <p>
+                        We noticed that as digital tools became a mandatory part of everyday life, many people in the civilian world were being left behind or overwhelmed by the complexity of it all. We decided to bring our expertise home to help our community navigate this new landscape.
+                    </p>
+                    <div class="founder-tag">FOUNDED BY SERVICE MEMBERS</div>
+                </div>
+
+                <div class="about-section">
+                    <h2>Why Vanguard?</h2>
+                    <p>
+                        We chose the name Vanguard because it represents the part of an advancing group that leads the way and scouts the path ahead. In a digital world that changes every single day, we act as the scouts for the Radcliff and Elizabethtown area. 
+                    </p>
+                    <p>
+                        Our mission is to identify threats and build stable foundations so that our neighbors can move forward with total confidence. We believe that technology should be a tool for progress rather than a source of stress.
+                    </p>
+                </div>
+
+                <div class="about-section">
+                    <h2>The Citizen Code</h2>
+                    <p>
+                        In our organization, we do not have customers or clients. Instead, we have Citizens. This choice of words is a reflection of our core philosophy. 
+                    </p>
+                    <p>
+                        Just as the knights of old held a sacred duty of care toward the people they served, we believe that our technical knowledge comes with a profound responsibility to our community. We are not just fixing computers. We are fulfilling a duty to protect and empower our fellow citizens in the digital age.
+                    </p>
+                </div>
+
+                <div class="about-section">
+                    <h2>The Vanguard Identity</h2>
+                    <div class="identity-grid">
+                        <div class="identity-card">
+                            <h3>The Guardian</h3>
+                            <p>Standing watch against the scams and security breaches that target our community.</p>
+                        </div>
+                        <div class="identity-card">
+                            <h3>The Architect</h3>
+                            <p>Designing the digital hubs and systems that fuel local growth and business success.</p>
+                        </div>
+                        <div class="identity-card">
+                            <h3>The Mechanic</h3>
+                            <p>Getting under the hood to ensure your personal technology is always reliable and ready for action.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-section" style="margin-bottom: 60px;">
+                    <h2>The Hardin County Mission</h2>
+                    <p>
+                        The Radcliff and Elizabethtown corridor is a place where traditional everyday life is now permanently mixed with the digital world. We realize that while technology is everywhere, many of our neighbors are struggling with this transition. 
+                    </p>
+                    <p>
+                        Vanguard exists to bridge that gap. Whether we are securing a small business network or helping a senior navigate their first smartphone, we are committed to ensuring that the people of Hardin County are never left to face the digital frontier alone.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <footer id="bottom-nav-bar" class="glass-module">
+            <div style="font-size: 0.7rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 2px;">
+                Vanguard Citizen Services &copy; <span id="current-year"></span>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        document.getElementById('current-year').innerText = new Date().getFullYear();
+    </script>
+</body>
+</html>
