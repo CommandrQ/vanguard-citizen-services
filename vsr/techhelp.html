@@ -51,6 +51,7 @@
             display: flex; flex-direction: column; align-items: center;
             overflow-y: auto; scrollbar-width: none;
         }
+        #app-wrapper::-webkit-scrollbar { display: none; }
 
         /* --- MAIN GLASS WINDOW --- */
         .glass-window {
@@ -126,16 +127,19 @@
                 <a href="../hub.html" style="color: white; text-decoration: none; font-size: 0.7rem; border: 1px solid white; padding: 8px 15px;">HUB →</a>
             </header>
 
-            <p style="opacity: 0.6; font-size: 0.85rem; margin-bottom: 20px;">Every neighbor gets a free 15-minute consultation to find the right path.</p>
+            <p style="opacity: 0.6; font-size: 0.85rem; margin-bottom: 20px;">Your first 15-minute consultation is always free. Let’s figure out what you need together.</p>
 
-            <nav class="persona-grid">
+            <nav class="persona-grid" id="persona-controls">
                 <button class="persona-btn active" onclick="loadPersona('senior')">Seniors</button>
-                <button class="persona-btn" onclick="loadPersona('standard')">Everyday</button>
+                <button class="persona-btn" onclick="loadPersona('everyday')">Everyday</button>
                 <button class="persona-btn" onclick="loadPersona('student')">Students</button>
                 <button class="persona-btn" onclick="loadPersona('gamer')">Gamers</button>
             </nav>
 
             <div id="packages-container"></div>
+            
+            <!-- Questions Button -->
+            <button onclick="window.location.href='../support.html'" class="persona-btn" style="margin-top: 40px; border-color: var(--white); color: var(--white); width: 100%; max-width: 300px;">Have a specific question? Ask us →</button>
         </article>
         <footer>Vanguard Citizen Services &copy; <span id="year"></span></footer>
     </main>
@@ -145,9 +149,9 @@
         <div class="modal-content">
             <h2 style="color: var(--gold); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; text-align: center;">Citizen Agreement</h2>
             <div style="font-size: 0.85rem; line-height: 1.6; color: rgba(255,255,255,0.8); margin-bottom: 25px; text-align: left;">
-                <strong>14-Day Neighbor Warranty:</strong> If the exact same issue returns within two weeks, we fix it for free. 
+                <strong>14-Day Workmanship Warranty:</strong> If the issue we fixed comes back within two weeks, we’ll return to make it right at no cost.
                 <br><br>
-                <strong>The Fine Print:</strong> We are consultants. We aren't liable for hardware that was already failing or data that wasn't backed up. We'll help you back up if you're worried!
+                <strong>The Safe Neighbor Policy:</strong> We provide technical advice and labor. We aren't responsible for pre-existing hardware failures, but we will help you back up your data if you need us to!
             </div>
             <div class="form-actions">
                 <button onclick="closeModals()" class="persona-btn" style="flex: 1;">Cancel</button>
@@ -166,8 +170,8 @@
                 <input type="text" id="form-name" placeholder="Full Name" required>
                 <input type="email" id="form-email" placeholder="Email Address" required>
                 <input type="tel" id="form-phone" placeholder="Phone Number">
-                <input type="text" id="form-address" placeholder="Physical Address (for on-site)">
-                <textarea id="form-message" rows="4" placeholder="Tell us more about what's happening..."></textarea>
+                <input type="text" id="form-address" placeholder="Physical Address (if on-site is needed)">
+                <textarea id="form-message" rows="4" placeholder="Tell us a little about what you're seeing..."></textarea>
             </div>
 
             <div class="form-actions">
@@ -180,29 +184,31 @@
     <script>
         const packageData = {
             senior: [
-                { title: "The Hand-Hold", desc: "Patient help for passwords, tablet setup, or spotting scams. Perfect for staying connected without the stress.", price: "$20", type: "Basic Help (60 min)" },
-                { title: "The Golden Guardian", desc: "A deep dive into your privacy and visibility. We'll set up your security and make your tech easier to see and use.", price: "$50", type: "Full Protocol (2 hours)" }
+                { title: "The Patient Hand-Hold", desc: "For neighbors who need a gentle guide. We'll recover passwords, set up your tablet, and show you exactly how to spot a scam before it happens.", price: "$20", type: "Basic Help (60 min)" },
+                { title: "The Golden Guardian", desc: "A total peace-of-mind session. We'll make your text easier to read, secure your most important accounts, and set up your device to be truly easy to use.", price: "$50", type: "Full Protocol (2 hours)" }
             ],
-            standard: [
-                { title: "Digital Dusting", desc: "Clean out the junk and speed up your computer. Ideal for making a slow PC feel brand new again.", price: "$30", type: "Basic Help (60 min)" },
-                { title: "Home Command Center", desc: "Automate your backups and set up family safety. We ensure your house is secure and your memories are safe.", price: "$75", type: "Full Protocol (2 hours)" }
+            everyday: [
+                { title: "The Busy-Bee Tune-Up", desc: "Life is fast. We'll clear the 'digital dust' from your computer, remove annoying pop-ups, and get your laptop running like it did on day one.", price: "$30", type: "Basic Help (60 min)" },
+                { title: "The Family Command Center", desc: "Total home protection. We'll set up parental controls, automate your cloud backups, and ensure your home office is running at maximum efficiency.", price: "$75", type: "Full Protocol (2 hours)" }
             ],
             student: [
-                { title: "The Tech Triage", desc: "Emergency help for software bugs or campus WiFi issues. Get back to your project before the deadline hits.", price: "$20", type: "Basic Help (60 min)" },
-                { title: "Scholar Uplink", desc: "Maximum speed and automatic backup setup. We optimize your machine so it survives the semester.", price: "$45", type: "Full Protocol (2 hours)" }
+                { title: "The Deadline Savior", desc: "Don't let a software bug ruin your grade. We'll fix campus WiFi issues, resolve file errors, and get your tools back in working order fast.", price: "$20", type: "Basic Help (60 min)" },
+                { title: "The Scholar's Edge", desc: "Built for endurance. We'll boost your laptop's performance and set up automatic backups so you never lose a project to a crash again.", price: "$45", type: "Full Protocol (2 hours)" }
             ],
             gamer: [
-                { title: "The Ping Check", desc: "Troubleshoot lag and optimize Discord. We verify your pathing for the smoothest connection possible.", price: "$35", type: "Basic Help (60 min)" },
-                { title: "Competitor's Edge", desc: "BIOS-level tuning and OS stripping. We maximize your frame-rates for a distraction-free gaming experience.", price: "$85", type: "Full Protocol (2 hours)" }
+                { title: "The Ping Fix", desc: "Stop losing to lag. We'll check your network path, optimize your Discord audio, and ensure your connection is as stable as possible.", price: "$35", type: "Basic Help (60 min)" },
+                { title: "The Competitor's Edge", desc: "For the absolute best FPS. We'll strip your Windows of useless processes and tune your hardware for maximum frame-rate output.", price: "$85", type: "Full Protocol (2 hours)" }
             ]
         };
 
         let currentPackage = "";
 
         function loadPersona(type) {
-            document.querySelectorAll('.persona-btn').forEach(btn => btn.classList.remove('active'));
-            const targetBtn = Array.from(document.querySelectorAll('.persona-btn')).find(b => b.innerText.toLowerCase().includes(type.substring(0,3)));
-            if(targetBtn) targetBtn.classList.add('active');
+            // Fix: Highlighting now works for "everyday"
+            document.querySelectorAll('.persona-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.toLowerCase() === type) btn.classList.add('active');
+            });
 
             const container = document.getElementById('packages-container');
             container.innerHTML = packageData[type].map(pkg => `
@@ -210,7 +216,7 @@
                     <h3 class="package-title">${pkg.title}</h3>
                     <p style="color: var(--gold); font-size: 0.7rem; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 2px;">${pkg.type}</p>
                     <p class="package-desc">${pkg.desc}</p>
-                    <span class="price-tag">${pkg.price} Flat</span>
+                    <span class="price-tag">${pkg.price} Flat Rate</span>
                     <button onclick="openTOS('${pkg.title} (${pkg.type})')" class="go-btn">Go</button>
                 </section>
             `).join('');
@@ -239,12 +245,12 @@
             const message = document.getElementById('form-message').value;
 
             if(!name || !email) {
-                alert("Please provide at least your name and email so we can help!");
+                alert("Please provide your name and email so we know how to reach you!");
                 return;
             }
 
-            const body = `Vanguard Support Request\n\nService: ${currentPackage}\nClient: ${name}\nEmail: ${email}\nPhone: ${phone}\nAddress: ${address}\n\nDetails:\n${message}`;
-            const mailtoLink = `mailto:commandrq@gmail.com?subject=Vanguard Service Request: ${name}&body=${encodeURIComponent(body)}`;
+            const body = `Vanguard Support Request\n\nService: ${currentPackage}\nClient: ${name}\nEmail: ${email}\nPhone: ${phone}\nAddress: ${address}\n\nProject Details:\n${message}`;
+            const mailtoLink = `mailto:commandrq@gmail.com?subject=Service Request: ${name} (${currentPackage})&body=${encodeURIComponent(body)}`;
             
             window.location.href = mailtoLink;
         }
