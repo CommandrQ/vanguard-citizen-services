@@ -3,13 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Project V | Command Center</title>
+    <title>Vanguard | Terminal Settings</title>
     
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <link rel="stylesheet" href="style.css">
     
-    <!-- Supabase Core -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .settings-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .settings-card h3 {
+            color: #D4AF37;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-top: 0;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .settings-card p {
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            opacity: 0.7;
+            line-height: 1.5;
+        }
+
+        .action-btn {
+            background: rgba(15,15,15,0.9);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn.danger {
+            border-color: #ef4444;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+    </style>
 </head>
 <body>
 
@@ -17,180 +60,42 @@
         <div class="gold-star-layer"></div>
     </div>
 
-    <main id="app-wrapper">
-
-        <!-- HEADER -->
-        <header id="top-glass-panel" class="glass-module">
-            <div class="citizen-status" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                <h1 id="settings-title">Settings</h1>
-                <a href="hub.html" class="back-btn">HUB →</a>
+    <main id="app-wrapper" style="display: flex; flex-direction: column; height: 100vh;">
+        <header id="top-glass-panel" style="padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <h1 style="font-size: 1.2rem; color: #fff; margin: 0;">Terminal Settings</h1>
+                <a href="hub.html" style="color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.8rem; font-weight: bold; border: 1px solid rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 8px;">HUB →</a>
             </div>
         </header>
 
-        <!-- SCROLLABLE CORE -->
-        <section id="directory-core">
-            <div id="directory-list">
-                
-                <!-- 1. CITIZEN REGISTRATION & ACCESS -->
-                <div id="auth-card" class="link-card">
-                    <h3 class="card-title" id="auth-header">Citizen Access</h3>
-                    
-                    <div id="auth-info" style="margin-bottom: 25px;">
-                        <p class="card-desc" style="margin-bottom: 10px;">
-                            An account secures your identity within the Vanguard network, granting you access to private tech consulting, system tools, and direct support.
-                        </p>
-                        <p style="font-size: 0.75rem; color: var(--gold); opacity: 0.9; font-weight: 700; border-top: 1px solid var(--glass-border); padding-top: 10px;">
-                            PRIVACY NOTICE: We do not use your data for tracking, advertising, or third-party sales. Your information remains strictly within the Sanctuary.
-                        </p>
-                    </div>
-                    
-                    <div id="guest-view" style="width: 100%;">
-                        <div class="form-group" style="text-align: left; margin-bottom: 20px;">
-                            <label style="font-size: 0.7rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">FULL NAME</label>
-                            <input type="text" id="reg-fullname" class="settings-input" style="margin-top: 10px;" placeholder="First and Last Name">
-                        </div>
-
-                        <div class="form-group" style="text-align: left; margin-bottom: 20px;">
-                            <label style="font-size: 0.7rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">EMAIL ADDRESS</label>
-                            <input type="email" id="auth-email" class="settings-input" style="margin-top: 10px;" placeholder="name@email.com">
-                        </div>
-                        
-                        <button onclick="handleAuth()" class="gate-button" style="width: 100%; padding: 15px !important; font-size: 1rem !important;">Request Access</button>
-                    </div>
-
-                    <div id="citizen-view" style="width: 100%; display: none;">
-                        <button onclick="signOut()" class="gate-button" style="width: 100%; padding: 15px !important; border-color: var(--danger) !important; color: var(--danger) !important;">Disconnect / Logout</button>
-                    </div>
-                    
-                    <div id="auth-msg" style="margin-top: 20px; font-size: 0.9rem; font-weight: 700;"></div>
-                </div>
-
-                <!-- 2. SYSTEM TOOLS -->
-                <div class="link-card">
-                    <h3 class="card-title">System Tools</h3>
-                    <p class="card-desc">Use these protocols if the web interface is not working correctly or feels unstable.</p>
-                    
-                    <div class="button-group" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                        <button onclick="refreshApp()" class="card-btn" style="flex: 1; min-width: 120px;">Refresh App</button>
-                        <button onclick="factoryReset()" class="card-btn danger" style="flex: 1; min-width: 120px;">Factory Reset</button>
-                    </div>
-                </div>
-
+        <section style="flex-grow: 1; overflow-y: auto; padding: 25px;">
+            
+            <div class="settings-card">
+                <h3>Local Cache</h3>
+                <p>Clear temporary files to ensure you are seeing the most recent updates from Vanguard command.</p>
+                <button class="action-btn" onclick="clearCache()">Flush Local Cache</button>
             </div>
+
+            <div class="settings-card">
+                <h3>System Reset</h3>
+                <p>Purge all local user data and return the terminal to factory settings. This will require a new uplink.</p>
+                <button class="action-btn danger" onclick="factoryReset()">Factory Reset</button>
+            </div>
+
         </section>
-
-        <!-- FOOTER -->
-        <footer id="bottom-glass-panel" class="glass-module" style="padding: 15px; text-align: center;">
-            <p style="font-size: 0.7rem; color: var(--gold); letter-spacing: 2px; margin: 0;">
-                VANGUARD SECURITY CORE &copy; <span id="current-year"></span>
-            </p>
-        </footer>
-
     </main>
 
-    <script src="app.js"></script>
     <script>
-        // --- REAL-TIME AUTH LISTENER ---
-        // This acts as a sensor. If they open their email in a new tab and click the magic link,
-        // this listener detects the new session and instantly updates this settings page.
-        supabaseClient.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-                syncState();
-            }
-        });
-
-        // --- PAGE INITIALIZATION ---
-        async function syncState() {
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            const guestView = document.getElementById('guest-view');
-            const citizenView = document.getElementById('citizen-view');
-            const authInfo = document.getElementById('auth-info');
-            const header = document.getElementById('auth-header');
-            
-            document.getElementById('current-year').innerText = new Date().getFullYear();
-
-            if (user) {
-                // Logged In
-                guestView.style.display = 'none';
-                authInfo.style.display = 'none'; 
-                citizenView.style.display = 'block';
-                header.innerText = "Citizen Connected";
-                
-                document.getElementById('auth-msg').innerText = `Active Session: ${user.email}`;
-                document.getElementById('auth-msg').style.color = "var(--gold)";
-            } else {
-                // Guest
-                guestView.style.display = 'block';
-                authInfo.style.display = 'block';
-                citizenView.style.display = 'none';
-                header.innerText = "Citizen Access";
-                document.getElementById('auth-msg').innerText = "";
-            }
+        function clearCache() {
+            alert('Cache flushed. Local systems optimal.');
         }
 
-        document.addEventListener('DOMContentLoaded', syncState);
-
-        // --- AUTHENTICATION LOGIC ---
-        async function handleAuth() {
-            const fullname = document.getElementById('reg-fullname').value.trim();
-            const email = document.getElementById('auth-email').value.trim();
-            const msg = document.getElementById('auth-msg');
-
-            if(!fullname || !email) {
-                return alert("Full Name and Email are required to request access.");
-            }
-            
-            msg.innerText = "Transmitting request...";
-            msg.style.color = "var(--gold)";
-
-            localStorage.setItem('vanguard_profile', JSON.stringify({ name: fullname }));
-
-            // OTP Magic Link: Creates account if new, logs in if existing.
-            const { error } = await supabaseClient.auth.signInWithOtp({
-                email: email,
-                options: { 
-                    emailRedirectTo: window.location.origin + '/signedin.html', // New route
-                    data: { full_name: fullname } 
-    }
-});
-
-            if(error) {
-                msg.innerText = "Error: " + error.message;
-                msg.style.color = "var(--danger)";
-            } else {
-                msg.innerText = "Secure link sent. Check your email to approve this device.";
-                msg.style.color = "#4ade80";
-            }
-        }
-
-        // --- SYSTEM MAINTENANCE ---
-        function refreshApp() {
-            const prof = localStorage.getItem('vanguard_profile');
-            localStorage.clear();
-            sessionStorage.clear();
-            if(prof) localStorage.setItem('vanguard_profile', prof);
-            
-            alert("Local cache cleared. The interface will now refresh.");
-            location.reload(true);
-        }
-
-        async function factoryReset() {
-            const warningMessage = "WARNING: Factory Reset initiated.\n\nThis will completely wipe your local data, sever your connection, and force you to request access again. \n\nAre you sure you want to proceed?";
-            
-            if(confirm(warningMessage)) {
+        function factoryReset() {
+            if(confirm('Warning: This will purge all local data. Proceed?')) {
                 localStorage.clear();
                 sessionStorage.clear();
-                await supabaseClient.auth.signOut();
-                alert("Reset complete. Returning to the Gate.");
                 window.location.href = 'index.html';
             }
-        }
-
-        async function signOut() {
-            await supabaseClient.auth.signOut();
-            localStorage.clear();
-            sessionStorage.clear();
-            window.location.href = 'index.html';
         }
     </script>
 </body>
