@@ -5,87 +5,166 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Vanguard | Support Terminal</title>
     
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <link rel="stylesheet" href="style.css">
-    
-    <!-- Supabase Core included for Auto-Fill capability -->
+    <!-- Supabase Core for Auto-Fill -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --white: #ffffff;
+            --glass-panel: rgba(10, 10, 12, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --v-curve: cubic-bezier(0.4, 0, 0.2, 1);
+            --success: #4ade80;
+        }
+
+        /* --- FOUNDATION --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body, html {
+            height: 100%;
+            background: #030303;
+            color: var(--white);
+            font-family: 'Inter', system-ui, sans-serif;
+            overflow: hidden;
+            font-size: 16px;
+        }
+
+        /* --- DESKTOP SCALING --- */
+        @media (min-width: 1024px) {
+            body, html { font-size: 18px; }
+            .glass-window { max-width: 750px !important; padding: 60px !important; }
+            h1 { font-size: 2.2rem !important; }
+        }
+
+        /* --- THE STARFIELD --- */
+        #vanguard-universe { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+        .star-layer {
+            position: absolute; inset: -50%; width: 200%; height: 200%;
+            background-image: 
+                radial-gradient(2px 2px at 40px 60px, var(--gold), transparent),
+                radial-gradient(1.5px 1.5px at 150px 200px, var(--white), transparent);
+            background-size: 400px 400px;
+            animation: orbital-rotation 240s linear infinite;
+        }
+        @keyframes orbital-rotation { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* --- UI WRAPPER --- */
+        #app-wrapper {
+            position: relative; z-index: 10; height: 100vh; width: 100%;
+            display: flex; flex-direction: column; align-items: center;
+            overflow-y: auto; scrollbar-width: none;
+        }
+        #app-wrapper::-webkit-scrollbar { display: none; }
+
+        /* --- MAIN GLASS WINDOW --- */
+        .glass-window {
+            width: 92%; max-width: 650px; margin: 40px 0;
+            background: var(--glass-panel);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border); border-radius: 16px;
+            padding: 40px 25px; text-align: center;
+            animation: fadeIn 0.8s var(--v-curve) forwards, gold-pulse-window 4s infinite ease-in-out;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.7);
+        }
+
+        /* --- FORM STYLING --- */
+        .support-form { display: flex; flex-direction: column; gap: 20px; margin-top: 30px; text-align: left; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 0.7rem; color: var(--gold); font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+        
+        .support-input {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+            border-radius: 4px; padding: 14px; color: white; font-family: inherit; font-size: 0.95rem;
+            transition: border-color 0.3s;
+        }
+        .support-input:focus { border-color: var(--gold); outline: none; }
+
+        /* --- BUTTONS --- */
+        .transmit-btn {
+            display: inline-block; width: 100%; margin-top: 10px;
+            padding: 16px; background: transparent; border: 1px solid var(--gold);
+            color: var(--gold); text-decoration: none; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 3px; border-radius: 4px; cursor: pointer; transition: 0.3s;
+        }
+        .transmit-btn:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+
+        .back-btn {
+            color: var(--white); text-decoration: none; font-size: 0.75rem; font-weight: 800;
+            letter-spacing: 2px; border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px; border-radius: 4px; transition: 0.3s;
+        }
+        .back-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+        /* --- STATUS CARD --- */
+        .status-box {
+            margin-top: 40px; padding-top: 25px; border-top: 1px solid var(--glass-border);
+            text-align: center;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes gold-pulse-window { 0%, 100% { border-color: rgba(212, 175, 55, 0.2); } 50% { border-color: rgba(212, 175, 55, 0.6); } }
+
+        footer { width: 100%; padding: 40px; text-align: center; font-size: 0.65rem; color: var(--white); letter-spacing: 4px; text-transform: uppercase; }
+    </style>
 </head>
 <body>
 
-    <!-- Deep Canvas Background -->
-    <div id="vanguard-universe" aria-hidden="true">
-        <div class="gold-star-layer"></div>
-    </div>
+    <div id="vanguard-universe"><div class="star-layer"></div></div>
 
     <main id="app-wrapper">
-
-        <!-- HEADER -->
-        <header id="top-glass-panel" class="glass-module">
-            <div class="citizen-status" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                <h1 id="support-title">Support</h1>
+        <article class="glass-window">
+            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h1 style="letter-spacing: 5px; text-transform: uppercase; font-weight: 900;">Support</h1>
                 <a href="hub.html" class="back-btn">HUB →</a>
-            </div>
-        </header>
+            </header>
 
-        <!-- CORE CONTENT -->
-        <section id="directory-core" style="flex-grow: 1; overflow-y: auto;">
-            <div id="directory-list" style="padding: 20px;">
-                
-                <!-- Transmission Card -->
-                <div class="link-card">
-                    <h3 class="card-title">Direct Uplink</h3>
-                    <p class="card-desc">Submit a secure request to the Vanguard Support Core. We will respond via your registered email.</p>
-                    
-                    <!-- New Identity Fields -->
-                    <div style="display: flex; gap: 15px; margin-bottom: 20px;">
-                        <div class="form-group" style="flex: 1; text-align: left;">
-                            <label style="font-size: 0.7rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">FULL NAME</label>
-                            <input type="text" id="support-name" class="settings-input" style="margin-top: 10px;" placeholder="Identify yourself...">
-                        </div>
-                    </div>
+            <h2 style="color: var(--gold); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Direct Uplink</h2>
+            <p style="opacity: 0.7; font-size: 0.9rem; line-height: 1.6; max-width: 500px; margin: 0 auto;">Submit a secure request to the Vanguard Support Core. We respond to all neighbors via registered email.</p>
 
-                    <div class="form-group" style="text-align: left; margin-bottom: 20px;">
-                        <label style="font-size: 0.7rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">EMAIL ADDRESS</label>
-                        <input type="email" id="support-email" class="settings-input" style="margin-top: 10px;" placeholder="Where should we reply?">
-                    </div>
-                    
-                    <!-- Message Field -->
-                    <div class="form-group" style="text-align: left; margin-bottom: 20px;">
-                        <label style="font-size: 0.7rem; color: var(--gold); font-weight: 800; letter-spacing: 2px;">YOUR MESSAGE</label>
-                        <textarea id="support-msg" class="settings-input" style="height: 140px; margin-top: 10px;" placeholder="Describe the issue, ask a question, or request assistance..."></textarea>
-                    </div>
-                    
-                    <button onclick="transmitRequest()" class="gate-button" style="width: 100%; padding: 15px !important; font-size: 1rem !important;">
-                        Transmit Message
-                    </button>
+            <div class="support-form">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="support-name" class="support-input" placeholder="Identify yourself...">
                 </div>
 
-                <!-- Status Card -->
-                <div class="link-card" style="background: rgba(15,15,15,0.5);">
-                    <h3 class="card-title" style="font-size: 1rem;">System Status</h3>
-                    <p class="card-desc" style="margin-bottom: 0; color: var(--success); font-weight: 700;">
-                        ● All Vanguard Citizen Services are currently operational.
-                    </p>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="support-email" class="support-input" placeholder="Where should we reply?">
                 </div>
 
-            </div>
-        </section>
+                <div class="form-group">
+                    <label>Your Message</label>
+                    <textarea id="support-msg" class="support-input" rows="6" style="resize: none;" placeholder="Describe the issue, ask a question, or request assistance..."></textarea>
+                </div>
 
+                <button onclick="transmitRequest()" class="transmit-btn">Transmit Message</button>
+            </div>
+
+            <!-- System Status -->
+            <div class="status-box">
+                <p style="font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; color: var(--success); font-weight: 800;">
+                    <span style="animation: gold-pulse-text 2s infinite;">●</span> System Status: Operational
+                </p>
+            </div>
+        </article>
+
+        <footer>Vanguard Citizen Services &copy; <span id="year"></span></footer>
     </main>
 
-    <!-- Load the main app logic so Supabase is connected -->
-    <script src="app.js"></script>
     <script>
         // --- AUTO-FILL LOGIC ---
         document.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('year').innerText = new Date().getFullYear();
+
             // Check local storage for name
             const cached = JSON.parse(localStorage.getItem('vanguard_profile')) || {};
             if (cached.name) {
                 document.getElementById('support-name').value = cached.name;
             }
 
-            // Check Supabase for verified email
+            // Check Supabase for verified email (Assumes supabaseClient is defined in app.js or similar)
             if (typeof supabaseClient !== 'undefined') {
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 if (user && user.email) {
@@ -104,14 +183,12 @@
                 return alert("Identification (Name and Email) and a message are required before transmitting.");
             }
             
-            // Format the email
             const subject = `[Vanguard Support] Uplink from ${name}`;
             const body = `CITIZEN LOG: ${name}\nRETURN COMM: ${email}\n\nTRANSMISSION:\n${msg}`;
             
-            // Open the user's email client
             window.location.href = `mailto:commandrq@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
             
-            // Clear the message box after clicking (leave name/email filled)
+            // Clear message box (Leave name/email for convenience)
             document.getElementById('support-msg').value = '';
         }
     </script>
