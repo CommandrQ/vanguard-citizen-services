@@ -132,40 +132,14 @@
             margin-bottom: 20px;
         }
 
-        /* --- BULLETED LIST IDENTITY --- */
-        .identity-list {
-            list-style: none;
-            text-align: left;
-            margin: 0 auto 30px auto;
-            max-width: 500px;
-        }
-
-        .identity-list li {
-            position: relative;
-            padding-left: 25px;
-            margin-bottom: 20px;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .identity-list li::before {
-            content: "✦";
-            color: var(--gold);
-            position: absolute;
-            left: 0;
-            top: 0;
-            font-size: 1.2rem;
-            animation: gold-pulse-text 3s infinite ease-in-out;
-        }
-
-        .identity-list strong {
+        /* --- TEXT HIGHLIGHTS --- */
+        p strong {
             color: var(--gold);
             letter-spacing: 1px;
             text-transform: uppercase;
-            font-size: 0.9rem;
-            display: block;
-            margin-bottom: 5px;
+            font-size: 0.95rem;
+            animation: gold-pulse-text 3s infinite ease-in-out;
+            margin-right: 5px;
         }
 
         /* --- CONTROLS --- */
@@ -233,16 +207,8 @@
             <p>We realized that as digital tools became mandatory for daily life, many in our community were being overwhelmed. We brought our expertise home to ensure no neighbor is left behind.</p>
 
             <h2>Our Identity</h2>
-            <ul class="identity-list">
-                <li>
-                    <strong>The Guardian</strong>
-                    Standing watch against scams and security breaches targeting our community.
-                </li>
-                <li>
-                    <strong>The Architect</strong>
-                    Designing digital hubs and systems that fuel local growth.
-                </li>
-            </ul>
+            <p><strong>The Guardian:</strong> Standing watch against scams and security breaches targeting our community.</p>
+            <p><strong>The Architect:</strong> Designing digital hubs and systems that fuel local growth.</p>
 
             <h2>The Mission</h2>
             <p>The Radcliff and Elizabethtown corridor is where traditional life meets the digital frontier. Vanguard exists to bridge that gap. We ensure Hardin County never faces the frontier alone.</p>
