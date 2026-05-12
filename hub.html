@@ -11,9 +11,9 @@
     <style>
         :root {
             --gold: #D4AF37;
-            --glass: rgba(0, 0, 0, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.15);
             --white: #ffffff;
+            --glass-panel: rgba(10, 10, 12, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.1);
             --v-curve: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -27,18 +27,17 @@
 
         body, html {
             height: 100%;
-            background: #000;
+            background: #030303;
             color: var(--white);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             overflow: hidden;
         }
 
-        /* --- ANIMATED GOLDEN STARFIELD --- */
+        /* --- THE STARFIELD --- */
         #vanguard-universe {
             position: fixed;
             inset: 0;
-            z-index: 1;
-            background: #000;
+            z-index: 0;
             overflow: hidden;
         }
 
@@ -50,10 +49,9 @@
             background-image: 
                 radial-gradient(2px 2px at 40px 60px, var(--gold), transparent),
                 radial-gradient(1.5px 1.5px at 150px 200px, var(--white), transparent),
-                radial-gradient(2.5px 2.5px at 300px 100px, var(--gold), transparent);
-            background-size: 400px 400px;
-            animation: orbital-rotation 240s linear infinite;
-            opacity: 0.8;
+                radial-gradient(2px 2px at 300px 100px, rgba(212, 175, 55, 0.4), transparent);
+            background-size: 350px 350px;
+            animation: orbital-rotation 200s linear infinite;
         }
 
         @keyframes orbital-rotation {
@@ -61,166 +59,184 @@
             to { transform: rotate(360deg); }
         }
 
-        /* --- UI WRAPPER (CENTERED) --- */
+        /* --- UI WRAPPER --- */
         #app-wrapper {
             position: relative;
             z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             height: 100vh;
             width: 100%;
-            text-align: center;
-        }
-
-        /* --- GLASS WINDOWS --- */
-        .glass-window {
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 4px;
-        }
-
-        header {
-            width: 100%;
-            max-width: 800px;
-            padding: 30px;
-            margin-top: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
+            overflow-y: auto;
+            scrollbar-width: none;
         }
 
+        #app-wrapper::-webkit-scrollbar { display: none; }
+
+        /* --- MAIN HUB WINDOW --- */
+        .glass-window {
+            width: 90%;
+            max-width: 800px;
+            margin: 40px 0;
+            background: var(--glass-panel);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 40px 30px;
+            text-align: center;
+            animation: fadeIn 0.8s var(--v-curve) forwards, gold-pulse-window 4s infinite ease-in-out;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+
+        /* --- HEADER & GREETING --- */
         h1#user-greeting {
-            font-size: 1.4rem;
+            font-size: 1.8rem;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 5px;
+            letter-spacing: 6px;
+            margin-bottom: 10px;
             color: var(--white);
-            animation: pulse-white 4s infinite ease-in-out;
+        }
+
+        .subtitle {
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            margin-bottom: 30px;
         }
 
         .config-btn {
+            display: inline-block;
             color: var(--white);
             text-decoration: none;
             font-size: 0.7rem;
             font-weight: 800;
             letter-spacing: 2px;
             text-transform: uppercase;
-            border: 1px solid var(--white);
-            padding: 10px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 4px;
             transition: 0.3s;
         }
 
         .config-btn:hover {
             border-color: var(--gold);
             color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
         }
 
         /* --- NAVIGATION --- */
         #category-bar {
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
-            gap: 15px;
-            padding: 20px;
-            width: 100%;
+            gap: 12px;
+            margin: 30px 0;
         }
 
         .cat-btn {
             background: transparent;
-            border: 1px solid var(--white);
-            color: var(--white);
-            padding: 12px 25px;
-            font-size: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            padding: 10px 20px;
+            font-size: 0.7rem;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             cursor: pointer;
             transition: 0.4s;
+            border-radius: 4px;
         }
 
         .cat-btn.active {
             border-color: var(--gold);
             color: var(--gold);
             background: rgba(212, 175, 55, 0.1);
-            animation: pulse-gold-border 3s infinite;
+            animation: gold-pulse-text 3s infinite ease-in-out;
         }
 
-        /* --- DIRECTORY WINDOWS --- */
+        /* --- SERVICE CARDS (TEXT FLOW STYLE) --- */
         #directory-list {
-            flex-grow: 1;
-            width: 90%;
-            max-width: 550px;
-            overflow-y: auto;
-            padding-bottom: 60px;
-            scrollbar-width: none;
+            width: 100%;
+            margin-top: 20px;
         }
-
-        #directory-list::-webkit-scrollbar { display: none; }
 
         .service-card {
-            padding: 45px 30px;
-            margin-bottom: 25px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            border-top: 1px solid var(--glass-border);
+            padding: 40px 0;
+            animation: fadeIn 0.5s ease-out;
         }
 
         .card-title {
             color: var(--gold);
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 3px;
             margin-bottom: 15px;
+            animation: gold-pulse-text 3s infinite ease-in-out;
         }
 
         .card-desc {
-            color: var(--white);
+            color: rgba(255, 255, 255, 0.8);
             font-size: 0.95rem;
             line-height: 1.8;
-            margin-bottom: 35px;
-            max-width: 400px;
+            margin-bottom: 25px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .access-btn {
-            width: 100%;
-            max-width: 240px;
-            padding: 16px;
+            display: inline-block;
+            padding: 14px 30px;
             background: transparent;
             border: 1px solid var(--gold);
             color: var(--gold);
             text-decoration: none;
             font-weight: 900;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 2px;
+            border-radius: 4px;
             transition: 0.3s;
         }
 
         .access-btn:hover {
             background: var(--gold);
             color: #000;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
         }
 
         /* --- FOOTER --- */
         footer {
             width: 100%;
-            padding: 25px;
+            padding: 40px;
+            margin-top: auto;
             font-size: 0.65rem;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             text-transform: uppercase;
-            color: var(--white);
-            background: rgba(0,0,0,0.5);
-            animation: pulse-white 3s infinite;
+            color: rgba(255, 255, 255, 0.4);
+            text-align: center;
         }
 
         /* --- ANIMATIONS --- */
-        @keyframes pulse-white { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-        @keyframes pulse-gold-border { 
-            0%, 100% { border-color: var(--gold); box-shadow: 0 0 5px rgba(212, 175, 55, 0.2); }
-            50% { border-color: #fff; box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes gold-pulse-window {
+            0%, 100% { border-color: rgba(212, 175, 55, 0.2); }
+            50% { border-color: rgba(212, 175, 55, 0.6); box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 20px rgba(212, 175, 55, 0.1); }
+        }
+
+        @keyframes gold-pulse-text {
+            0%, 100% { text-shadow: 0 0 5px rgba(212, 175, 55, 0.2); }
+            50% { text-shadow: 0 0 15px rgba(212, 175, 55, 0.6); }
         }
     </style>
 </head>
@@ -231,14 +247,17 @@
     </div>
 
     <main id="app-wrapper">
-        <header class="glass-window">
-            <h1 id="user-greeting">Welcome, Citizen</h1>
-            <a href="settings.html" class="config-btn">⚙️ Config Terminal</a>
-        </header>
+        <article class="glass-window">
+            <header>
+                <h1 id="user-greeting">Welcome, Citizen</h1>
+                <div class="subtitle">System Online | Vanguard Hub</div>
+                <a href="settings.html" class="config-btn">⚙️ Config Terminal</a>
+            </header>
 
-        <nav id="category-bar"></nav>
+            <nav id="category-bar"></nav>
 
-        <section id="directory-list"></section>
+            <section id="directory-list"></section>
+        </article>
 
         <footer>
             Vanguard Citizen Services &copy; <span id="year"></span>
@@ -254,7 +273,6 @@
         let directoryData = {};
         let currentCategory = "";
 
-        /* --- DATA ENGINE --- */
         async function loadDirectory() {
             try {
                 const response = await fetch('directory.json');
@@ -267,19 +285,17 @@
         }
 
         function renderUI() {
-            // Render Navigation
             const nav = document.getElementById('category-bar');
             nav.innerHTML = Object.keys(directoryData).map(cat => `
                 <button class="cat-btn ${cat === currentCategory ? 'active' : ''}" 
                         onclick="switchCategory('${cat}')">${cat}</button>
             `).join('');
 
-            // Render Services
             const list = document.getElementById('directory-list');
             const items = directoryData[currentCategory];
             
             list.innerHTML = items.map(item => `
-                <div class="service-card glass-window">
+                <div class="service-card">
                     <h2 class="card-title">${item.title}</h2>
                     <p class="card-desc">${item.desc}</p>
                     <a href="${item.url}" class="access-btn">Initiate Access</a>
@@ -292,13 +308,11 @@
             renderUI();
         }
 
-        /* --- AUTHENTICATION & GREETING --- */
         async function updateGreeting() {
             const el = document.getElementById('user-greeting');
             const { data: { user } } = await supabaseClient.auth.getUser();
 
             if (user) {
-                // Queries the specific 'citizens' table for the verified full name
                 const { data: profile } = await supabaseClient
                     .from('citizens')
                     .select('full_name')
@@ -306,12 +320,9 @@
                     .single();
 
                 el.innerText = `Welcome, ${profile?.full_name || "Citizen"}`;
-            } else {
-                el.innerText = "Welcome, Citizen";
             }
         }
 
-        /* --- INITIALIZATION --- */
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('year').innerText = new Date().getFullYear();
             updateGreeting();
