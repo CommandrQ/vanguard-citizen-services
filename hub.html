@@ -207,7 +207,7 @@
 
         .access-btn {
             display: inline-block;
-            padding: 14px 30px;
+            padding: 14px 45px; /* Widened slightly for "Go" */
             background: transparent;
             border: 1px solid var(--gold);
             color: var(--gold);
@@ -226,7 +226,7 @@
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
         }
 
-        /* --- FOOTER (WHITE TEXT) --- */
+        /* --- FOOTER --- */
         footer {
             width: 100%;
             padding: 40px;
@@ -234,7 +234,7 @@
             font-size: 0.65rem;
             letter-spacing: 4px;
             text-transform: uppercase;
-            color: var(--white); /* Updated to full white */
+            color: var(--white);
             text-align: center;
             opacity: 0.9;
         }
@@ -267,7 +267,6 @@
             <header>
                 <h1 id="user-greeting">Welcome, Citizen</h1>
                 <div class="subtitle">System Online | Vanguard Hub</div>
-                <!-- Renamed to Settings -->
                 <a href="settings.html" class="config-btn">Settings</a>
             </header>
 
@@ -315,7 +314,8 @@
                 <div class="service-card">
                     <h2 class="card-title">${item.title}</h2>
                     <p class="card-desc">${item.desc}</p>
-                    <a href="${item.url}" class="access-btn">Initiate Access</a>
+                    <!-- Button renamed to "Go" -->
+                    <a href="${item.url}" class="access-btn">Go</a>
                 </div>
             `).join('');
         }
