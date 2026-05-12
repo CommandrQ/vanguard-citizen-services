@@ -8,6 +8,9 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <link rel="stylesheet" href="style.css">
     
+    <!-- Supabase Core -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
         .settings-card {
             background: rgba(255, 255, 255, 0.03);
@@ -22,8 +25,10 @@
             font-size: 0.9rem;
             text-transform: uppercase;
             margin-top: 0;
-            margin-bottom: 8px;
+            margin-bottom: 15px;
             letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
         }
 
         .settings-card p {
@@ -31,6 +36,26 @@
             margin-bottom: 15px;
             opacity: 0.7;
             line-height: 1.5;
+        }
+
+        /* Form Inputs */
+        .vanguard-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .vanguard-input:focus {
+            outline: none;
+            border-color: #D4AF37;
         }
 
         .action-btn {
@@ -47,10 +72,34 @@
             transition: all 0.3s ease;
         }
 
+        .action-btn:hover {
+            border-color: #D4AF37;
+            color: #D4AF37;
+        }
+
         .action-btn.danger {
             border-color: #ef4444;
             color: #ef4444;
             background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Auth Toggle Elements */
+        .auth-toggle {
+            text-align: center;
+            font-size: 0.8rem;
+            margin-top: 15px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .auth-toggle span {
+            color: #D4AF37;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        #register-section {
+            display: none;
         }
     </style>
 </head>
@@ -70,6 +119,35 @@
 
         <section style="flex-grow: 1; overflow-y: auto; padding: 25px;">
             
+            <!-- AUTHENTICATION MODULE -->
+            <div class="settings-card" id="auth-module">
+                
+                <!-- LOGIN FORM -->
+                <div id="login-section">
+                    <h3>Terminal Access</h3>
+                    <input type="email" id="login-email" class="vanguard-input" placeholder="Citizen Email" required>
+                    <input type="password" id="login-pass" class="vanguard-input" placeholder="Secure Password" required>
+                    <button class="action-btn" onclick="processLogin()">Establish Uplink</button>
+                    <div class="auth-toggle">
+                        No active clearance? <span onclick="toggleAuth()">Register Here</span>
+                    </div>
+                </div>
+
+                <!-- REGISTRATION FORM -->
+                <div id="register-section">
+                    <h3>Citizen Registration</h3>
+                    <input type="text" id="reg-name" class="vanguard-input" placeholder="Full Name" required>
+                    <input type="email" id="reg-email" class="vanguard-input" placeholder="Citizen Email" required>
+                    <input type="password" id="reg-pass" class="vanguard-input" placeholder="Secure Password" required>
+                    <button class="action-btn" onclick="processRegistration()">Initialize Profile</button>
+                    <div class="auth-toggle">
+                        Clearance established? <span onclick="toggleAuth()">Access Terminal</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- LOCAL CONTROLS -->
             <div class="settings-card">
                 <h3>Local Cache</h3>
                 <p>Clear temporary files to ensure you are seeing the most recent updates from Vanguard command.</p>
@@ -86,17 +164,101 @@
     </main>
 
     <script>
+        /* --- SUPABASE INITIALIZATION --- */
+        const supabaseUrl = 'https://dvyjupytbwbrcoyouxpf.supabase.co';
+        const supabaseKey = 'sb_publishable_wjgbPekKmodd5mSDXIeUeg_Wq73GzOk';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        /* --- UI TOGGLE LOGIC --- */
+        function toggleAuth() {
+            const loginSec = document.getElementById('login-section');
+            const regSec = document.getElementById('register-section');
+            
+            if (loginSec.style.display === 'none') {
+                loginSec.style.display = 'block';
+                regSec.style.display = 'none';
+            } else {
+                loginSec.style.display = 'none';
+                regSec.style.display = 'block';
+            }
+        }
+
+        /* --- AUTHENTICATION LOGIC --- */
+        async function processRegistration() {
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-pass').value;
+
+            if (!name || !email || !password) {
+                alert('All fields are required to initialize a profile.');
+                return;
+            }
+
+            const { data, error } = await supabaseClient.auth.signUp({
+                email: email,
+                password: password,
+            });
+
+            if (error) {
+                alert('Error: ' + error.message);
+            } else {
+                localStorage.setItem('vanguard_profile', JSON.stringify({ name: name }));
+                alert('Profile initialized successfully. Returning to Hub.');
+                window.location.href = 'hub.html';
+            }
+        }
+
+        async function processLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-pass').value;
+
+            if (!email || !password) {
+                alert('Credentials required for access.');
+                return;
+            }
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email: email,
+                password: password,
+            });
+
+            if (error) {
+                alert('Access Denied: ' + error.message);
+            } else {
+                sessionStorage.setItem('just_logged_in', 'true');
+                window.location.href = 'hub.html';
+            }
+        }
+
+        /* --- SYSTEM CONTROLS --- */
         function clearCache() {
             alert('Cache flushed. Local systems optimal.');
         }
 
         function factoryReset() {
-            if(confirm('Warning: This will purge all local data. Proceed?')) {
+            if(confirm('Warning: This will purge all local data and sever your current uplink. Proceed?')) {
                 localStorage.clear();
                 sessionStorage.clear();
-                window.location.href = 'index.html';
+                supabaseClient.auth.signOut().then(() => {
+                    window.location.reload();
+                });
             }
         }
+
+        /* --- BOOT CHECK --- */
+        async function checkStatus() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (user) {
+                const authModule = document.getElementById('auth-module');
+                authModule.innerHTML = `
+                    <h3>Uplink Active</h3>
+                    <p style="color: #4ade80; font-weight: bold; margin-bottom: 15px;">Connection secured for ${user.email}</p>
+                    <button class="action-btn danger" onclick="supabaseClient.auth.signOut().then(() => window.location.reload())">Sever Uplink (Log Out)</button>
+                `;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', checkStatus);
     </script>
 </body>
 </html>
