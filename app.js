@@ -8,7 +8,7 @@ const directoryDataRaw = {
     "Vanguard Tech Lab": [
         { 
             title: "Tech Consulting", 
-            desc: "Expert technology support and and coaching Hardin County.", 
+            desc: "Expert technology support and and coaching for Hardin County.", 
             url: "vsr/techhelp.html" 
         }
     ],
