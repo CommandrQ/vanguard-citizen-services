@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Vanguard | My Settings</title>
     
-    <!-- Supabase Connection Tool -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
@@ -16,7 +15,6 @@
             --glass-border: rgba(255, 255, 255, 0.2);
         }
 
-        /* --- BASIC SETUP --- */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body, html {
@@ -27,13 +25,12 @@
             overflow: hidden;
         }
 
-        /* --- THE GOLDEN STARS --- */
+        /* --- BACKGROUND STARS --- */
         #vanguard-universe {
             position: fixed;
             inset: 0;
             z-index: 0;
             background: #000;
-            overflow: hidden;
         }
 
         .star-layer {
@@ -43,14 +40,14 @@
             height: 200%;
             background-image: 
                 radial-gradient(2px 2px at 50px 80px, var(--gold), transparent),
-                radial-gradient(1px 1px at 150px 250px, #fff, transparent);
+                radial-gradient(1.5px 1.5px at 150px 250px, #fff, transparent);
             background-size: 500px 500px;
-            animation: move-stars 200s linear infinite;
+            animation: move-stars 220s linear infinite;
         }
 
         @keyframes move-stars { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* --- MAIN CONTAINER --- */
+        /* --- MAIN LAYOUT --- */
         #app-wrapper {
             position: relative;
             z-index: 10;
@@ -59,7 +56,6 @@
             align-items: center;
             height: 100vh;
             width: 100%;
-            background: transparent;
             overflow-y: auto;
             text-align: center;
             scrollbar-width: none;
@@ -67,7 +63,7 @@
 
         #app-wrapper::-webkit-scrollbar { display: none; }
 
-        /* --- HEADER WINDOW --- */
+        /* --- TOP IDENTITY PANEL --- */
         header {
             width: 90%;
             max-width: 500px;
@@ -75,64 +71,31 @@
             padding: 30px;
             background: var(--glass);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             border-bottom: 2px solid var(--gold);
         }
 
-        .name-text {
-            font-size: 1.4rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 5px;
-        }
+        .name-label { font-size: 1.4rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
+        .id-label { color: var(--gold); font-size: 1rem; font-weight: bold; letter-spacing: 2px; margin-top: 5px; }
 
-        .number-text {
-            color: var(--gold);
-            font-size: 1rem;
-            font-weight: bold;
-            letter-spacing: 2px;
-        }
-
-        /* --- CONTENT WINDOWS --- */
+        /* --- WINDOWS --- */
         .window {
             width: 90%;
             max-width: 500px;
             background: var(--glass);
             backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
             border: 1px solid var(--glass-border);
             padding: 40px 30px;
             margin: 20px 0;
-            border-radius: 4px;
         }
 
-        h2 {
-            color: var(--gold);
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            margin-bottom: 25px;
-            letter-spacing: 2px;
-        }
+        h2 { color: var(--gold); font-size: 1.2rem; text-transform: uppercase; margin-bottom: 25px; letter-spacing: 2px; }
 
-        .detail-row {
-            margin-bottom: 20px;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
+        .info-group { margin-bottom: 20px; }
+        .info-tag { display: block; font-size: 0.7rem; opacity: 0.6; text-transform: uppercase; margin-bottom: 4px; }
 
-        .detail-label {
-            display: block;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            opacity: 0.6;
-            margin-bottom: 4px;
-            letter-spacing: 1px;
-        }
-
-        /* --- BUTTONS & INPUTS --- */
-        .input-box {
+        /* --- FORM ELEMENTS --- */
+        .box {
             width: 100%;
             background: rgba(0,0,0,0.7);
             border: 1px solid var(--glass-border);
@@ -155,18 +118,9 @@
             transition: 0.3s;
             text-decoration: none;
             display: inline-block;
-            letter-spacing: 1px;
         }
 
         .btn:hover { background: var(--gold); color: #000; }
-
-        .link-text {
-            margin-top: 15px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            text-decoration: underline;
-            display: block;
-        }
 
         footer {
             width: 100%;
@@ -181,64 +135,41 @@
 </head>
 <body>
 
-    <div id="vanguard-universe">
-        <div class="star-layer"></div>
-    </div>
+    <div id="vanguard-universe"><div class="star-layer"></div></div>
 
     <main id="app-wrapper">
         
-        <!-- TOP IDENTITY DISPLAY -->
+        <!-- CENTERED HEADER -->
         <header>
-            <div class="name-text" id="header-name">GUEST</div>
-            <div class="number-text" id="header-id">VCS-OFFLINE</div>
+            <div class="name-label" id="top-name">GUEST</div>
+            <div class="id-label" id="top-number">OFFLINE</div>
         </header>
 
-        <!-- MAIN ACCOUNT WINDOW -->
+        <!-- MAIN VIEW -->
         <div class="window">
             
-            <!-- VIEW FOR SIGNED-IN USERS -->
-            <div id="signed-in-area" style="display: none;">
-                <h2>My Information</h2>
-                <div class="detail-row">
-                    <span class="detail-label">Verified Email</span>
-                    <span id="display-email">...</span>
+            <!-- SECTION SEEN WHEN LOGGED IN -->
+            <div id="user-info" style="display: none;">
+                <h2>My Account</h2>
+                <div class="info-group">
+                    <span class="info-tag">Registered Email</span>
+                    <span id="user-email">Loading...</span>
                 </div>
-                <div class="detail-row">
-                    <span class="detail-label">Account Status</span>
-                    <span>Active Member</span>
-                </div>
-                <button class="btn" onclick="logOut()">Sign Out</button>
+                <button class="btn" onclick="signOut()">Sign Out</button>
             </div>
 
-            <!-- VIEW FOR GUESTS (LOGIN) -->
-            <div id="login-area">
+            <!-- LOGIN SECTION -->
+            <div id="login-view">
                 <h2>Sign In</h2>
-                <input type="email" id="in-email" class="input-box" placeholder="EMAIL ADDRESS">
-                <input type="password" id="in-pass" class="input-box" placeholder="PASSWORD">
-                <button class="btn" onclick="logIn()">Sign In</button>
-                <span class="link-text" onclick="toggleViews()">Need to create an account?</span>
+                <input type="email" id="email-in" class="box" placeholder="EMAIL ADDRESS">
+                <input type="password" id="pass-in" class="box" placeholder="PASSWORD">
+                <button class="btn" onclick="signIn()">Sign In</button>
             </div>
 
-            <!-- VIEW FOR GUESTS (REGISTER) -->
-            <div id="register-area" style="display: none;">
-                <h2>Create Account</h2>
-                <input type="text" id="reg-name" class="input-box" placeholder="FULL NAME">
-                <input type="email" id="reg-email" class="input-box" placeholder="EMAIL ADDRESS">
-                <input type="password" id="reg-pass" class="input-box" placeholder="PASSWORD">
-                <button class="btn" onclick="registerUser()">Join Vanguard</button>
-                <span class="link-text" onclick="toggleViews()">Already have an account?</span>
-            </div>
-
-        </div>
-
-        <div class="window">
-            <h2>Support</h2>
-            <p>If you have questions about your information, reach out to our team.</p>
-            <a href="support.html" class="btn" style="border-color: #fff; color: #fff;">Contact Help</a>
         </div>
 
         <div style="margin-bottom: 60px; width: 90%; max-width: 500px;">
-            <a href="hub.html" class="btn" style="border-color: #fff; color: #fff;">Return to Hub</a>
+            <a href="hub.html" class="btn" style="border-color: #fff; color: #fff;">Back to Hub</a>
         </div>
 
         <footer>Vanguard &copy; <span id="year"></span></footer>
@@ -249,74 +180,52 @@
         const supabaseKey = 'sb_publishable_wjgbPekKmodd5mSDXIeUeg_Wq73GzOk';
         const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        function toggleViews() {
-            const login = document.getElementById('login-area');
-            const register = document.getElementById('register-area');
-            login.style.display = login.style.display === 'none' ? 'block' : 'none';
-            register.style.display = register.style.display === 'none' ? 'block' : 'none';
-        }
-
-        async function registerUser() {
-            const name = document.getElementById('reg-name').value;
-            const email = document.getElementById('reg-email').value;
-            const pass = document.getElementById('reg-pass').value;
-
-            const { data, error } = await supabase.auth.signUp({
-                email, password: pass, options: { data: { full_name: name } }
-            });
-
-            if (error) alert(error.message);
-            else if (data.user) {
-                // Creates a new entry in your 'citizens' table
-                const newNum = "VCS-" + Math.floor(1000 + Math.random() * 9000);
-                await supabase.from('citizens').insert([{ 
-                    id: data.user.id, 
-                    full_name: name, 
-                    email: email,
-                    citizen_number: newNum 
-                }]);
-                alert("Welcome! Check your email to confirm your account.");
-            }
-        }
-
-        async function logIn() {
-            const email = document.getElementById('in-email').value;
-            const pass = document.getElementById('in-pass').value;
+        async function signIn() {
+            const email = document.getElementById('email-in').value;
+            const pass = document.getElementById('pass-in').value;
             const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
             if (error) alert("Error: " + error.message); 
             else window.location.reload();
         }
 
-        async function logOut() {
+        async function signOut() {
             await supabase.auth.signOut();
             window.location.reload();
         }
 
-        async function fetchUserDetails() {
+        /* --- THE LOOKUP ENGINE --- */
+        async function runIdentityCheck() {
+            // 1. Get the current logged-in user's email
             const { data: { user } } = await supabase.auth.getUser();
             
             if (user) {
-                document.getElementById('login-area').style.display = 'none';
-                document.getElementById('signed-in-area').style.display = 'block';
-                document.getElementById('display-email').innerText = user.email;
+                // UI Swapping
+                document.getElementById('login-view').style.display = 'none';
+                document.getElementById('user-info').style.display = 'block';
+                document.getElementById('user-email').innerText = user.email;
 
-                // Pull the fields from your 'citizens' table
-                const { data: profile } = await supabase
+                // 2. EXPLICIT LOOKUP: Search the citizens table for this specific email
+                const { data: citizenRow, error } = await supabase
                     .from('citizens')
                     .select('full_name, citizen_number')
-                    .eq('id', user.id)
+                    .eq('email', user.email) // This is the lookup you requested
                     .single();
 
-                if (profile) {
-                    document.getElementById('header-name').innerText = profile.full_name;
-                    document.getElementById('header-id').innerText = profile.citizen_number;
+                if (citizenRow) {
+                    // 3. Update the Page with the found data
+                    document.getElementById('top-name').innerText = citizenRow.full_name;
+                    document.getElementById('top-number').innerText = citizenRow.citizen_number;
+                } else {
+                    // Fallback if the email isn't in your citizens list yet
+                    document.getElementById('top-name').innerText = "Unregistered";
+                    document.getElementById('top-number').innerText = "VCS-PENDING";
                 }
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('year').innerText = new Date().getFullYear();
-            fetchUserDetails();
+            runIdentityCheck();
         });
     </script>
 </body>
