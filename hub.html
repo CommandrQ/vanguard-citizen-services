@@ -5,55 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Vanguard | Terminal Hub</title>
     
-    <!-- Supabase SDK -->
+    <!-- Supabase Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
             --gold: #D4AF37;
             --white: #ffffff;
-            --glass-panel: rgba(10, 10, 12, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --v-curve: cubic-bezier(0.4, 0, 0.2, 1);
+            --glass: rgba(0, 0, 0, 0.85);
+            --border: rgba(255, 255, 255, 0.15);
         }
 
         /* --- FOUNDATION --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body, html {
             height: 100%;
-            background: #030303;
+            background: #000;
             color: var(--white);
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'Inter', sans-serif;
             overflow: hidden;
-            font-size: 16px; /* Base size for mobile */
         }
 
-        /* --- DESKTOP ENHANCEMENTS --- */
-        @media (min-width: 1024px) {
-            body, html {
-                font-size: 18px; /* Slightly bigger font for desktop */
-            }
-            h1#user-greeting {
-                font-size: 2.2rem !important;
-            }
-            .glass-window {
-                max-width: 900px !important;
-                padding: 60px 50px !important;
-            }
-        }
-
-        /* --- THE STARFIELD --- */
-        #vanguard-universe {
+        /* --- ANIMATED STARFIELD --- */
+        #vanguard-stars {
             position: fixed;
             inset: 0;
             z-index: 0;
-            overflow: hidden;
+            background: #000;
         }
 
         .star-layer {
@@ -63,287 +42,196 @@
             height: 200%;
             background-image: 
                 radial-gradient(2px 2px at 40px 60px, var(--gold), transparent),
-                radial-gradient(1.5px 1.5px at 150px 200px, var(--white), transparent),
-                radial-gradient(2px 2px at 300px 100px, rgba(212, 175, 55, 0.4), transparent);
-            background-size: 350px 350px;
-            animation: orbital-rotation 200s linear infinite;
+                radial-gradient(1.5px 1.5px at 150px 200px, var(--white), transparent);
+            background-size: 400px 400px;
+            animation: rotate-stars 240s linear infinite;
         }
 
-        @keyframes orbital-rotation {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
+        @keyframes rotate-stars { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         /* --- UI WRAPPER --- */
         #app-wrapper {
             position: relative;
             z-index: 10;
-            height: 100vh;
-            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-y: auto;
-            scrollbar-width: none;
+            height: 100vh;
+            width: 100%;
+            text-align: center;
+            background: transparent;
         }
 
-        #app-wrapper::-webkit-scrollbar { display: none; }
-
-        /* --- MAIN HUB WINDOW --- */
-        .glass-window {
+        header {
             width: 90%;
             max-width: 800px;
-            margin: 40px 0;
-            background: var(--glass-panel);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 40px 30px;
-            text-align: center;
-            animation: fadeIn 0.8s var(--v-curve) forwards, gold-pulse-window 4s infinite ease-in-out;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            padding: 30px;
+            margin-top: 20px;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border);
+            border-radius: 4px;
         }
 
-        /* --- HEADER & GREETING --- */
         h1#user-greeting {
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 6px;
-            margin-bottom: 10px;
-            color: var(--white);
+            letter-spacing: 3px;
         }
 
-        .subtitle {
-            font-size: 0.75rem;
-            letter-spacing: 4px;
-            color: rgba(255, 255, 255, 0.5);
-            text-transform: uppercase;
-            margin-bottom: 30px;
-        }
-
-        .config-btn {
-            display: inline-block;
-            color: var(--white);
-            text-decoration: none;
-            font-size: 0.7rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 4px;
-            transition: 0.3s;
-        }
-
-        .config-btn:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-            background: rgba(212, 175, 55, 0.05);
-        }
-
-        /* --- NAVIGATION --- */
+        /* --- CATEGORY NAVIGATION --- */
         #category-bar {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
-            gap: 12px;
-            margin: 30px 0;
+            gap: 10px;
+            padding: 20px;
+            width: 100%;
         }
 
         .cat-btn {
             background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid var(--white);
+            color: var(--white);
             padding: 10px 20px;
             font-size: 0.7rem;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 2px;
             cursor: pointer;
-            transition: 0.4s;
-            border-radius: 4px;
+            transition: 0.3s;
         }
 
         .cat-btn.active {
             border-color: var(--gold);
             color: var(--gold);
             background: rgba(212, 175, 55, 0.1);
-            animation: gold-pulse-text 3s infinite ease-in-out;
         }
 
-        /* --- SERVICE CARDS --- */
+        /* --- DIRECTORY LIST --- */
         #directory-list {
-            width: 100%;
-            margin-top: 20px;
+            flex-grow: 1;
+            width: 90%;
+            max-width: 550px;
+            overflow-y: auto;
+            padding-bottom: 60px;
+            scrollbar-width: none;
         }
+        #directory-list::-webkit-scrollbar { display: none; }
 
         .service-card {
-            border-top: 1px solid var(--glass-border);
-            padding: 40px 0;
-            animation: fadeIn 0.5s ease-out;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            padding: 40px 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
         }
 
-        .card-title {
-            color: var(--gold);
-            font-size: 1.2rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 15px;
-            animation: gold-pulse-text 3s infinite ease-in-out;
-        }
-
-        .card-desc {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1rem;
-            line-height: 1.8;
-            margin-bottom: 25px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .access-btn {
+        .card-title { color: var(--gold); font-size: 1.2rem; font-weight: 900; text-transform: uppercase; margin-bottom: 10px; }
+        .card-desc { font-size: 0.9rem; margin-bottom: 25px; line-height: 1.6; }
+        
+        .action-link {
             display: inline-block;
-            padding: 14px 45px; /* Widened slightly for "Go" */
-            background: transparent;
+            padding: 12px 30px;
             border: 1px solid var(--gold);
             color: var(--gold);
             text-decoration: none;
             font-weight: 900;
-            font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            border-radius: 4px;
             transition: 0.3s;
         }
+        .action-link:hover { background: var(--gold); color: #000; }
 
-        .access-btn:hover {
-            background: var(--gold);
-            color: #000;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-        }
-
-        /* --- FOOTER --- */
         footer {
             width: 100%;
-            padding: 40px;
-            margin-top: auto;
-            font-size: 0.65rem;
-            letter-spacing: 4px;
+            padding: 20px;
+            font-size: 0.6rem;
             text-transform: uppercase;
-            color: var(--white);
-            text-align: center;
-            opacity: 0.9;
-        }
-
-        /* --- ANIMATIONS --- */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes gold-pulse-window {
-            0%, 100% { border-color: rgba(212, 175, 55, 0.2); }
-            50% { border-color: rgba(212, 175, 55, 0.6); box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 20px rgba(212, 175, 55, 0.1); }
-        }
-
-        @keyframes gold-pulse-text {
-            0%, 100% { text-shadow: 0 0 5px rgba(212, 175, 55, 0.2); }
-            50% { text-shadow: 0 0 15px rgba(212, 175, 55, 0.6); }
+            letter-spacing: 2px;
+            background: rgba(0,0,0,0.8);
         }
     </style>
 </head>
 <body>
 
-    <div id="vanguard-universe">
-        <div class="star-layer"></div>
-    </div>
+    <div id="vanguard-stars"><div class="star-layer"></div></div>
 
     <main id="app-wrapper">
-        <article class="glass-window">
-            <header>
-                <h1 id="user-greeting">Welcome, Citizen</h1>
-                <div class="subtitle">System Online | Vanguard Hub</div>
-                <a href="settings.html" class="config-btn">Settings</a>
-            </header>
+        <header>
+            <h1 id="user-greeting">Welcome, Citizen</h1>
+            <a href="settings.html" style="color: var(--white); font-size: 0.6rem; text-decoration: none; margin-top: 10px; display: inline-block; opacity: 0.6;">⚙️ Account Settings</a>
+        </header>
 
-            <nav id="category-bar"></nav>
+        <nav id="category-bar"></nav>
 
-            <section id="directory-list"></section>
-        </article>
+        <section id="directory-list"></section>
 
-        <footer>
-            Vanguard Citizen Services &copy; <span id="year"></span>
-        </footer>
+        <footer>Vanguard Citizen Services &copy; <span id="year"></span></footer>
     </main>
 
     <script>
-        /* --- SUPABASE SETUP --- */
-        const supabaseUrl = 'https://dvyjupytbwbrcoyouxpf.supabase.co';
-        const supabaseKey = 'sb_publishable_wjgbPekKmodd5mSDXIeUeg_Wq73GzOk';
-        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+        // Use a unique name to avoid "already declared" errors
+        const vanguardHub = supabase.createClient(
+            'https://dvyjupytbwbrcoyouxpf.supabase.co', 
+            'sb_publishable_wjgbPekKmodd5mSDXIeUeg_Wq73GzOk'
+        );
 
-        let directoryData = {};
-        let currentCategory = "";
+        let hubData = {};
+        let activeCat = "";
 
-        async function loadDirectory() {
+        // 1. Load the Directory JSON
+        async function loadHubContent() {
             try {
                 const response = await fetch('directory.json');
-                directoryData = await response.json();
-                currentCategory = Object.keys(directoryData)[0];
-                renderUI();
-            } catch (err) {
-                console.error("Critical System Error: Could not load directory.json", err);
-            }
+                hubData = await response.json();
+                activeCat = Object.keys(hubData)[0];
+                renderHub();
+            } catch (err) { console.error("Error loading directory:", err); }
         }
 
-        function renderUI() {
+        function renderHub() {
+            // Nav Bar
             const nav = document.getElementById('category-bar');
-            nav.innerHTML = Object.keys(directoryData).map(cat => `
-                <button class="cat-btn ${cat === currentCategory ? 'active' : ''}" 
-                        onclick="switchCategory('${cat}')">${cat}</button>
+            nav.innerHTML = Object.keys(hubData).map(cat => `
+                <button class="cat-btn ${cat === activeCat ? 'active' : ''}" 
+                        onclick="switchHubCat('${cat}')">${cat}</button>
             `).join('');
 
+            // Cards
             const list = document.getElementById('directory-list');
-            const items = directoryData[currentCategory];
-            
-            list.innerHTML = items.map(item => `
+            list.innerHTML = hubData[activeCat].map(item => `
                 <div class="service-card">
                     <h2 class="card-title">${item.title}</h2>
                     <p class="card-desc">${item.desc}</p>
-                    <!-- Button renamed to "Go" -->
-                    <a href="${item.url}" class="access-btn">Go</a>
+                    <a href="${item.url}" class="action-link">Open</a>
                 </div>
             `).join('');
         }
 
-        function switchCategory(cat) {
-            currentCategory = cat;
-            renderUI();
-        }
+        function switchHubCat(cat) { activeCat = cat; renderHub(); }
 
-        async function updateGreeting() {
-            const el = document.getElementById('user-greeting');
-            const { data: { user } } = await supabaseClient.auth.getUser();
+        // 2. Updated Identity Logic (Same as Settings)
+        async function fetchUserIdentity() {
+            const { data: { user } } = await vanguardHub.auth.getUser();
 
             if (user) {
-                const { data: profile } = await supabaseClient
+                // Look up by email inside the 'citizens' table
+                const { data: profile } = await vanguardHub
                     .from('citizens')
                     .select('full_name')
-                    .eq('id', user.id)
+                    .ilike('email', user.email)
                     .single();
 
-                el.innerText = `Welcome, ${profile?.full_name || "Citizen"}`;
+                if (profile) {
+                    document.getElementById('user-greeting').innerText = `Welcome, ${profile.full_name}`;
+                }
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('year').innerText = new Date().getFullYear();
-            updateGreeting();
-            loadDirectory();
+            loadHubContent();
+            fetchUserIdentity();
         });
     </script>
 </body>
