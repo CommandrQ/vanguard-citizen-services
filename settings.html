@@ -3,236 +3,380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vanguard | My Settings</title>
-    
-    <!-- This is the tool that lets us talk to your database -->
+    <title>Account | Vanguard Citizen Services</title>
+    <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <style>
+        /* --- BRANDING & VARIABLES --- */
         :root {
             --gold: #D4AF37;
+            --gold-glow: rgba(212, 175, 55, 0.4);
+            --bg-dark: #05040a;
             --white: #ffffff;
-            --glass: rgba(0, 0, 0, 0.85);
-            --border: rgba(255, 255, 255, 0.2);
+            --text-muted: rgba(255, 255, 255, 0.7);
+            --glass-bg: rgba(15, 15, 20, 0.5);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* --- BASIC SETUP --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
         body, html {
-            height: 100%;
-            background: #000;
+            width: 100%;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
             color: var(--white);
-            font-family: 'Inter', sans-serif;
-            overflow: hidden;
-        }
-
-        /* --- THE GOLDEN STARS --- */
-        #vanguard-stars {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            background: #000;
-        }
-
-        .star-layer {
-            position: absolute;
-            inset: -50%;
-            width: 200%;
-            height: 200%;
-            background-image: 
-                radial-gradient(2px 2px at 50px 80px, var(--gold), transparent), 
-                radial-gradient(1px 1px at 150px 250px, #fff, transparent);
-            background-size: 500px 500px;
-            animation: rotate-stars 240s linear infinite;
-        }
-
-        @keyframes rotate-stars { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        /* --- CENTERED BOXES --- */
-        #app-wrapper {
-            position: relative;
-            z-index: 10;
+            background: linear-gradient(180deg, #020108 0%, #0a0815 40%, #1a1005 75%, #D4AF37 120%);
+            -webkit-font-smoothing: antialiased;
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100vh;
-            width: 100%;
-            overflow-y: auto;
-            text-align: center;
-            scrollbar-width: none;
         }
 
-        #app-wrapper::-webkit-scrollbar { display: none; }
+        /* --- THE ENVIRONMENT (Stars & Comets) --- */
+        #environment { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
-        header {
+        .starfield {
+            position: absolute; width: 200vw; height: 200vh; top: -50%; left: -50%;
+            background-image: 
+                radial-gradient(1.5px 1.5px at 10% 10%, #fff, transparent),
+                radial-gradient(2px 2px at 30% 40%, var(--gold), transparent),
+                radial-gradient(1px 1px at 80% 20%, #fff, transparent),
+                radial-gradient(2.5px 2.5px at 50% 80%, var(--gold), transparent);
+            background-size: 350px 350px;
+            animation: stellar-drift 400s linear infinite;
+            opacity: 0.5;
+        }
+        @keyframes stellar-drift { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .comet {
+            position: absolute; width: 120px; height: 2px;
+            background: linear-gradient(90deg, #fff 0%, var(--gold) 20%, transparent 100%);
+            border-radius: 50%; box-shadow: 0 0 15px var(--gold-glow);
+            animation: comet-strike 2s var(--ease-smooth) forwards; opacity: 0;
+        }
+        @keyframes comet-strike {
+            0% { transform: translate(0, 0) rotate(-35deg); opacity: 1; }
+            100% { transform: translate(-1000px, 600px) rotate(-35deg); opacity: 0; }
+        }
+
+        /* --- LAYOUT & CONTAINERS --- */
+        .settings-container {
             width: 90%;
-            max-width: 500px;
-            margin-top: 30px;
-            padding: 30px;
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-bottom: 2px solid var(--gold);
-        }
-
-        .user-name { font-size: 1.4rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
-        .user-id { color: var(--gold); font-weight: bold; margin-top: 5px; letter-spacing: 1px; }
-
-        .window {
-            width: 90%;
-            max-width: 500px;
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--border);
-            padding: 40px 30px;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
-
-        .input-box {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid var(--border);
-            color: var(--white);
-            padding: 16px;
-            margin-bottom: 15px;
+            max-width: 450px;
+            z-index: 10;
+            padding: 60px 0 30px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
-            font-size: 1rem;
+            margin: auto 0;
+            animation: fadeUp 0.6s var(--ease-smooth) forwards;
         }
 
-        .btn {
-            width: 100%;
-            padding: 16px;
-            background: transparent;
-            border: 1px solid var(--gold);
-            color: var(--gold);
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-title { 
+            font-size: 2.2rem; 
+            font-weight: 800; 
+            margin-bottom: 30px;
             text-transform: uppercase;
-            font-weight: 900;
-            cursor: pointer;
-            transition: 0.3s;
-            text-decoration: none;
-            display: inline-block;
+            letter-spacing: 2px;
+            background: linear-gradient(180deg, #fff 0%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.3));
         }
 
-        .btn:hover { background: var(--gold); color: #000; }
-
-        footer {
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px) saturate(150%);
+            -webkit-backdrop-filter: blur(30px) saturate(150%);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 40px 30px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 0 1px var(--glass-border);
             width: 100%;
-            padding: 30px;
-            margin-top: auto;
-            font-size: 0.7rem;
-            letter-spacing: 3px;
-            background: rgba(0, 0, 0, 0.9);
-            border-top: 1px solid var(--border);
+            margin-bottom: 25px; 
+        }
+
+        h2 { color: var(--gold); margin-bottom: 20px; font-size: 1.4rem; font-weight: 700; }
+        p.subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5; }
+
+        /* --- USER PROFILE DISPLAY --- */
+        .user-info { margin-bottom: 30px; background: rgba(255, 255, 255, 0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .greeting-text { font-size: 1.2rem; color: var(--white); margin-bottom: 20px; line-height: 1.4; }
+        .greeting-text strong { font-size: 1.4rem; color: var(--gold); display: block; margin-top: 5px; }
+        
+        .label { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .citizen-id { font-size: 1.5rem; font-weight: 600; color: var(--white); letter-spacing: 2px; margin-bottom: 20px; }
+        .user-email { font-size: 0.9rem; color: var(--text-muted); }
+
+        /* --- FORMS & INPUTS --- */
+        input { 
+            width: 100%; padding: 16px; margin-bottom: 15px; border-radius: 16px; 
+            border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(0, 0, 0, 0.4); color: white; 
+            font-family: inherit; font-size: 1rem; transition: all 0.3s ease;
+        }
+        input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 10px var(--gold-glow); background: rgba(0, 0, 0, 0.6); }
+        input::placeholder { color: rgba(255, 255, 255, 0.3); }
+
+        .name-row { display: flex; gap: 12px; width: 100%; }
+
+        .action-btn {
+            width: 100%; padding: 18px; border-radius: 16px; border: none; 
+            background: var(--white); color: var(--bg-dark); font-weight: 700; font-size: 1.05rem;
+            cursor: pointer; transition: all 0.3s var(--ease-smooth); text-decoration: none; display: inline-block;
+        }
+        .action-btn:hover { background: var(--gold); box-shadow: 0 0 20px var(--gold-glow); transform: translateY(-2px); }
+        
+        /* Secondary buttons (Clear Cache, Sign Out, Back to Hub) */
+        .btn-outline { background: transparent; border: 1px solid var(--glass-border); color: var(--white); margin-top: 15px; }
+        .btn-outline:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--white); box-shadow: none; transform: none; }
+
+        .btn-danger { color: #ff6b6b; border-color: rgba(255, 107, 107, 0.3); }
+        .btn-danger:hover { background: rgba(255, 107, 107, 0.1); border-color: #ff6b6b; color: #ff6b6b; }
+
+        .toggle-link {
+            margin-top: 20px; font-size: 0.95rem; color: var(--text-muted);
+            cursor: pointer; display: inline-block; transition: color 0.2s;
+        }
+        .toggle-link:hover { color: var(--white); text-decoration: underline; }
+
+        .hidden { display: none !important; }
+
+        /* --- FOOTER --- */
+        footer { 
+            text-align: center; color: var(--white); font-size: 0.75rem; 
+            letter-spacing: 2px; text-transform: uppercase; width: 100%; 
+            margin-top: auto; padding-bottom: 30px; opacity: 0.7;
         }
     </style>
 </head>
 <body>
 
-    <div id="vanguard-stars"><div class="star-layer"></div></div>
+    <!-- Environmental Background -->
+    <div id="environment"><div class="starfield"></div></div>
 
-    <main id="app-wrapper">
-        
-        <header>
-            <div style="font-size: 0.6rem; margin-bottom: 10px; opacity: 0.6;" id="load-status">System: Ready</div>
-            <div class="user-name" id="name-field">GUEST</div>
-            <div class="user-id" id="id-field">OFFLINE</div>
-        </header>
+    <div class="settings-container">
+        <h1 class="page-title">Your Account</h1>
 
-        <div class="window">
+        <main class="glass-card">
             
-            <!-- This shows up if you need to log in -->
-            <div id="login-view">
-                <h2 style="color: var(--gold); margin-bottom: 20px;">Sign In</h2>
-                <input type="email" id="email-input" class="input-box" placeholder="EMAIL">
-                <input type="password" id="pass-input" class="input-box" placeholder="PASSWORD">
-                <button class="btn" onclick="runLogin()">Sign In</button>
+            <!-- Login & Sign Up Form -->
+            <div id="auth-form" class="hidden">
+                <h2 id="auth-title">Create Your Profile</h2>
+                <p class="subtitle" id="auth-subtitle">Join the community and get involved.</p>
+                
+                <div class="name-row" id="signup-name-row">
+                    <input type="text" id="signup-first" placeholder="First Name">
+                    <input type="text" id="signup-last" placeholder="Last Name">
+                </div>
+                
+                <input type="email" id="signup-email" placeholder="Email Address">
+                <input type="password" id="signup-pass" placeholder="Password">
+                
+                <button id="auth-submit-btn" class="action-btn" onclick="handleAuthAction()">Sign Up</button>
+                
+                <span id="auth-toggle-btn" class="toggle-link" onclick="toggleAuthMode()">Already a member? Sign in here.</span>
             </div>
 
-            <!-- This shows up once you are logged in -->
-            <div id="profile-view" style="display: none;">
-                <h2 style="color: var(--gold); margin-bottom: 10px;">My Account</h2>
-                <p id="email-label" style="margin-bottom: 25px; opacity: 0.8;"></p>
-                <button class="btn" onclick="runLogout()">Sign Out</button>
+            <!-- Logged In User View -->
+            <div id="user-profile" class="hidden">
+                <h2>Welcome Back</h2>
+                
+                <div class="user-info">
+                    <div id="display-greeting" class="greeting-text">Hello, <strong>Neighbor</strong></div>
+                    
+                    <div class="label">Citizen Number</div>
+                    <div id="display-id" class="citizen-id">Loading...</div>
+                    
+                    <div class="label">Contact</div>
+                    <div id="display-email" class="user-email">...</div>
+                </div>
+                
+                <button class="action-btn btn-outline" onclick="handleLogout()">Sign Out</button>
             </div>
 
-        </div>
+            <!-- Maintenance Options -->
+            <div id="maintenance-section" style="margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <button class="action-btn btn-outline btn-danger" style="padding: 14px;" onclick="wipeCache()">Clear Browser Data</button>
+            </div>
 
-        <div style="margin-bottom: 60px; width: 90%; max-width: 500px;">
-            <a href="index.html" class="btn" style="border-color: #fff; color: #fff;">Return to Hub</a>
-        </div>
+        </main>
 
-        <footer>Vanguard &copy; <span id="year"></span></footer>
-    </main>
+        <!-- Links back to index.html -->
+        <a href="index.html" class="action-btn btn-outline" style="border: none; background: rgba(0,0,0,0.3); backdrop-filter: blur(10px);">Back to Home</a>
+    </div>
+
+    <footer>Powered by Vanguard Citizen Services</footer>
 
     <script>
-        // Use a unique name for the connection to avoid syntax errors
-        const vanguardData = supabase.createClient(
-            'https://dvyjupytbwbrcoyouxpf.supabase.co', 
-            'sb_publishable_wjgbPekKmodd5mSDXIeUeg_Wq73GzOk'
-        );
-
-        function setLabel(text) {
-            document.getElementById('load-status').innerText = "System: " + text;
+        /* --- 1. COMET ANIMATION --- */
+        function spawnComet() {
+            const container = document.getElementById('environment');
+            const comet = document.createElement('div');
+            comet.classList.add('comet');
+            comet.style.top = `${Math.random() * 40}vh`;
+            comet.style.left = `${50 + (Math.random() * 50)}vw`;
+            container.appendChild(comet);
+            setTimeout(() => comet.remove(), 2000);
         }
+        setInterval(spawnComet, 3500);
+        spawnComet();
 
-        async function runLogin() {
-            const e = document.getElementById('email-input').value;
-            const p = document.getElementById('pass-input').value;
-            setLabel("Checking Credentials...");
-            
-            const { error } = await vanguardData.auth.signInWithPassword({ email: e, password: p });
-            if (error) {
-                alert(error.message);
-                setLabel("Error");
-            } else {
-                window.location.reload();
-            }
-        }
+        /* --- 2. SUPABASE SETUP --- */
+        const sbUrl = 'https://dvyjupytbwbrcoyouxpf.supabase.co';
+        const sbKey = 'sb_publishable_wjgbPekKmodd5mSDXIeUeg_Wq73GzOk';
+        const supabaseClient = supabase.createClient(sbUrl, sbKey);
+        
+        let isSignUpMode = true;
 
-        async function runLogout() {
-            await vanguardData.auth.signOut();
-            window.location.reload();
-        }
+        /* --- 3. CHECK USER STATUS --- */
+        async function checkSession() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                
+                if (user) {
+                    document.getElementById('user-profile').classList.remove('hidden');
+                    document.getElementById('auth-form').classList.add('hidden');
+                    document.getElementById('display-email').innerText = user.email;
+                    
+                    const { data, error } = await supabaseClient
+                        .from('master_roster')
+                        .select('first_name, last_name, citizenship_number')
+                        .eq('id', user.id) 
+                        .single();
 
-        async function checkIdentity() {
-            // Get the current user session
-            const { data: { user } } = await vanguardData.auth.getUser();
-
-            if (user) {
-                // Adjust the UI
-                document.getElementById('login-view').style.display = 'none';
-                document.getElementById('profile-view').style.display = 'block';
-                document.getElementById('email-label').innerText = user.email;
-
-                setLabel("Searching Table...");
-
-                // Look for the user's email in your citizens table
-                // We use .ilike to ignore capital letters
-                const { data, error } = await vanguardData
-                    .from('citizens')
-                    .select('full_name, citizen_number')
-                    .ilike('email', user.email)
-                    .single();
-
-                if (error) {
-                    console.log("Database says:", error.message);
-                    setLabel("No Match Found");
-                    document.getElementById('name-field').innerText = "Unregistered";
-                } else if (data) {
-                    setLabel("Verified");
-                    document.getElementById('name-field').innerText = data.full_name;
-                    document.getElementById('id-field').innerText = data.citizen_number;
+                    if (data) {
+                        const fullName = `${data.first_name} ${data.last_name}`;
+                        document.getElementById('display-greeting').innerHTML = `Hello, <strong>${fullName}</strong>`;
+                        document.getElementById('display-id').innerText = data.citizenship_number || "Pending Setup";
+                        
+                        localStorage.setItem('vanguard_session_status', 'active');
+                        localStorage.setItem('vanguard_citizen_name', fullName);
+                    } else {
+                        document.getElementById('display-greeting').innerHTML = `Hello, <strong>Neighbor</strong>`;
+                        document.getElementById('display-id').innerText = "Processing";
+                    }
+                } else {
+                    document.getElementById('auth-form').classList.remove('hidden');
+                    document.getElementById('user-profile').classList.add('hidden');
                 }
+            } catch (err) {
+                console.log("Could not find an active login session.");
+                document.getElementById('auth-form').classList.remove('hidden');
+                document.getElementById('user-profile').classList.add('hidden');
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('year').innerText = new Date().getFullYear();
-            checkIdentity();
-        });
+        /* --- 4. SWITCH BETWEEN LOGIN AND SIGN UP --- */
+        function toggleAuthMode() {
+            isSignUpMode = !isSignUpMode;
+            
+            const title = document.getElementById('auth-title');
+            const subtitle = document.getElementById('auth-subtitle');
+            const nameRow = document.getElementById('signup-name-row');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            const toggleLink = document.getElementById('auth-toggle-btn');
+
+            if (isSignUpMode) {
+                title.innerText = "Create Your Profile";
+                subtitle.innerText = "Join the community and get involved.";
+                nameRow.classList.remove('hidden');
+                submitBtn.innerText = "Sign Up";
+                toggleLink.innerText = "Already a member? Sign in here.";
+            } else {
+                title.innerText = "Welcome Back";
+                subtitle.innerText = "Sign in to access your community account.";
+                nameRow.classList.add('hidden'); // Hide names for standard login
+                submitBtn.innerText = "Sign In";
+                toggleLink.innerText = "Need an account? Register here.";
+            }
+        }
+
+        function handleAuthAction() {
+            if (isSignUpMode) {
+                handleSignup();
+            } else {
+                handleLogin();
+            }
+        }
+
+        /* --- 5. AUTHENTICATION LOGIC --- */
+        async function handleLogin() {
+            const email = document.getElementById('signup-email').value.trim();
+            const pass = document.getElementById('signup-pass').value.trim();
+
+            if (!email || !pass) {
+                alert("Please fill in both your email and password.");
+                return;
+            }
+
+            const { error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
+            
+            if (error) {
+                alert("We couldn't sign you in: " + error.message);
+            } else {
+                localStorage.setItem('vanguard_session_status', 'active');
+                location.reload();
+            }
+        }
+
+        async function handleSignup() {
+            const first = document.getElementById('signup-first').value.trim();
+            const last = document.getElementById('signup-last').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const pass = document.getElementById('signup-pass').value.trim();
+
+            if (!first || !last || !email || pass.length < 6) {
+                alert("Please fill in all details. Make sure your password is at least 6 characters long!");
+                return;
+            }
+
+            const { data, error } = await supabaseClient.auth.signUp({
+                email: email,
+                password: pass,
+                options: {
+                    data: {
+                        first_name: first,
+                        last_name: last,
+                        initial_focus: 'unspecified'
+                    }
+                }
+            });
+            
+            if (error) {
+                alert("There was an issue creating your account: " + error.message);
+            } else {
+                localStorage.setItem('vanguard_session_status', 'active');
+                localStorage.setItem('vanguard_citizen_name', `${first} ${last}`);
+                location.reload();
+            }
+        }
+
+        /* --- 6. CLEANUP TOOLS --- */
+        async function handleLogout() {
+            await supabaseClient.auth.signOut();
+            localStorage.removeItem('vanguard_session_status');
+            localStorage.removeItem('vanguard_citizen_name');
+            location.reload();
+        }
+
+        function wipeCache() {
+            if (confirm("This will clear your local website data and sign you out. Are you sure?")) {
+                localStorage.clear();
+                sessionStorage.clear();
+                alert("Data cleared successfully.");
+                location.reload();
+            }
+        }
+
+        // Start the check when the page loads
+        window.onload = checkSession;
     </script>
 </body>
 </html>
