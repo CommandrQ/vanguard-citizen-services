@@ -92,10 +92,12 @@ body, html {
     position: relative;
     z-index: 10;
     display: flex;
+    flex-direction: column; /* Stacks the dashboard and footer naturally */
     justify-content: center;
     align-items: center;
     height: 100vh;
     width: 100%;
+    overflow-y: auto; /* Allows scrolling if screen is extremely small */
 }
 
 #intro-overlay {
@@ -141,26 +143,23 @@ body, html {
     display: none;
     width: 100%;
     max-width: 500px;
-    height: 100vh;
+    height: auto; /* Shrinks to fit content perfectly */
     flex-direction: column;
-    justify-content: center; 
-    padding: 20px 24px 80px 24px;
+    padding: 20px 24px;
     animation: scaleFadeIn 0.8s var(--ease-smooth) forwards;
-    overflow-y: auto;
-    scrollbar-width: none;
 }
-#main-dashboard::-webkit-scrollbar { display: none; }
 
 .hub-header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 .hub-logo {
-    font-size: 2.2rem;
+    font-size: 1.8rem; /* Scaled to fit "Vanguard Citizen Services" */
+    line-height: 1.2;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     margin-bottom: 12px;
     background: linear-gradient(180deg, #fff 0%, var(--gold) 100%);
     -webkit-background-clip: text;
@@ -177,7 +176,7 @@ body, html {
 .hub-nav {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
     width: 100%;
 }
 
@@ -285,9 +284,10 @@ body, html {
    GLOBAL FOOTER (Mobile & Desktop)
    ========================================================================== */
 .global-footer {
-    position: absolute;
-    bottom: 20px;
-    left: 0; /* Setting left to 0 and width to 100% perfectly centers text */
+    display: none; /* Managed by JS to hide during intro */
+    position: static;
+    margin-top: 15px; /* Creates the small gap under the Account link */
+    margin-bottom: 20px;
     width: 100%;
     text-align: center;
     color: var(--white);
@@ -298,6 +298,7 @@ body, html {
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     z-index: 20;
     opacity: 0.8;
+    animation: scaleFadeIn 0.8s var(--ease-smooth) forwards;
 }
 
 /* ==========================================================================
@@ -334,7 +335,7 @@ body, html {
         margin-bottom: 0;
     }
 
-    .hub-logo { font-size: 2.4rem; text-align: left; margin-bottom: 20px; }
+    .hub-logo { font-size: 2.2rem; text-align: left; margin-bottom: 20px; }
     .hub-bio { display: none; } 
 
     .hub-nav {
@@ -407,7 +408,8 @@ body, html {
     .action-btn { width: auto; padding: 18px 50px; font-size: 1.1rem; }
 
     .global-footer {
-        bottom: 3.5vh;
+        margin-top: 25px; /* Spaces the footer perfectly under the glass window */
+        margin-bottom: 0;
         font-size: 0.85rem;
         letter-spacing: 3px;
         text-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 20px rgba(255, 255, 255, 0.5);
