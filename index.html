@@ -19,21 +19,21 @@
         <!-- INTRO SEQUENCE -->
         <div id="intro-overlay">
             <div class="intro-window active" id="intro-1">
-                <h2>The Vanguard Origin</h2>
-                <p>What began as a mission to document the Vanguard Knights' journey through their rebuild has evolved into something greater. Today, Vanguard Citizen Services is a creative studio dedicated to empowering the community.</p>
-                <button class="action-btn" onclick="VCS_Engine.nextIntro(2)">Our Process</button>
+                <h2>How We Started</h2>
+                <p>Vanguard Citizen Services began simply as a way to share the Vanguard Knights' journey as they rebuilt. Along the way, it grew into something much bigger—a creative studio focused entirely on lifting up our community.</p>
+                <button class="action-btn" onclick="VCS_Engine.nextIntro(2)">Our Approach</button>
             </div>
             
             <div class="intro-window" id="intro-2">
-                <h2>Community First</h2>
-                <p>We don't just build digital tools; we build alongside the people. Our process starts on the ground level—listening to community needs, designing intuitive solutions, and deploying resources that solve real-world challenges.</p>
-                <button class="action-btn" onclick="VCS_Engine.nextIntro(3)">The Alliance</button>
+                <h2>Putting People First</h2>
+                <p>We believe the best tools are built by listening. Before we create anything, we spend time hearing what our community actually needs. Then, we work together to build simple, helpful resources that make everyday life a little easier.</p>
+                <button class="action-btn" onclick="VCS_Engine.nextIntro(3)">Looking Ahead</button>
             </div>
 
             <div class="intro-window" id="intro-3">
-                <h2>Powering the Future</h2>
-                <p>The Vanguard Knights are the engine of this mission. Together, our collaborative goal is to forge a secure, accessible, and zero-friction hub where technology serves the citizens. The rebuild is just the beginning.</p>
-                <button class="action-btn" onclick="VCS_Engine.closeIntro()">Enter Terminal</button>
+                <h2>Growing Together</h2>
+                <p>The Vanguard Knights are the heartbeat of everything we do. Together, our goal is to build a safe, welcoming space where technology actually works for you, not against you. We're so glad you're here.</p>
+                <button class="action-btn" onclick="VCS_Engine.closeIntro()">Step Inside</button>
             </div>
         </div>
 
@@ -43,13 +43,13 @@
             <!-- HEADER & NAVIGATION -->
             <aside class="hub-header">
                 <div class="hub-logo">Vanguard</div>
-                <div class="hub-bio">Creative Studio & Alliance Hub for the Vanguard Knights. Forging digital tools for the community.</div>
+                <div class="hub-bio">A creative studio partnering with the Vanguard Knights to build friendly, community-first digital tools.</div>
                 
                 <nav class="hub-nav">
                     <button class="nav-btn" id="btn-projects" onclick="VCS_Engine.switchTab('projects', this)">Projects</button>
                     <button class="nav-btn" id="btn-about" onclick="VCS_Engine.switchTab('about', this)">About Us</button>
                     <button class="nav-btn" id="btn-support" onclick="VCS_Engine.switchTab('support', this)">Support</button>
-                    <button class="nav-btn" id="btn-legal" onclick="VCS_Engine.switchTab('legal', this)">Legal</button>
+                    <button class="nav-btn" id="btn-legal" onclick="VCS_Engine.switchTab('legal', this)">Guidelines</button>
                     <button class="nav-btn" id="btn-account" onclick="VCS_Engine.switchTab('account', this)">Account</button>
                 </nav>
             </aside>
@@ -60,15 +60,15 @@
                 <!-- PROJECTS -->
                 <article id="tab-projects" class="tab-panel">
                     <button class="btn-close" onclick="VCS_Engine.closeMobileTabs()">✕</button>
-                    <h2 class="panel-title">Active Operations</h2>
-                    <p class="panel-desc">Current resources and initiatives powered by the Vanguard Knights.</p>
+                    <h2 class="panel-title">Current Projects</h2>
+                    <p class="panel-desc">Here is what we are working on right now to support our community and the Knights.</p>
                     <ul class="feature-list" id="project-list-container">
                         <li>
-                            <strong>Basic Tech Consulting & Coaching</strong>
-                            One-on-one guidance to help citizens navigate the digital world, optimize their tools, and build their ideas.
+                            <strong>Tech Help & Coaching</strong>
+                            Friendly, one-on-one support to help you feel confident using your digital tools, navigating the web, or bringing your ideas to life.
                         </li>
                         <li style="opacity: 0.5;">
-                            <em>Awaiting next project deployment...</em>
+                            <em>More community tools are on the way...</em>
                         </li>
                     </ul>
                 </article>
@@ -76,47 +76,56 @@
                 <!-- ABOUT -->
                 <article id="tab-about" class="tab-panel">
                     <button class="btn-close" onclick="VCS_Engine.closeMobileTabs()">✕</button>
-                    <h2 class="panel-title">The Creative Studio</h2>
-                    <p class="panel-desc">VCS operates on the core value that technology should serve the community, not the other way around.</p>
+                    <h2 class="panel-title">Who We Are</h2>
+                    <p class="panel-desc">We believe technology should bring people together and make life simpler. Meet the folks working behind the scenes:</p>
                     <ul class="feature-list">
-                        <li><strong>Kona Agpalza: Lead Developer</strong> Ensuring our infrastructure is secure, scalable, and highly accessible.</li>
-                        <li><strong>Quincy Jones: Creative Director</strong> Aligning our tools, branding, and interfaces with the pulse of the people.</li>
+                        <li><strong>Kona Agpalza: Lead Developer</strong><br>Kona focuses on making sure all our tools run smoothly, safely, and are easy for everyone to use.</li>
+                        <li><strong>Quincy Jones: Creative Director</strong><br>Quincy makes sure everything we build feels welcoming, looks great, and truly connects with our community.</li>
                     </ul>
                 </article>
 
                 <!-- SUPPORT -->
                 <article id="tab-support" class="tab-panel">
                     <button class="btn-close" onclick="VCS_Engine.closeMobileTabs()">✕</button>
-                    <h2 class="panel-title">Citizen Support</h2>
-                    <p class="panel-desc">Encountered a bug or need guidance on a project? The Knights are on standby to assist.</p>
+                    <h2 class="panel-title">Here to Help</h2>
+                    <p class="panel-desc">Need a hand with something or ran into a glitch? Our community support team is always around and happy to jump in.</p>
                     <ul class="feature-list">
-                        <li><strong>General Inquiries</strong> Routing for project assistance and platform questions.</li>
-                        <li><strong>Comm-Link Diagnostics</strong> Reporting issues with the Vanguard Strategic Comm-Link.</li>
+                        <li><strong>Friendly Guidance</strong><br>Connect with a Knight for real-time help with any of our projects or services.</li>
+                        <li><strong>Report an Issue</strong><br>Notice something broken on the site? Let us know so we can fix it quickly for everyone.</li>
                     </ul>
-                    <button class="action-btn">Open Support Ticket</button>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <button class="action-btn" style="flex: 1;">Send a Message</button>
+                        <button class="action-btn" style="flex: 1; background: transparent; border: 1px solid var(--white); color: var(--white);">Check Site Status</button>
+                    </div>
                 </article>
 
                 <!-- LEGAL -->
                 <article id="tab-legal" class="tab-panel">
                     <button class="btn-close" onclick="VCS_Engine.closeMobileTabs()">✕</button>
-                    <h2 class="panel-title">Legal & Compliance</h2>
-                    <p class="panel-desc">We believe in absolute transparency. All community interactions and data protocols are governed strictly by our core values.</p>
+                    <h2 class="panel-title">Keeping Things Safe</h2>
+                    <p class="panel-desc">We believe in being completely open with you. Our rules and privacy steps are built around our core values of respect and community safety.</p>
                     <ul class="feature-list">
-                        <li><strong>Terms of Service</strong> The foundational rules of our digital community.</li>
-                        <li><strong>Privacy Protocol</strong> How we protect and manage citizen data.</li>
+                        <li><strong>Community Rules</strong><br>The basic guidelines that keep our digital home kind and welcoming for everyone.</li>
+                        <li><strong>Your Privacy</strong><br>How we protect your personal information and respect your digital boundaries.</li>
                     </ul>
                 </article>
 
                 <!-- ACCOUNT -->
                 <article id="tab-account" class="tab-panel">
                     <button class="btn-close" onclick="VCS_Engine.closeMobileTabs()">✕</button>
-                    <h2 class="panel-title">Identity & Access</h2>
-                    <p class="panel-desc">Manage your citizen profile, active project links, and community security clearances.</p>
-                    <button class="action-btn">Secure Login</button>
+                    <h2 class="panel-title">Your Account</h2>
+                    <p class="panel-desc">Update your personal profile, check on your active projects, and manage your settings all in one place.</p>
+                    <button class="action-btn">Sign In</button>
                 </article>
 
             </main>
         </div>
+
+        <!-- DESKTOP GLOWING FOOTER -->
+        <footer class="desktop-footer">
+            Powered by Vanguard Citizen Services &copy; <span id="current-year"></span>
+        </footer>
+
     </div>
 
     <!-- 3. JAVASCRIPT LOGIC ENGINE -->
@@ -127,12 +136,15 @@
                 this.checkIntroStatus();
                 this.startComets();
                 this.setupResponsiveDefaults();
+                this.setYear();
                 
-                // Watch for screen resizing to reset tab states if moving mobile <-> desktop
                 window.addEventListener('resize', this.setupResponsiveDefaults.bind(this));
             },
 
-            // --- INTRO & LOCAL STORAGE ---
+            setYear: function() {
+                document.getElementById('current-year').innerText = new Date().getFullYear();
+            },
+
             checkIntroStatus: function() {
                 if (localStorage.getItem('vcs_intro_complete') === 'true') {
                     document.getElementById('intro-overlay').style.display = 'none';
@@ -157,13 +169,10 @@
                 }, 800);
             },
 
-            // --- NAVIGATION LOGIC ---
             switchTab: function(tabId, btnElement) {
-                // Clear active states
                 document.querySelectorAll('.tab-panel').forEach(tab => tab.classList.remove('active'));
                 document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
                 
-                // Activate targets
                 document.getElementById(`tab-${tabId}`).classList.add('active');
                 btnElement.classList.add('active');
             },
@@ -177,20 +186,17 @@
                 const isDesktop = window.innerWidth >= 1024;
                 
                 if (isDesktop) {
-                    // Ensure the first tab is open on desktop by default if none are active
                     const activeTab = document.querySelector('.tab-panel.active');
                     if (!activeTab) {
                         this.switchTab('projects', document.getElementById('btn-projects'));
                     }
                 } else {
-                    // On mobile, ensure panels are hidden initially to show just the buttons
                     if (!document.querySelector('.tab-panel.active')) {
                         this.closeMobileTabs();
                     }
                 }
             },
 
-            // --- ENVIRONMENTAL EFFECTS ---
             startComets: function() {
                 const spawn = () => {
                     const container = document.getElementById('environment');
@@ -209,7 +215,6 @@
             }
         };
 
-        // Ignite the Engine
         document.addEventListener('DOMContentLoaded', () => VCS_Engine.init());
     </script>
 </body>
