@@ -3,327 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vanguard | Terminal Hub</title>
-    
-    <!-- Supabase Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <style>
-        :root {
-            --gold: #D4AF37;
-            --gold-glow: rgba(212, 175, 55, 0.4);
-            --white: #ffffff;
-            --apple-glass: rgba(28, 28, 30, 0.75);
-            --apple-border: rgba(255, 255, 255, 0.12);
-        }
-
-        /* --- BASIC SETUP --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body, html {
-            height: 100%;
-            background: #000;
-            color: var(--white);
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
-            -webkit-font-smoothing: antialiased;
-            overflow: hidden; /* Keeps the outer body still */
-        }
-
-        /* --- BACKGROUND --- */
-        #vanguard-stars {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            background: #000;
-        }
-
-        .star-layer {
-            position: absolute;
-            inset: -50%;
-            width: 200%;
-            height: 200%;
-            background-image: 
-                radial-gradient(2px 2px at 40px 60px, var(--gold), transparent),
-                radial-gradient(1.5px 1.5px at 150px 200px, var(--white), transparent);
-            background-size: 400px 400px;
-            animation: rotate-stars 240s linear infinite;
-        }
-
-        @keyframes rotate-stars { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        /* --- SCROLLABLE WRAPPER --- */
-        #app-wrapper {
-            position: relative;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
-            width: 100%;
-            text-align: center;
-            background: transparent;
-            overflow-y: auto; /* This allows scrolling within the app */
-            scrollbar-width: none;
-            padding-bottom: 100px; /* Crucial: Space for footer visibility */
-        }
-
-        #app-wrapper::-webkit-scrollbar { display: none; }
-
-        /* --- HEADER --- */
-        header {
-            width: 90%;
-            max-width: 600px;
-            padding: 60px 20px 20px 20px;
-        }
-
-        h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-        }
-
-        /* --- NAVIGATION --- */
-        #tab-nav {
-            display: flex;
-            background: rgba(118, 118, 128, 0.24); 
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border-radius: 100px;
-            padding: 5px;
-            margin: 15px 0 40px 0;
-            width: 90%;
-            max-width: 500px;
-            border: 1px solid var(--apple-border);
-        }
-
-        .tab-btn {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--white);
-            padding: 12px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            border-radius: 100px;
-            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        .tab-btn.active {
-            background: rgba(255, 255, 255, 0.15); 
-            color: var(--gold);
-            box-shadow: 0 0 20px var(--gold-glow);
-        }
-
-        /* --- WINDOWS / CARDS --- */
-        .window {
-            width: 90%;
-            max-width: 550px; /* Mobile width */
-            background: var(--apple-glass);
-            backdrop-filter: saturate(180%) blur(40px);
-            -webkit-backdrop-filter: saturate(180%) blur(40px);
-            border: 1px solid var(--apple-border);
-            padding: 35px 30px;
-            margin-bottom: 30px;
-            border-radius: 28px; 
-            text-align: left;
-            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.5), 0 0 1px var(--gold-glow);
-        }
-
-        .center-text { text-align: center; }
-
-        .card-title { 
-            color: var(--white); 
-            font-size: 1.4rem; 
-            font-weight: 700; 
-            margin-bottom: 10px; 
-        }
-        
-        .card-desc { 
-            font-size: 1rem; 
-            margin-bottom: 25px; 
-            line-height: 1.6; 
-            color: var(--white); 
-        }
-        
-        /* --- ACTION BUTTONS --- */
-        .action-link {
-            display: inline-block;
-            background: var(--white);
-            color: #000;
-            padding: 18px 0;
-            width: 100%; 
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1rem;
-            border-radius: 18px; 
-            transition: 0.3s;
-            text-align: center;
-        }
-
-        .action-link.gold-btn {
-            background: var(--gold);
-            box-shadow: 0 5px 20px var(--gold-glow);
-        }
-        
-        .action-link:hover { transform: scale(0.985); filter: brightness(1.1); }
-
-        .mission-header {
-            font-size: 0.8rem; 
-            color: var(--gold); 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-            margin-bottom: 15px;
-            font-weight: 800;
-            text-shadow: 0 0 10px var(--gold-glow);
-        }
-
-        .content-section {
-            display: none; 
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            animation: slideUp 0.6s ease;
-        }
-
-        .content-section.active { display: flex; }
-
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- DESKTOP SCALING --- */
-        @media (min-width: 1024px) {
-            header { max-width: 800px; padding-top: 80px; }
-            h1 { font-size: 2.8rem; }
-            #tab-nav { max-width: 600px; }
-            .tab-btn { font-size: 1.1rem; }
-            .window { max-width: 800px; padding: 50px; border-radius: 40px; }
-            .card-title { font-size: 2rem; }
-            .card-desc { font-size: 1.2rem; }
-            .action-link { font-size: 1.2rem; padding: 22px 0; }
-        }
-
-        /* --- FOOTER --- */
-        footer {
-            width: 100%;
-            padding: 60px 20px;
-            font-size: 0.9rem;
-            color: var(--white);
-            letter-spacing: 1.5px;
-            font-weight: 400;
-            text-transform: uppercase;
-        }
-    </style>
+    <title>Vanguard Citizen Services</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="vanguard-stars"><div class="star-layer"></div></div>
+    <!-- 1. ENVIRONMENTAL LAYER -->
+    <div id="environment">
+        <div class="starfield"></div>
+    </div>
 
-    <main id="app-wrapper">
-        <header>
-            <h1>Welcome Citizen</h1>
-        </header>
-
-        <nav id="tab-nav">
-            <button class="tab-btn active" id="btn-vision" onclick="switchTab('vision')">Our Vision</button>
-            <button class="tab-btn" id="btn-projects" onclick="switchTab('projects')">Projects</button>
-            <button class="tab-btn" id="btn-knights" onclick="switchTab('knights')">Knights</button>
-        </nav>
-
-        <!-- VISION -->
-        <section id="sec-vision" class="content-section active">
-            <div class="window center-text">
-                <div class="mission-header">The Mission</div>
-                <p style="font-size: 1.2rem; line-height: 1.7; font-weight: 500;">
-                    "To bridge the gap between digital accessibility and community resources, creating a hub where every citizen has the tools to succeed."
-                </p>
+    <!-- 2. APPLICATION LAYER -->
+    <div id="app-layer">
+        
+        <!-- INTRO SEQUENCE -->
+        <div id="intro-overlay">
+            <div class="intro-window active" id="intro-1">
+                <h2>How We Started</h2>
+                <p>Vanguard Citizen Services began simply as a way to share the Vanguard Knights' journey as they rebuilt. Along the way, it grew into something much bigger—a creative studio focused entirely on lifting up our community.</p>
+                <button class="action-btn" onclick="VCS_Engine.nextIntro(2)">Our Approach</button>
+            </div>
+            
+            <div class="intro-window" id="intro-2">
+                <h2>Putting People First</h2>
+                <p>We believe the best tools are built by listening. Before we create anything, we spend time hearing what our community actually needs. Then, we work together to build simple, helpful resources that make everyday life a little easier.</p>
+                <button class="action-btn" onclick="VCS_Engine.nextIntro(3)">Looking Ahead</button>
             </div>
 
-            <div class="window">
-                <div class="mission-header">Lead Developer</div>
-                <h2 class="card-title">Kona Agpalza</h2>
-                <p class="card-desc">
-                    The architect behind the Vanguard infrastructure, focusing on secure, fast, and community-driven digital tools for the modern internet.
-                </p>
+            <div class="intro-window" id="intro-3">
+                <h2>Growing Together</h2>
+                <p>The Vanguard Knights are the heartbeat of everything we do. Together, our goal is to build a safe, welcoming space where technology actually works for you, not against you. We're so glad you're here.</p>
+                <button class="action-btn" onclick="VCS_Engine.closeIntro()">Step Inside</button>
             </div>
+        </div>
 
-            <div class="window">
-                <div class="mission-header">Creative Director</div>
-                <h2 class="card-title">Quincy Jones</h2>
-                <p class="card-desc">
-                    The vision behind the Vanguard experience, ensuring every interaction is intuitive, accessible, and aligned with our community mission.
-                </p>
-            </div>
-        </section>
-
-        <!-- PROJECTS -->
-        <section id="sec-projects" class="content-section">
-            <!-- Project cards injected by JS -->
-        </section>
-
-        <!-- KNIGHTS -->
-        <section id="sec-knights" class="content-section">
-            <div class="window">
-                <h2 class="card-title">The Community Engine</h2>
-                <p class="card-desc">
-                    The Vanguard Knights are the heartbeat of this community. They are the neighbors and innovators who power the projects hosted here in the hub.
-                </p>
-                <p class="card-desc">
-                    From refining digital tools to leading local initiatives, the Knights turn our vision into reality. Every contribution fuels the engine of Vanguard Citizen Services.
-                </p>
-                <div style="height: 1px; background: var(--apple-border); margin: 25px 0;"></div>
-                <p class="mission-header" style="text-align: center; margin-bottom: 0;">Status: Recruiting Citizens</p>
-            </div>
-        </section>
-
-        <!-- FOOTER (Inside wrapper to ensure scroll visibility) -->
-        <footer>Vanguard Citizen Services &copy; <span id="year"></span></footer>
-    </main>
-
-    <script>
-        const vanguardHub = supabase.createClient(
-            'https://dvyjupytbwbrcoyouxpf.supabase.co', 
-            'sb_publishable_wjgbPekKmodd5mSDXIeUeg_Wq73GzOk',
-            { auth: { persistSession: true, autoRefreshToken: true } }
-        );
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`sec-${tabName}`).classList.add('active');
-            document.getElementById(`btn-${tabName}`).classList.add('active');
-            // Scroll to top of content when tab switches
-            document.getElementById('app-wrapper').scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        async function loadProjects() {
-            try {
-                const response = await fetch('projects.json');
-                const projects = await response.json();
-                const container = document.getElementById('sec-projects');
+        <!-- MAIN DASHBOARD -->
+        <div id="main-dashboard">
+            
+            <!-- HEADER & NAVIGATION -->
+            <aside class="hub-header">
+                <div class="hub-logo">Vanguard Citizen Services</div>
+                <div class="hub-bio">A creative studio partnering with the Vanguard Knights to build friendly, community-first digital tools.</div>
                 
-                if (!projects || projects.length === 0) {
-                    container.innerHTML = `<div class="window center-text"><p class="card-desc">Awaiting deployment...</p></div>`;
-                    return;
+                <nav class="hub-nav">
+                    <button class="nav-btn" id="btn-projects" onclick="VCS_Engine.switchTab('projects', this)">Projects</button>
+                    <!-- Updated About Us tab to link directly to about.html -->
+                    <a href="about.html" class="nav-btn" id="btn-about" style="text-decoration: none; display: block;">About Us</a>
+                    <button class="nav-btn" id="btn-support" onclick="VCS_Engine.switchTab('support', this)">Support</button>
+                    <button class="nav-btn" id="btn-legal" onclick="VCS_Engine.switchTab('legal', this)">Legal</button>
+                    <button class="nav-btn" id="btn-account" onclick="VCS_Engine.switchTab('account', this)">Account</button>
+                </nav>
+            </aside>
+
+            <!-- CONTENT PANELS -->
+            <main class="hub-content">
+                
+                <!-- PROJECTS -->
+                <article id="tab-projects" class="tab-panel">
+                    <button class="btn-close" onclick="VCS_Engine.closeMobileTabs()">✕</button>
+                    <h2 class="panel-title">Current Projects</h2>
+                    <p class="panel-desc">Here is what we are working on right now to support our community and the Knights.</p>
+                    <ul class="feature-list" id="project-list-container">
+                        <!-- PROJECT V -->
+                        <li>
+                            <strong>Project V</strong>
+                            <p style="margin-bottom: 15px; font-size: 1rem; color: rgba(255,255,255,0.85);">A real-time community project built to help close the gap between everyday citizens and elected officials at all levels. It uses simple digital tools to bring neighbors and leaders together, ensuring your voice is heard directly where it matters most.</p>
+                            <a href="project-v.html" class="action-btn" style="display: block; text-align: center; text-decoration: none; padding: 14px 0; font-size: 0.95rem;">Join the Conversation</a>
+                        </li>
+                        <!-- TECH HELP & COACHING -->
+                        <li>
+                            <strong>Tech Help & Coaching</strong>
+                            <p style="margin-bottom: 15px; font-size: 1rem; color: rgba(255,255,255,0.85);">Friendly, one-on-one support to help you feel confident using your digital tools, navigating the web, or bringing your ideas to life.</p>
+                            <a href="#" class="action-btn" style="display: block; text-align: center; text-decoration: none; padding: 14px 0; font-size: 0.95rem;">Get Tech Help</a>
+                        </li>
+                    </ul>
+                </article>
+
+                <!-- SUPPORT -->
+                <article id="tab-support" class="tab-panel">
+                    <button class="btn-close" onclick="VCS_Engine.closeMobileTabs()">✕</button>
+                    <h2 class="panel-title">Here to Help</h2>
+                    <p class="panel-desc">Need a hand with a project, have a question, or noticed something isn't working quite right? We are always ready to jump in and assist.</p>
+                    <a href="support.html" class="action-btn" style="display: block; text-align: center; text-decoration: none; margin-top: 20px;">Open a Ticket</a>
+                </article>
+
+                <!-- LEGAL -->
+                <article id="tab-legal" class="tab-panel">
+                    <button class="btn-close" onclick="VCS_Engine.closeMobileTabs()">✕</button>
+                    <h2 class="panel-title">Keeping Things Safe</h2>
+                    <p class="panel-desc">We believe in being completely open with you. To read the rules that keep our space welcoming, or to see how we protect your privacy, please review our legal documents.</p>
+                    <a href="legal.html" class="action-btn" style="display: block; text-align: center; text-decoration: none; margin-top: 20px;">View Legal & Guidelines</a>
+                </article>
+
+                <!-- ACCOUNT -->
+                <article id="tab-account" class="tab-panel">
+                    <button class="btn-close" onclick="VCS_Engine.closeMobileTabs()">✕</button>
+                    <h2 class="panel-title">Your Account</h2>
+                    <p class="panel-desc">Update your personal profile, check on your active projects, and manage your settings all in one place.</p>
+                    <a href="settings.html" class="action-btn" style="display: block; text-align: center; text-decoration: none; margin-top: 20px;">Sign In</a>
+                </article>
+
+            </main>
+        </div>
+
+        <!-- GLOBAL GLOWING FOOTER -->
+        <footer class="global-footer" id="global-footer">
+            Powered by Vanguard Citizen Services &copy; <span id="current-year"></span>
+        </footer>
+
+    </div>
+
+    <!-- 3. JAVASCRIPT LOGIC ENGINE -->
+    <script>
+        const VCS_Engine = {
+            
+            init: function() {
+                this.checkIntroStatus();
+                this.startComets();
+                this.setupResponsiveDefaults();
+                this.setYear();
+                
+                window.addEventListener('resize', this.setupResponsiveDefaults.bind(this));
+            },
+
+            setYear: function() {
+                document.getElementById('current-year').innerText = new Date().getFullYear();
+            },
+
+            checkIntroStatus: function() {
+                if (localStorage.getItem('vcs_intro_complete') === 'true') {
+                    document.getElementById('intro-overlay').style.display = 'none';
+                    document.getElementById('main-dashboard').style.display = 'flex';
+                    document.getElementById('global-footer').style.display = 'block';
                 }
+            },
 
-                container.innerHTML = projects.map(item => `
-                    <div class="window">
-                        <div class="mission-header">Active Project</div>
-                        <h2 class="card-title">${item.title}</h2>
-                        <p class="card-desc">${item.desc}</p>
-                        <a href="${item.url}" class="action-link gold-btn">Launch Terminal</a>
-                    </div>
-                `).join('');
-            } catch (err) { 
-                document.getElementById('sec-projects').innerHTML = `<div class="window center-text"><p class="card-desc">Syncing project database...</p></div>`;
+            nextIntro: function(step) {
+                document.querySelectorAll('.intro-window').forEach(win => win.classList.remove('active'));
+                document.getElementById(`intro-${step}`).classList.add('active');
+            },
+
+            closeIntro: function() {
+                localStorage.setItem('vcs_intro_complete', 'true');
+                const overlay = document.getElementById('intro-overlay');
+                overlay.style.opacity = '0';
+                
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    document.getElementById('main-dashboard').style.display = 'flex';
+                    document.getElementById('global-footer').style.display = 'block';
+                    this.setupResponsiveDefaults();
+                }, 800);
+            },
+
+            switchTab: function(tabId, btnElement) {
+                document.querySelectorAll('.tab-panel').forEach(tab => tab.classList.remove('active'));
+                document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+                
+                document.getElementById(`tab-${tabId}`).classList.add('active');
+                btnElement.classList.add('active');
+            },
+
+            closeMobileTabs: function() {
+                document.querySelectorAll('.tab-panel').forEach(tab => tab.classList.remove('active'));
+                document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            },
+
+            setupResponsiveDefaults: function() {
+                const isDesktop = window.innerWidth >= 1024;
+                
+                if (isDesktop) {
+                    const activeTab = document.querySelector('.tab-panel.active');
+                    if (!activeTab) {
+                        this.switchTab('projects', document.getElementById('btn-projects'));
+                    }
+                } else {
+                    if (!document.querySelector('.tab-panel.active')) {
+                        this.closeMobileTabs();
+                    }
+                }
+            },
+
+            startComets: function() {
+                const spawn = () => {
+                    const container = document.getElementById('environment');
+                    const comet = document.createElement('div');
+                    comet.classList.add('comet');
+                    
+                    comet.style.top = `${Math.random() * 40}vh`;
+                    comet.style.left = `${50 + (Math.random() * 50)}vw`;
+                    
+                    container.appendChild(comet);
+                    setTimeout(() => comet.remove(), 2000);
+                };
+
+                setInterval(spawn, 3500);
+                spawn();
             }
-        }
+        };
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('year').innerText = new Date().getFullYear();
-            loadProjects();
-        });
+        document.addEventListener('DOMContentLoaded', () => VCS_Engine.init());
     </script>
 </body>
 </html>
