@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Project V | Vanguard Citizen Services</title>
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         /* --- BRANDING & VARIABLES --- */
         :root {
@@ -14,12 +16,12 @@
             --text-muted: rgba(255, 255, 255, 0.7);
             --glass-bg: rgba(15, 15, 20, 0.5);
             --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.15);
             --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-        /* FIXED: Separated html and body to allow mobile scrolling */
         html {
             width: 100%;
             scroll-behavior: smooth;
@@ -36,7 +38,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-x: hidden; /* Keeps starfield from breaking width without locking scroll */
+            overflow-x: hidden; 
         }
 
         /* --- BACKGROUND ENVIRONMENT --- */
@@ -164,6 +166,61 @@
         .ledger-row:last-child { border-bottom: none; padding-bottom: 0; }
         .ledger-date { color: var(--gold); font-weight: 600; font-family: monospace; }
 
+        /* --- INTERACTIVE TRACKER WINDOW OVERLAY --- */
+        #tracker-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s var(--ease-smooth);
+            padding: 20px;
+        }
+        #tracker-overlay.active { opacity: 1; visibility: visible; }
+
+        .tracker-window {
+            background: rgba(20, 20, 25, 0.9);
+            border: 1px solid var(--glass-border);
+            padding: 40px 30px;
+            border-radius: 28px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 1px var(--gold-glow);
+            transform: scale(0.95);
+            transition: transform 0.5s var(--ease-smooth);
+            position: relative;
+        }
+        #tracker-overlay.active .tracker-window { transform: scale(1); }
+
+        .btn-close {
+            position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.05);
+            border: none; color: var(--white); width: 36px; height: 36px; border-radius: 50%;
+            font-size: 1rem; cursor: pointer; display: flex; justify-content: center; align-items: center;
+        }
+        .btn-close:hover { background: rgba(255,255,255,0.15); color: var(--gold); }
+
+        /* --- FORM ELEMENTS & INSTRUCTIONS --- */
+        .instruction-step { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 6px; }
+        .instruction-step strong { color: var(--gold); }
+
+        label { display: block; margin-bottom: 6px; margin-top: 16px; font-weight: 600; font-size: 0.9rem; }
+        select, input, textarea { 
+            width: 100%; padding: 14px; border-radius: 14px; 
+            border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(0, 0, 0, 0.4); color: white; 
+            font-family: inherit; font-size: 1rem; transition: all 0.3s ease; margin-bottom: 5px;
+        }
+        select:focus, input:focus, textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 10px var(--gold-glow); background: rgba(0, 0, 0, 0.6); }
+        input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.25); }
+        textarea { resize: none; }
+
         /* --- BUTTONS --- */
         .action-btn {
             width: 100%; padding: 18px; border-radius: 16px; border: none; 
@@ -172,6 +229,14 @@
             display: block; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .action-btn:hover { background: var(--gold); box-shadow: 0 0 25px var(--gold-glow); transform: translateY(-2px); }
+        .action-btn:disabled { background: rgba(255,255,255,0.3); color: rgba(255,255,255,0.5); cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .btn-secondary { background: transparent; border: 1px solid var(--glass-border); color: var(--white); margin-top: 15px; }
+        .btn-secondary:hover { background: rgba(255,255,255,0.05); border-color: var(--white); transform: none; box-shadow: none; }
+
+        .status-banner { margin-top: 18px; padding: 14px; border-radius: 12px; text-align: center; font-size: 0.95rem; display: none; }
+        .status-success { display: block; background: rgba(46, 204, 113, 0.15); border: 1px solid #2ecc71; color: #2ecc71; }
+        .status-error { display: block; background: rgba(231, 76, 60, 0.15); border: 1px solid #e74c3c; color: #e74c3c; }
 
         /* --- FOOTER --- */
         footer { 
@@ -237,8 +302,10 @@
                 </div>
             </div>
 
-            <div style="margin-top: 40px;">
-                <a href="settings.html" class="action-btn">Join the Collective Mission</a>
+            <!-- BUTTONS: Open Issue Tracker or Sign In -->
+            <div style="margin-top: 40px; display: flex; flex-direction: column; gap: 15px;">
+                <button class="action-btn" onclick="toggleTracker(true)">Launch Community Issue Tracker</button>
+                <a href="settings.html" class="action-btn btn-secondary">Join the Collective Mission</a>
             </div>
 
         </main>
@@ -246,8 +313,54 @@
         <footer>Powered by Vanguard Citizen Services &copy; <span id="current-year"></span></footer>
     </div>
 
+    <!-- POP-UP INTERACTIVE COMMUNITY ISSUE TRACKER BOX -->
+    <div id="tracker-overlay" onclick="if(event.target === this) toggleTracker(false)">
+        <div class="tracker-window">
+            <button class="btn-close" onclick="toggleTracker(false)">✕</button>
+            
+            <h2 style="margin-top: 0; font-size: 1.6rem; margin-bottom: 10px;">Community Box</h2>
+            
+            <!-- SIMPLE USER INSTRUCTIONS -->
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 16px; margin-bottom: 10px;">
+                <h4 style="color: var(--gold); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">How to Submit:</h4>
+                <div class="instruction-step"><strong>1. Select Topic:</strong> Choose the area that fits the friction point best.</div>
+                <div class="instruction-step"><strong>2. Pick Area:</strong> Tell us which city center you are closest to.</div>
+                <div class="instruction-step"><strong>3. Add Location:</strong> Provide a street name or public neighborhood.</div>
+                <div class="instruction-step"><strong>4. Describe:</strong> Briefly explain the local issue so we can verify it.</div>
+            </div>
+
+            <!-- LIVE DATA INPUT FORM -->
+            <form id="submission-form">
+                <label for="category">Topic Category</label>
+                <select id="category">
+                    <option value="School Transparency">School Transparency</option>
+                    <option value="Resource Access">Resource Access</option>
+                    <option value="Budget/Infrastructure">Budget / Infrastructure</option>
+                </select>
+
+                <label for="municipality">Your General Area</label>
+                <select id="municipality">
+                    <option value="Radcliff">Radcliff</option>
+                    <option value="Elizabethtown">Elizabethtown</option>
+                    <option value="Vine Grove">Vine Grove</option>
+                    <option value="Other Hardin County">Other Hardin County</option>
+                </select>
+
+                <label for="location">Nearest Street or Neighborhood Name</label>
+                <input type="text" id="location" placeholder="e.g., Dixie Highway or Woodland Drive" required>
+
+                <label for="description">What issue needs attention?</label>
+                <textarea id="description" rows="4" placeholder="Please describe the local issue or area of improvement here..." required></textarea>
+
+                <button type="submit" id="submit-button" class="action-btn" style="margin-top: 20px;">Submit Anonymously</button>
+                
+                <div id="response-banner" class="status-banner"></div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        /* --- COMET GENERATOR --- */
+        /* --- 1. COMET GENERATOR --- */
         function spawnComet() {
             const container = document.getElementById('environment');
             const comet = document.createElement('div');
@@ -260,8 +373,77 @@
         setInterval(spawnComet, 3500);
         spawnComet();
 
-        /* --- SET CURRENT YEAR --- */
+        /* --- 2. SET CURRENT YEAR --- */
         document.getElementById('current-year').innerText = new Date().getFullYear();
+
+        /* --- 3. POP-UP WINDOW TOGGLE FUNCTION --- */
+        function toggleTracker(open) {
+            const overlay = document.getElementById('tracker-overlay');
+            if (open) {
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Locks body scroll while modal is up
+            } else {
+                overlay.classList.remove('active');
+                document.body.style.overflow = 'auto'; // Restores scrolling
+            }
+        }
+
+        /* --- 4. SUPABASE LIVE ACCOUNT CONNECTION --- */
+        const sbUrl = 'https://dvyjupytbwbrcoyouxpf.supabase.co';
+        const sbKey = 'sb_publishable_wjgbPekKmodd5mSDXIeUeg_Wq73GzOk';
+        const supabaseClient = supabase.createClient(sbUrl, sbKey);
+
+        /* --- 5. DATA SUBMISSION DISPATCHER --- */
+        const form = document.getElementById('submission-form');
+        const submitBtn = document.getElementById('submit-button');
+        const banner = document.getElementById('response-banner');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Sending Your Note...";
+            banner.className = "status-banner";
+            banner.innerText = "";
+
+            const category = document.getElementById('category').value;
+            const municipality = document.getElementById('municipality').value;
+            const user_location = document.getElementById('location').value.trim();
+            const description = document.getElementById('description').value.trim();
+
+            try {
+                const { error } = await supabaseClient
+                    .from('suggestionbox')
+                    .insert([
+                        {
+                            category: category,
+                            municipality: municipality,
+                            user_location: user_location,
+                            description: description,
+                            status: 'Pending Verification',
+                            is_public: false,
+                            trust_score_flag: false
+                        }
+                    ]);
+
+                if (error) throw error;
+
+                banner.classList.add('status-success');
+                banner.innerText = "Thank you! Your feedback has been safely submitted to the council log.";
+                form.reset();
+                
+                // Smoothly close window after 2.5 seconds upon success
+                setTimeout(() => { toggleTracker(false); }, 2500);
+
+            } catch (err) {
+                console.error(err);
+                banner.classList.add('status-error');
+                banner.innerText = "We couldn't lock your entry in. Please check your network and try again.";
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Submit Anonymously";
+            }
+        });
     </script>
 </body>
 </html>
